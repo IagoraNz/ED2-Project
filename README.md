@@ -46,9 +46,9 @@ Then, allow the user to do the following actions with the appropriate restrictio
 
 ### **2. In relation to exercise 1, check the times**
 
-  a. insertion of each element in the Courses tree (in item ii) of exercise 1);
+  *a.* insertion of each element in the Courses tree (in item ii) of exercise 1);
 
-  b. searching for a grade for a student's subject (in item xii) of exercise 1);
+  *b.* searching for a grade for a student's subject (in item xii) of exercise 1);
 
 To check execution times, search for the C time function. Insert commands into the code to obtain
 the starting time before taking the survey and the ending time after completing the survey.
