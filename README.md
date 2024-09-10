@@ -61,4 +61,4 @@ consumes a lot of time.
 🗞️ **Note 3:** To validate the search time, it must be repeated 30 times. Take an average to get the
 end result.
 
-### **3. (5.0 points) Repeat the entire process from exercises 1 and 2 but now implement the code using a AVL tree.**
+### **3. Repeat the entire process from exercises 1 and 2 but now implement the code using a AVL tree.**
