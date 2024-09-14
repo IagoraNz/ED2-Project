@@ -1,14 +1,5 @@
 #pragma once
 
-typedef struct cursos {
-    int idcurso;
-    char nomecurso[50];
-    int qntdperiodos;
-    struct cursos *esq;
-    struct cursos *dir;
-    Disciplina *disc;
-} Cursos;
-
 typedef struct disciplina {
     int cod_disciplina;
     char nomedisc[50];
@@ -17,6 +8,15 @@ typedef struct disciplina {
     struct disciplina *esq;
     struct disciplina *dir;
 } Disciplina;
+
+typedef struct cursos {
+    int idcurso;
+    char nomecurso[50];
+    int qntdperiodos;
+    struct cursos *esq;
+    struct cursos *dir;
+    Disciplina *disc;
+} Cursos;
 
 typedef struct notas {
     int coddisc;
