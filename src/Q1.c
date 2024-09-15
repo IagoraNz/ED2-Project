@@ -3,6 +3,40 @@
 #include <string.h>
 #include "Q1.h"
 
+// Função para verificar se um idcurso ja está em uso ou para procurar algum curso.
+void buscaCurso(Cursos *curso, int idcurso, int *enc){
+    if(curso == NULL)
+        *enc = 0;
+    else{
+        if(curso->idcurso == idcurso)
+            *enc = 1;
+        else{
+            if(idcurso < curso->idcurso)
+                buscamat(&(curso->esq), idcurso, enc);
+            else
+                buscamat(&(curso->dir), idcurso, enc);
+        }
+    }
+}
+
+void cadcurso(Cursos **curso, int idcurso, const char nomecurso, int qntperiodos){
+    if(*curso == NULL){
+        (*curso)->idcurso = idcurso;
+        strcpy((*curso)->nomecurso, nomecurso);
+        (*curso)->qntdperiodos = qntperiodos;
+        (*curso)->disc = NULL; // Inicializando Arvore Binaria de Disciplinas como Nulo.
+        // Orientação da arvore binario
+        (*curso)->dir = NULL;
+        (*curso)->esq = NULL;
+    }
+    else{
+        if(idcurso < (*curso)->idcurso)
+            cadmatricula(&((*curso)->esq), idcurso);
+        else
+            cadmatricula(&((*curso)->dir), idcurso);
+    }
+}
+
 void cadmatricula(Matricula **m, int codigo){
     if(*m == NULL){
         Matricula *novo = (Matricula*)malloc(sizeof(Matricula));
