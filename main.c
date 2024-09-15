@@ -36,8 +36,6 @@ int main(){
             case 0:
                 break;
             default:
-                printf("Entrada invalida. Por favor, digite um opcao existente!\n");
-                system("PAUSE");
                 break;
             }
         }
