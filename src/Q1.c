@@ -138,3 +138,18 @@ void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
         }
     }
 }
+
+// Essa buscaCurso vai mudar de lugar, para o main quando este for criado. Isto para otimizar
+void alunosporcurso(Alunos **a, Cursos **c, int codcurso){
+    int enc;
+    buscaCurso(c, codcurso, &enc);
+
+    if(enc == 1){
+        while((*a) != NULL && (*a)->codcurso == codcurso){
+            printf("%s\n", (*a)->nome);
+            *a = (*a)->prox;
+        }
+    }
+    else
+        printf("Curso nao encontrado!\n");
+}
