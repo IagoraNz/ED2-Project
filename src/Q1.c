@@ -4,7 +4,7 @@
 #include "Q1.h"
 
 // Função para verificar se um idcurso ja está em uso ou para procurar algum curso.
-void buscaCurso(Cursos *curso, int idcurso, int *enc){
+void buscacurso(Cursos *curso, int idcurso, int *enc){
     if(curso == NULL)
         *enc = 0;
     else{
@@ -12,30 +12,44 @@ void buscaCurso(Cursos *curso, int idcurso, int *enc){
             *enc = 1;
         else{
             if(idcurso < curso->idcurso)
-                buscamat(&(curso->esq), idcurso, enc);
+                buscacurso(curso->esq, idcurso, enc);
             else
-                buscamat(&(curso->dir), idcurso, enc);
+                buscacurso(curso->dir, idcurso, enc);
         }
     }
 }
 
-void cadcurso(Cursos **curso, int idcurso, const char nomecurso, int qntperiodos){
+void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos){
     if(*curso == NULL){
-        (*curso)->idcurso = idcurso;
-        strcpy((*curso)->nomecurso, nomecurso);
-        (*curso)->qntdperiodos = qntperiodos;
-        (*curso)->disc = NULL; // Inicializando Arvore Binaria de Disciplinas como Nulo.
-        // Orientação da arvore binario
-        (*curso)->dir = NULL;
-        (*curso)->esq = NULL;
+        Cursos *novo = (Cursos*)malloc(sizeof(Cursos));
+        novo->idcurso = idcurso;
+        strcpy(novo->nomecurso, nomecurso);
+        novo->qntdperiodos = qntperiodos;
+        novo->disc = NULL;
+        novo->dir = NULL;
+        novo->esq = NULL;
+        *curso = novo;
     }
     else{
         if(idcurso < (*curso)->idcurso)
-            cadmatricula(&((*curso)->esq), idcurso);
+            cadcurso(&((*curso)->esq), idcurso, nomecurso, qntperiodos);
         else
-            cadmatricula(&((*curso)->dir), idcurso);
+            cadcurso(&((*curso)->dir), idcurso, nomecurso, qntperiodos);
     }
 }
+
+// void exibircurso(Cursos *c, int nivel) {
+//     if (c != NULL) {
+//         // Imprime o conteúdo do nó atual
+//         printf("\%d %s %d\n", c->idcurso, c->nomecurso, c->qntdperiodos);
+//         for (int i = 0; i < nivel; i++) {
+//             printf("    ");  // 4 espaços para cada nível
+//         }
+//         // Chama a função recursivamente para o filho esquerdo e direito
+//         exibircurso(c->esq, nivel + 1);  // Primeiro exibe o filho esquerdo
+//         exibircurso(c->dir, nivel + 1);  // Depois exibe o filho direito
+//     }
+// }
 
 void cadmatricula(Matricula **m, int codigo){
     if(*m == NULL){
@@ -139,10 +153,10 @@ void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
     }
 }
 
-// Essa buscaCurso vai mudar de lugar, para o main quando este for criado. Isto para otimizar
+// Essa buscacurso vai mudar de lugar, para o main quando este for criado. Isto para otimizar
 void alunosporcurso(Alunos **a, Cursos **c, int codcurso){
     int enc;
-    buscaCurso(c, codcurso, &enc);
+    buscacurso(c, codcurso, &enc);
 
     if(enc == 1){
         while((*a) != NULL && (*a)->codcurso == codcurso){
@@ -152,4 +166,38 @@ void alunosporcurso(Alunos **a, Cursos **c, int codcurso){
     }
     else
         printf("Curso nao encontrado!\n");
+}
+
+// void buscanota(Notas *n, int coddisc, int *enc){
+//     if(n == NULL)
+//         *enc = 0;
+//     else{
+//         if(n->coddisc == coddisc){
+//             *enc = 1;
+//         }
+//         else{
+//             if(coddisc < n->coddisc)
+//                 buscanota(&(n->esq), coddisc, enc);
+//             else
+//                 buscanota(&(n->dir), coddisc, enc);
+//         }
+//     }
+// }
+
+void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
+    if(a == NULL){
+        printf("Nao existe alunos cadastrados\n");
+    }
+    else{
+        if(a->nota != NULL){
+            if(a->nota->semestre == periodo){
+                // printf("EXIBINDO NOTAS DO SEMESTRE %d\n", a->nota->semestre);
+                printf("%d %.2f", a->nota->coddisc, a->nota->notafinal);
+                notasdiscperiodoaluno(a->nota->esq, periodo, mat);
+                notasdiscperiodoaluno(a->nota->dir, periodo, mat);
+            }
+        }
+        else
+            printf("Nota nao encontrada\n");
+    }
 }
