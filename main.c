@@ -57,7 +57,7 @@ int main(){
             break;
         case 16:
             system("cls");
-            exibircurso(c, 0);
+            exibircurso(c);
             system("PAUSE");
             break;
         case 0:
