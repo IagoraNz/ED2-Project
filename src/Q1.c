@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "Q1.h"
 
 // Função para verificar se um idcurso ja está em uso ou para procurar algum curso.
@@ -38,18 +39,14 @@ void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodo
     }
 }
 
-// void exibircurso(Cursos *c, int nivel) {
-//     if (c != NULL) {
-//         // Imprime o conteúdo do nó atual
-//         printf("\%d %s %d\n", c->idcurso, c->nomecurso, c->qntdperiodos);
-//         for (int i = 0; i < nivel; i++) {
-//             printf("    ");  // 4 espaços para cada nível
-//         }
-//         // Chama a função recursivamente para o filho esquerdo e direito
-//         exibircurso(c->esq, nivel + 1);  // Primeiro exibe o filho esquerdo
-//         exibircurso(c->dir, nivel + 1);  // Depois exibe o filho direito
-//     }
-// }
+void exibircurso(Cursos *c){
+    printf("CURSOS CADASTRADOS\n");
+    if(c != NULL){
+        exibircurso(c->esq);
+        printf("%d %s %d\n", c->idcurso, c->nomecurso, c->qntdperiodos);
+        exibircurso(c->dir);
+    }
+}
 
 void cadmatricula(Matricula **m, int codigo){
     if(*m == NULL){
@@ -199,5 +196,51 @@ void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
         }
         else
             printf("Nota nao encontrada\n");
+    }
+}
+
+// xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o período e a carga horária da
+// disciplina. 
+void notadiscporaluno(Alunos *a, int matricula, int coddisc){
+    if(a != NULL){
+        while(a != NULL){
+            if(a->matricula == matricula){
+                while(a->nota != NULL){
+                    if(a->nota->coddisc == coddisc){
+                        printf("Aluno: %s\nDisciplina: %d\nNota Final: %.2f\nSemestre: %d\n", a->nome, coddisc, a->nota->notafinal, a->nota->semestre);
+                    }
+                    if(coddisc < a->nota->coddisc){
+                        a->nota = a->nota->esq;
+                    } 
+                    else{
+                        a->nota = a->nota->dir;
+                    }
+                }
+            }
+            a = a->prox;
+        }
+    }
+    else{
+        printf("Nao ha alunos cadastrados.\n");
+    }
+}
+
+// xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno.
+void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
+    int enc = 0;
+    if((*a) != NULL){
+        while((*a) != NULL && (*a)->matricula == matricula){
+            printf("Aluno %s\n", (*a)->nome);
+            *a = (*a)->prox;
+        }
+    }
+
+    buscamat((*a)->mat, coddisc, &enc);
+
+    if(enc == 1){
+        rmvmatricula((*a)->mat, coddisc);
+    }
+    else{
+        printf("Matricula nao encontrada para o aluno %s\n", (*a)->nome);
     }
 }
