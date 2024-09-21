@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "Q1.h"
 
 // Função para verificar se um idcurso ja está em uso ou para procurar algum curso.
@@ -89,6 +90,49 @@ void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
                 cadnota(m, &((*n)->esq), cod, semestre, notafinal);
             else
                 cadnota(m, &((*n)->dir), cod, semestre, notafinal);
+        }
+    }
+}
+
+void converternome(char *nome) {
+    int i = 0;
+    // Converte cada caractere para maiuscula enquanto não encontrar o caractere de terminação '\0'
+    while (nome[i] != '\0') {
+        nome[i] = toupper(nome[i]);
+        i++;
+    }
+}
+
+void cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
+    Alunos *novo = (Alunos*) malloc(sizeof(Alunos));
+    novo->prox = NULL;
+    novo->matricula = mat;
+    char *aux_nome = strdup(nome);
+    converternome(aux_nome);
+    strcpy(novo->nome, aux_nome);
+    novo->codcurso = codcurso;
+    novo->nota = NULL;
+    novo->mat = NULL;
+
+    // Se a lista estiver vazia, insere o primeiro aluno
+    if (*a == NULL) {
+        *a = novo;
+    }
+    else {
+        // Verifica se o novo nome deve ser inserido na primeira posição
+        if (strcmp(aux_nome, (*a)->nome) < 0) {
+            novo->prox = *a;
+            *a = novo;
+        }
+        else {
+            Alunos *aux = *a;
+            // Percorre a lista e encontra a posição correta
+            while (aux->prox != NULL && strcmp(aux_nome, aux->prox->nome) > 0) {
+                aux = aux->prox;
+            }
+            // Insere o novo aluno na posição correta
+            novo->prox = aux->prox;
+            aux->prox = novo;
         }
     }
 }
