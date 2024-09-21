@@ -18,7 +18,7 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 ## 🔗 **Implementation**
 
-### **1. Write a C program that records data about students and their history within a particular course. To do this, you need to have the following data structures:**
+## **1. Write a C program that records data about students and their history within a particular course. To do this, you need to have the following data structures:**
    
    *a. List of Students:* Student registration, Student name, Course Code, Grade tree, Enrollment, the list must be organized alphabetically by student name.
    
@@ -44,7 +44,7 @@ Then, allow the user to do the following actions with the appropriate restrictio
   *v)* Register Grades, allow the registration of grades only for subjects that are in the class tree enrollment, and when the grade is registered, the subject must be removed from the enrollment tree to
   note tree.
 
-### **2. In relation to exercise 1, check the times**
+## **2. In relation to exercise 1, check the times**
 
   *a.* insertion of each element in the Courses tree (in item ii) of exercise 1);
 
@@ -61,4 +61,4 @@ consumes a lot of time.
 🗞️ **Note 3:** To validate the search time, it must be repeated 30 times. Take an average to get the
 end result.
 
-### **3. Repeat the entire process from exercises 1 and 2 but now implement the code using a AVL tree.**
+## **3. Repeat the entire process from exercises 1 and 2 but now implement the code using a AVL tree.**
