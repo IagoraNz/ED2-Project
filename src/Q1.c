@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <math.h>
 #include "Q1.h"
 
@@ -149,6 +150,109 @@ void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
         }
     }
 }
+
+// i) Cadastrar alunos a qualquer momento na lista, de forma que só possa cadastrar um código de curso que
+// já tenha sido cadastrado na árvore de cursos. 
+void converternome(char *nome) {
+    int i = 0;
+    // Converte cada caractere para maiuscula enquanto não encontrar o caractere de terminação '\0'
+    while (nome[i] != '\0') {
+        nome[i] = toupper(nome[i]);
+        i++;
+    }
+}
+
+void cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
+    Alunos *novo = (Alunos*) malloc(sizeof(Alunos));
+    novo->prox = NULL;
+    novo->matricula = mat;
+    char *aux_nome = strdup(nome);
+    converternome(aux_nome);
+    strcpy(novo->nome, aux_nome);
+    novo->codcurso = codcurso;
+    novo->nota = NULL;
+    novo->mat = NULL;
+
+    // Se a lista estiver vazia, insere o primeiro aluno
+    if (*a == NULL) {
+        *a = novo;
+    }
+    else {
+        // Verifica se o novo nome deve ser inserido na primeira posição
+        if (strcmp(aux_nome, (*a)->nome) < 0) {
+            novo->prox = *a;
+            *a = novo;
+        }
+        else {
+            Alunos *aux = *a;
+            // Percorre a lista e encontra a posição correta
+            while (aux->prox != NULL && strcmp(aux_nome, aux->prox->nome) > 0) {
+                aux = aux->prox;
+            }
+            // Insere o novo aluno na posição correta
+            novo->prox = aux->prox;
+            aux->prox = novo;
+        }
+    }
+}
+
+// vii) Mostrar todos os cursos do Campus. 
+void exibir_cursos(Cursos *curso) {
+    if (curso != NULL) {
+        printf("ID: %d\n", curso->idcurso);
+        printf("Nome: %s\n", curso->nomecurso);
+        printf("Quantidade de períodos: %d\n", curso->qntdperiodos);
+        printf("\n");
+        exibir_cursos(curso->esq);
+        exibir_cursos(curso->dir);
+    }
+}
+
+// viii) Mostrar todas as disciplinas de um determinado curso. 
+void exibir_disc_curso(Cursos *curso, int idcurso) {
+    if (curso != NULL) {
+        if (curso->idcurso == idcurso) {
+            Disciplina *disc = curso->disc;
+            while (disc != NULL) {
+                printf("Código: %d\n", disc->cod_disciplina);
+                printf("Nome: %s\n", disc->nomedisc);
+                printf("Carga horária: %d\n", disc->cargah);
+                printf("Período: %d\n", disc->periodo);
+                printf("\n");
+                disc = disc->dir;
+            }
+        }
+        else if (idcurso < curso->idcurso) {
+            exibir_disciplinas(curso->esq, idcurso);
+        }
+        else {
+            exibir_disciplinas(curso->dir, idcurso);
+        }
+    }
+}
+
+// ix) Mostrar todas as disciplinas de um determinado período de um curso. 
+void exibir_disc_periodo(Cursos *curso, int idcurso, int periodo){
+    if(curso != NULL){
+        if(curso->idcurso == idcurso){
+            Disciplina *disc = curso->disc;
+            while(disc != NULL){
+                if(disc->periodo == periodo){
+                    printf("Código: %d\n", disc->cod_disciplina);
+                    printf("Nome: %s\n", disc->nomedisc);
+                    printf("Carga horária: %d\n", disc->cargah);
+                    printf("Período: %d\n", disc->periodo);
+                    printf("\n");
+                }
+            }
+        }
+        else if(idcurso < curso->idcurso){
+            exibir_disc_periodo(curso->esq, idcurso, periodo);
+        }
+        else{
+            exibir_disc_periodo(curso->dir, idcurso, periodo);
+        }
+    }
 
 // Essa buscacurso vai mudar de lugar, para o main quando este for criado. Isto para otimizar
 void alunosporcurso(Alunos **a, Cursos **c, int codcurso){
