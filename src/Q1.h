@@ -42,4 +42,9 @@ typedef struct alunos {
 void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos);
 void exibircurso(Cursos *c);
 
+// ### MATRICULA ###
+void cadmatricula(Matricula **m, int coddisc);
+void exibirmat(Matricula *m);
+void rmvmatricula(Matricula **m, int cod);
+
 #endif

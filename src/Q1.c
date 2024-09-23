@@ -7,7 +7,7 @@
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
-/*i) Cadastrar alunos a qualquer momento na lista, de forma que só possa cadastrar um código de curso que
+/* i) Cadastrar alunos a qualquer momento na lista, de forma que só possa cadastrar um código de curso que
 já tenha sido cadastrado na árvore de cursos. */
 
 void converternome(char *nome) {
@@ -94,7 +94,6 @@ void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodo
 }
 
 void exibircurso(Cursos *c){
-    printf("CURSOS CADASTRADOS\n");
     if(c != NULL){
         exibircurso(c->esq);
         printf("%d %s %d\n", c->idcurso, c->nomecurso, c->qntdperiodos);
@@ -142,6 +141,14 @@ void buscamat(Matricula *m, int codigo, int *enc){
             else
                 buscamat(m->dir, codigo, enc);
         }
+    }
+}
+
+void exibirmat(Matricula *m){
+    if(m != NULL){
+        exibirmat(m->esq);
+        printf("%d\n", m->coddisc);
+        exibirmat(m->dir);
     }
 }
 
@@ -218,16 +225,25 @@ void rmvmatricula(Matricula **m, int cod){
                 free(aux);
                 aux = NULL;
             }
-            /* O nó mais a direita da sub-árvore à esquerda */
-            else{
-                Matricula *filho;
-                aux = menorDireita((*m)->dir, &filho);
-                aux->esq = (*m)->esq;
-                aux->dir = (*m)->dir;
-                (*m)->esq = (*m)->dir = NULL;
-                free(*m);
-                *m = aux;
-                aux = NULL;
+            /* O nó mais a esquerda da sub-árvore à direita */
+            else {
+                Matricula *no = NULL;
+                Matricula *subs = (*m)->dir;
+
+                while(subs->esq != NULL){
+                    no = subs;
+                    subs = subs->esq;
+                }
+
+                if(no != NULL){
+                    no->esq = subs->dir;
+                } 
+                else{
+                    (*m)->dir = subs->dir;
+                }
+
+                (*m)->coddisc = subs->coddisc;
+                free(subs);
             }
         }
     }
