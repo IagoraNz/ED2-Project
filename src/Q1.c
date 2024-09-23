@@ -73,9 +73,9 @@ void buscamat(Matricula *m, int codigo, int *enc){
             *enc = 1;
         else{
             if(codigo < m->coddisc)
-                buscamat(&(m->esq), codigo, enc);
+                buscamat(m->esq, codigo, enc);
             else
-                buscamat(&(m->dir), codigo, enc);
+                buscamat(m->dir, codigo, enc);
         }
     }
 }
@@ -129,7 +129,7 @@ void rmvmatricula(Matricula **m, int cod){
 // Essa buscamat vai mudar de lugar, para o main quando este for criado. Isto para otimizar
 void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
     int enc;
-    buscamat(m, cod, &enc);
+    // buscamat(&m, cod, &enc);
     
     if(enc == 1){
         if(*n == NULL){
@@ -223,10 +223,10 @@ void exibir_disc_curso(Cursos *curso, int idcurso) {
             }
         }
         else if (idcurso < curso->idcurso) {
-            exibir_disciplinas(curso->esq, idcurso);
+            exibir_disc_curso(curso->esq, idcurso);
         }
         else {
-            exibir_disciplinas(curso->dir, idcurso);
+            exibir_disc_curso(curso->dir, idcurso);
         }
     }
 }
@@ -244,6 +244,7 @@ void exibir_disc_periodo(Cursos *curso, int idcurso, int periodo){
                     printf("Período: %d\n", disc->periodo);
                     printf("\n");
                 }
+                disc = disc->dir; // Add this line to avoid infinite loop
             }
         }
         else if(idcurso < curso->idcurso){
@@ -253,11 +254,12 @@ void exibir_disc_periodo(Cursos *curso, int idcurso, int periodo){
             exibir_disc_periodo(curso->dir, idcurso, periodo);
         }
     }
+}
 
 // Essa buscacurso vai mudar de lugar, para o main quando este for criado. Isto para otimizar
 void alunosporcurso(Alunos **a, Cursos **c, int codcurso){
     int enc;
-    buscacurso(c, codcurso, &enc);
+    // buscacurso(c, codcurso, &enc);
 
     if(enc == 1){
         while((*a) != NULL && (*a)->codcurso == codcurso){
@@ -293,9 +295,9 @@ void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
         if(a->nota != NULL){
             if(a->nota->semestre == periodo){
                 // printf("EXIBINDO NOTAS DO SEMESTRE %d\n", a->nota->semestre);
-                printf("%d %.2f", a->nota->coddisc, a->nota->notafinal);
-                notasdiscperiodoaluno(a->nota->esq, periodo, mat);
-                notasdiscperiodoaluno(a->nota->dir, periodo, mat);
+                // printf("%d %.2f", a->nota->coddisc, a->nota->notafinal);
+                // notasdiscperiodoaluno((*a)->nota->esq, periodo, mat);
+                // notasdiscperiodoaluno((*a)->nota->dir, periodo, mat);
             }
         }
         else
@@ -342,7 +344,7 @@ void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
     buscamat((*a)->mat, coddisc, &enc);
 
     if(enc == 1){
-        rmvmatricula((*a)->mat, coddisc);
+        rmvmatricula(&(*a)->mat, coddisc);
     }
     else{
         printf("Matricula nao encontrada para o aluno %s\n", (*a)->nome);
