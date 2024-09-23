@@ -9,7 +9,9 @@ int main(){
     char buffer[50], nomecurso[50];
 
     Cursos *c;
+    Matricula *m;
     c = NULL;
+    m = NULL;
 
     while(1){
         system("cls");
@@ -30,6 +32,8 @@ int main(){
         printf("14. Permita remover uma disciplina da arvore de matrícula de um determinado aluno\n");
         printf("15. Mostrar o historico de um determinado aluno\n");
         printf("16. Exibir cursos\n");
+        printf("17. Exibir matriculas\n");
+        printf("18. Remover matricula\n");
         printf("Digite a opcao desejada: ");
         scanf("%d", &opc);
 
@@ -40,7 +44,7 @@ int main(){
         case 2:
             system("cls");
             printf("CADASTRAR CURSO\n");
-            printf("Digite o id do curso: ");
+            printf("Digite o ID do curso: ");
             scanf("%d", &idcurso);
             printf("Digite o nome do curso: ");
             scanf("%s", nomecurso);
@@ -52,6 +56,11 @@ int main(){
         case 3:
             break;
         case 4:
+            system("cls");
+            printf("CADASTRAR MATRICULA\n");
+            printf("Digite o ID do curso: ");
+            scanf("%d", &idcurso);
+            cadmatricula(&m, idcurso);
             break;
         case 5:
             break;
@@ -59,6 +68,16 @@ int main(){
             system("cls");
             exibircurso(c);
             system("PAUSE");
+            break;
+        case 17:
+            system("cls");
+            exibirmat(m);
+            system("PAUSE");
+            break;
+        case 18:
+            printf("Digite o ID do curso: ");
+            scanf("%d", &idcurso);
+            removermatricula(&m, idcurso);
             break;
         case 0:
             break;
