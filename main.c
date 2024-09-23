@@ -5,10 +5,15 @@
 #include "./src/Q1.h"
 
 int main(){
-    int opc, sucesso, idcurso, qtdperiodos;
+    int opc, sucesso, idcurso, qtdperiodos, coddisc, semestre;
+    int notafinal;
     char buffer[50], nomecurso[50];
 
     Cursos *c;
+    Matricula *m;
+    Notas *n;
+    m = NULL;
+    n = NULL;
     c = NULL;
 
     while(1){
@@ -40,7 +45,7 @@ int main(){
         case 2:
             system("cls");
             printf("CADASTRAR CURSO\n");
-            printf("Digite o id do curso: ");
+            printf("Digite o ID do curso: ");
             scanf("%d", &idcurso);
             printf("Digite o nome do curso: ");
             scanf("%s", nomecurso);
@@ -54,6 +59,16 @@ int main(){
         case 4:
             break;
         case 5:
+            // Lembrar de implementar aqui a buscamat e tirar da função
+            system("cls");
+            printf("CADASTRAR NOTA\n");
+            printf("Digite o codigo da disciplina: ");
+            scanf("%d", &coddisc);
+            printf("Digite o semestre: ");
+            scanf("%d", &semestre);
+            printf("Cadastre a nota final: ");
+            scanf("%f", &notafinal);
+            cadnota(&m, &n, coddisc, semestre, notafinal);
             break;
         case 16:
             system("cls");
