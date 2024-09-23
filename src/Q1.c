@@ -5,6 +5,59 @@
 #include <math.h>
 #include "Q1.h"
 
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/*i) Cadastrar alunos a qualquer momento na lista, de forma que só possa cadastrar um código de curso que
+já tenha sido cadastrado na árvore de cursos. */
+
+void converternome(char *nome) {
+    int i = 0;
+    // Converte cada caractere para maiuscula enquanto não encontrar o caractere de terminação '\0'
+    while (nome[i] != '\0') {
+        nome[i] = toupper(nome[i]);
+        i++;
+    }
+}
+
+void cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
+    Alunos *novo = (Alunos*) malloc(sizeof(Alunos));
+    novo->prox = NULL;
+    novo->matricula = mat;
+    char *aux_nome = strdup(nome);
+    converternome(aux_nome);
+    strcpy(novo->nome, aux_nome);
+    novo->codcurso = codcurso;
+    novo->nota = NULL;
+    novo->mat = NULL;
+
+    // Se a lista estiver vazia, insere o primeiro aluno
+    if (*a == NULL) {
+        *a = novo;
+    }
+    else {
+        // Verifica se o novo nome deve ser inserido na primeira posição
+        if (strcmp(aux_nome, (*a)->nome) < 0) {
+            novo->prox = *a;
+            *a = novo;
+        }
+        else {
+            Alunos *aux = *a;
+            // Percorre a lista e encontra a posição correta
+            while (aux->prox != NULL && strcmp(aux_nome, aux->prox->nome) > 0) {
+                aux = aux->prox;
+            }
+            // Insere o novo aluno na posição correta
+            novo->prox = aux->prox;
+            aux->prox = novo;
+        }
+    }
+}
+
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* ii) Cadastrar cursos a qualquer momento na árvore de curso, de forma que o usuário não precise cadastrar
+as disciplinas para permitir o cadastro do curso. */
+
 // Função para verificar se um idcurso ja está em uso ou para procurar algum curso.
 void buscacurso(Cursos *curso, int idcurso, int *enc){
     if(curso == NULL)
@@ -49,6 +102,18 @@ void exibircurso(Cursos *c){
     }
 }
 
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* iii) Cadastrar disciplinas a qualquer momento em uma árvore de disciplinas de um determinado curso, ou
+seja, um disciplina só pode ser cadastrada se o curso já estiver sido cadastrado, além disso, o período da
+disciplina deve ser válido, ou seja, estar entre 1 e a quantidade máxima de períodos do curso. A carga
+horária da disciplina deve ser múltiplo de 15, variando entre 30 e 90. */
+
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
+uma disciplina do curso do aluno. */
+
 void cadmatricula(Matricula **m, int codigo){
     if(*m == NULL){
         Matricula *novo = (Matricula*)malloc(sizeof(Matricula));
@@ -80,51 +145,11 @@ void buscamat(Matricula *m, int codigo, int *enc){
     }
 }
 
-Matricula* menor(Matricula *m){
-    Matricula *atual = m;
-    while(atual && atual->esq != NULL)
-        atual = atual->esq;
-    return atual;
-}
+/*---------------------------------------------------------------------------------------------------------------*/
 
-void rmvmatricula(Matricula **m, int cod){
-    int temp;
-    // Primeiro caso: árvore vazia
-    if(*m == NULL)
-        return;
-
-    // Segundo caso: código menor que o nó
-    if(cod < (*m)->coddisc)
-        rmvmatricula(&((*m)->esq), cod);
-    // Terceiro caso: código maior que o nó
-    else if(cod > (*m)->coddisc)
-        rmvmatricula(&((*m)->dir), cod);
-    // Quarto caso: código igual
-    else{
-        // 4.1: nó folha
-        if((*m)->esq == NULL && (*m)->dir == NULL){
-            free((*m));
-            (*m) = NULL;
-        }
-        // 4.2 nó com 1 filho
-        else if((*m)->esq == NULL){
-            Matricula *aux = (*m)->dir;
-            free((*m));
-            (*m) = aux;
-        }
-        else if((*m)->dir == NULL){
-            Matricula *aux = (*m)->esq;
-            free((*m));
-            (*m) = aux;
-        }
-        // 4.3 nó com 2 filhos
-        else{
-            Matricula *aux = menor((*m)->dir);
-            (*m)->coddisc = aux->coddisc;
-            rmvmatricula(&((*m)->dir), aux->coddisc);
-        }
-    }
-}
+/* v) Cadastrar Notas, permitir o cadastro de notas somente de disciplinas que estejam na árvore de
+matricula, e quando a nota for cadastrada a disciplina deve ser removida da árvore de matricula para
+árvore de notas.*/
 
 // Essa buscamat vai mudar de lugar, para o main quando este for criado. Isto para otimizar
 void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
@@ -151,52 +176,85 @@ void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
     }
 }
 
-// i) Cadastrar alunos a qualquer momento na lista, de forma que só possa cadastrar um código de curso que
-// já tenha sido cadastrado na árvore de cursos. 
-void converternome(char *nome) {
-    int i = 0;
-    // Converte cada caractere para maiuscula enquanto não encontrar o caractere de terminação '\0'
-    while (nome[i] != '\0') {
-        nome[i] = toupper(nome[i]);
-        i++;
+Matricula* menorDireita(Matricula *no, Matricula **filho){
+    Matricula *aux;
+    aux = NULL;
+
+    if(no != NULL){
+        aux = menorDireita(no->esq, filho);
+        if(!aux){
+            aux = no;
+            *filho = no->dir;
+        }
     }
+    return aux;
 }
 
-void cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
-    Alunos *novo = (Alunos*) malloc(sizeof(Alunos));
-    novo->prox = NULL;
-    novo->matricula = mat;
-    char *aux_nome = strdup(nome);
-    converternome(aux_nome);
-    strcpy(novo->nome, aux_nome);
-    novo->codcurso = codcurso;
-    novo->nota = NULL;
-    novo->mat = NULL;
+void rmvmatricula(Matricula **m, int cod){
+    int temp;
 
-    // Se a lista estiver vazia, insere o primeiro aluno
-    if (*a == NULL) {
-        *a = novo;
-    }
-    else {
-        // Verifica se o novo nome deve ser inserido na primeira posição
-        if (strcmp(aux_nome, (*a)->nome) < 0) {
-            novo->prox = *a;
-            *a = novo;
-        }
-        else {
-            Alunos *aux = *a;
-            // Percorre a lista e encontra a posição correta
-            while (aux->prox != NULL && strcmp(aux_nome, aux->prox->nome) > 0) {
-                aux = aux->prox;
+    if((*m)){
+        if(cod < (*m)->coddisc)
+            rmvmatricula(&(*m)->esq, cod);
+        else if(cod > (*m)->coddisc)
+            rmvmatricula(&(*m)->dir, cod);
+        else{
+            Matricula *aux = *m;
+            if((*m)->esq == NULL && (*m)->dir == NULL){
+                free(aux);
+                *m = NULL;
             }
-            // Insere o novo aluno na posição correta
-            novo->prox = aux->prox;
-            aux->prox = novo;
+            /* Só tem o filho da direita */
+            else if((*m)->esq == NULL){
+                (*m) = (*m)->dir;
+                aux->dir = NULL;
+                free(aux);
+                aux = NULL;
+            }
+            /* Só tem o filho da esquerda */
+            else if((*m)->dir == NULL){
+                (*m) = (*m)->esq;
+                aux->esq = NULL;
+                free(aux);
+                aux = NULL;
+            }
+            /* O nó mais a direita da sub-árvore à esquerda */
+            else{
+                Matricula *filho;
+                aux = menorDireita((*m)->dir, &filho);
+                aux->esq = (*m)->esq;
+                aux->dir = (*m)->dir;
+                (*m)->esq = (*m)->dir = NULL;
+                free(*m);
+                *m = aux;
+                aux = NULL;
+            }
         }
     }
 }
 
-// vii) Mostrar todos os cursos do Campus. 
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* vi) Mostrar todos os alunos de um determinado curso. */
+
+// Essa buscacurso vai mudar de lugar, para o main quando este for criado. Isto para otimizar
+void alunosporcurso(Alunos **a, Cursos **c, int codcurso){
+    int enc;
+    // buscacurso(c, codcurso, &enc);
+
+    if(enc == 1){
+        while((*a) != NULL && (*a)->codcurso == codcurso){
+            printf("%s\n", (*a)->nome);
+            *a = (*a)->prox;
+        }
+    }
+    else
+        printf("Curso nao encontrado!\n");
+}
+
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* vii) Mostrar todos os cursos do Campus. */ 
 void exibir_cursos(Cursos *curso) {
     if (curso != NULL) {
         printf("ID: %d\n", curso->idcurso);
@@ -208,7 +266,9 @@ void exibir_cursos(Cursos *curso) {
     }
 }
 
-// viii) Mostrar todas as disciplinas de um determinado curso. 
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* viii) Mostrar todas as disciplinas de um determinado curso. */
 void exibir_disc_curso(Cursos *curso, int idcurso) {
     if (curso != NULL) {
         if (curso->idcurso == idcurso) {
@@ -230,6 +290,8 @@ void exibir_disc_curso(Cursos *curso, int idcurso) {
         }
     }
 }
+
+/*---------------------------------------------------------------------------------------------------------------*/
 
 // ix) Mostrar todas as disciplinas de um determinado período de um curso. 
 void exibir_disc_periodo(Cursos *curso, int idcurso, int periodo){
@@ -256,36 +318,13 @@ void exibir_disc_periodo(Cursos *curso, int idcurso, int periodo){
     }
 }
 
-// Essa buscacurso vai mudar de lugar, para o main quando este for criado. Isto para otimizar
-void alunosporcurso(Alunos **a, Cursos **c, int codcurso){
-    int enc;
-    // buscacurso(c, codcurso, &enc);
+/*---------------------------------------------------------------------------------------------------------------*/
 
-    if(enc == 1){
-        while((*a) != NULL && (*a)->codcurso == codcurso){
-            printf("%s\n", (*a)->nome);
-            *a = (*a)->prox;
-        }
-    }
-    else
-        printf("Curso nao encontrado!\n");
-}
+/* x) Mostrar todas as disciplinas que um determinado aluno está matriculado */
 
-// void buscanota(Notas *n, int coddisc, int *enc){
-//     if(n == NULL)
-//         *enc = 0;
-//     else{
-//         if(n->coddisc == coddisc){
-//             *enc = 1;
-//         }
-//         else{
-//             if(coddisc < n->coddisc)
-//                 buscanota(&(n->esq), coddisc, enc);
-//             else
-//                 buscanota(&(n->dir), coddisc, enc);
-//         }
-//     }
-// }
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* xi) Mostrar todas as notas de disciplinas de um determinado período de um determinado aluno.*/
 
 void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
     if(a == NULL){
@@ -305,8 +344,10 @@ void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
     }
 }
 
-// xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o período e a carga horária da
-// disciplina. 
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o período e a carga horária da
+disciplina. */
 void notadiscporaluno(Alunos *a, int matricula, int coddisc){
     if(a != NULL){
         while(a != NULL){
@@ -331,7 +372,14 @@ void notadiscporaluno(Alunos *a, int matricula, int coddisc){
     }
 }
 
-// xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno.
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* xiii)Remover uma disciplina de um determinado curso desde que não tenha nenhum aluno matriculado na
+mesma */
+
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
 void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
     int enc = 0;
     if((*a) != NULL){
@@ -350,3 +398,10 @@ void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
         printf("Matricula nao encontrada para o aluno %s\n", (*a)->nome);
     }
 }
+
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* xv) Mostrar o histórico de um determinado aluno, contendo o nome do curso, as disciplinas e sua respectiva
+nota organizadas pelo período que a disciplina está cadastrada no curso. */
+
+/*---------------------------------------------------------------------------------------------------------------*/
