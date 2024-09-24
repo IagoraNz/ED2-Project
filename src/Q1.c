@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+#include <time.h>
 #include "Q1.h"
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -513,5 +514,43 @@ nota organizadas pelo período que a disciplina está cadastrada no curso. */
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* extra) Função agregadas, associadas ou adicionais para complementar a coesão do software */
+
+void gerarCodDisciplina(int cargah, int periodo, char *coddisc){
+    // Passo 1: obtendo o ano atual
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    int anoatual = tm.tm_year + 1900;
+
+    // Passo 2: gerando 5 dígitos aleatórios
+    srand(time(NULL));
+    int num5 = rand() % 100000; // Gera um número entre 0 e 99999
+
+    // Passo 3:gerando o código no formato AAAACCPNNNNN
+    sprintf(coddisc, "%04d%02d%d%05d", anoatual, cargah, periodo, num5);
+}
+
+void gerarIdCurso(int qntperiodos, int *idcurso){
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    int ano = tm.tm_year + 1900;
+
+    srand(time(NULL));
+    int num4 = rand() % 10000;
+
+    // Formato PPPAAAANNNN
+    sprintf(idcurso, "%d%d%d%d%04d", qntperiodos, (qntperiodos * 3), (qntperiodos * 5), ano, num4);
+}
+
+void gerarMatriculaAluno(int idcurso, int *matricula){
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    int ano = tm.tm_year + 1900;
+
+    srand(time(NULL));
+    int num4 = rand() % 10000;
+    int num3 = rand() % 1000;
+
+    sprintf(matricula, "%d%04d%d%03d", ano, num4, idcurso, num3);
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
