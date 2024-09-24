@@ -421,3 +421,7 @@ void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
 nota organizadas pelo período que a disciplina está cadastrada no curso. */
 
 /*---------------------------------------------------------------------------------------------------------------*/
+
+/* extra) Função agregadas, associadas ou adicionais para complementar a coesão do software */
+
+/*---------------------------------------------------------------------------------------------------------------*/
