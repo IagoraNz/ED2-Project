@@ -1,49 +1,69 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <time.h>
 #include "./src/Q1.h"
 
 int main(){
-    int opc, sucesso;
-    char buffer[50];
+    int opc, sucesso, idcurso, qtdperiodos;
+    char buffer[50], nomecurso[50];
+
+    Cursos *c;
+    c = NULL;
 
     while(1){
         system("cls");
         printf("MENU DO SISTEMA\n");
-        printf("1. Alunos\n");
-        printf("2. Cursos\n");
-        printf("3. Disciplinas\n");
-        printf("4. Notas\n");
-        printf("5. Matriculas\n");
-        printf("0. Sair\n");
+        printf("1. Cadastrar alunos\n");
+        printf("2. Cadastrar curso\n");
+        printf("3. Cadastrar disciplina\n");
+        printf("4. Cadastrar matricula\n");
+        printf("5. Cadastrar nota\n");
+        printf("6. Mostrar todos os alunos de um determinado curso\n");
+        printf("7. Mostrar todos os cursos do campus\n");
+        printf("8. Mostrar todas as disciplinas de um determinado curso\n");
+        printf("9. Mostrar todas as disciplinas de um determinado periodo de um curso\n");
+        printf("10. Mostrar todas as disciplinas que um determinado aluno esta matriculado\n");
+        printf("11. Mostrar todas as notas de disciplinas de um determinado período de um determinado aluno\n");
+        printf("12. Mostrar a nota de uma disciplina de um determinado aluno, mostrando o período e a carga horaria da disciplina\n");
+        printf("13. Remover uma disciplina de um determinado curso desde que não tenha nenhum aluno matriculado na mesma\n");
+        printf("14. Permita remover uma disciplina da arvore de matrícula de um determinado aluno\n");
+        printf("15. Mostrar o historico de um determinado aluno\n");
+        printf("16. Exibir cursos\n");
         printf("Digite a opcao desejada: ");
-        fgets(buffer, sizeof(buffer), stdin);
-        sucesso = sscanf(buffer, "%d", &opc);
+        scanf("%d", &opc);
 
-        if(sucesso == 1){
-            switch (opc)
-            {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-            case 0:
-                break;
-            default:
-                printf("Entrada invalida. Por favor, digite um opcao existente!\n");
-                system("PAUSE");
-                break;
-            }
-        }
-        else{
-            printf("Entrada invalida. Por favor, digite um numero inteiro!\n");
+        switch (opc)
+        {
+        case 1:
+            break;
+        case 2:
+            system("cls");
+            printf("CADASTRAR CURSO\n");
+            printf("Digite o id do curso: ");
+            scanf("%d", &idcurso);
+            printf("Digite o nome do curso: ");
+            scanf("%s", nomecurso);
+            printf("Digite a quantidade de periodos: ");
+            scanf("%d", &qtdperiodos);
+            cadcurso(&c, idcurso, nomecurso, qtdperiodos);
             system("PAUSE");
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 16:
+            system("cls");
+            exibircurso(c);
+            system("PAUSE");
+            break;
+        case 0:
+            break;
+        default:
+            break;
         }
     }
 

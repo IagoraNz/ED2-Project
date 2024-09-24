@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 #include "Q1.h"
 
 // Função para verificar se um idcurso ja está em uso ou para procurar algum curso.
-void buscaCurso(Cursos *curso, int idcurso, int *enc){
+void buscacurso(Cursos *curso, int idcurso, int *enc){
     if(curso == NULL)
         *enc = 0;
     else{
@@ -13,28 +14,38 @@ void buscaCurso(Cursos *curso, int idcurso, int *enc){
             *enc = 1;
         else{
             if(idcurso < curso->idcurso)
-                buscamat(&(curso->esq), idcurso, enc);
+                buscacurso(curso->esq, idcurso, enc);
             else
-                buscamat(&(curso->dir), idcurso, enc);
+                buscacurso(curso->dir, idcurso, enc);
         }
     }
 }
 
-void cadcurso(Cursos **curso, int idcurso, const char nomecurso, int qntperiodos){
+void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos){
     if(*curso == NULL){
-        (*curso)->idcurso = idcurso;
-        strcpy((*curso)->nomecurso, nomecurso);
-        (*curso)->qntdperiodos = qntperiodos;
-        (*curso)->disc = NULL; // Inicializando Arvore Binaria de Disciplinas como Nulo.
-        // Orientação da arvore binario
-        (*curso)->dir = NULL;
-        (*curso)->esq = NULL;
+        Cursos *novo = (Cursos*)malloc(sizeof(Cursos));
+        novo->idcurso = idcurso;
+        strcpy(novo->nomecurso, nomecurso);
+        novo->qntdperiodos = qntperiodos;
+        novo->disc = NULL;
+        novo->dir = NULL;
+        novo->esq = NULL;
+        *curso = novo;
     }
     else{
         if(idcurso < (*curso)->idcurso)
-            cadmatricula(&((*curso)->esq), idcurso);
+            cadcurso(&((*curso)->esq), idcurso, nomecurso, qntperiodos);
         else
-            cadmatricula(&((*curso)->dir), idcurso);
+            cadcurso(&((*curso)->dir), idcurso, nomecurso, qntperiodos);
+    }
+}
+
+void exibircurso(Cursos *c){
+    printf("CURSOS CADASTRADOS\n");
+    if(c != NULL){
+        exibircurso(c->esq);
+        printf("%d %s %d\n", c->idcurso, c->nomecurso, c->qntdperiodos);
+        exibircurso(c->dir);
     }
 }
 
@@ -69,61 +80,6 @@ void buscamat(Matricula *m, int codigo, int *enc){
     }
 }
 
-// iii) Cadastrar disciplinas a qualquer momento em uma árvore de disciplinas de um determinado curso, ou
-// seja, um disciplina só pode ser cadastrada se o curso já estiver sido cadastrado, além disso, o período da
-// disciplina deve ser válido, ou seja, estar entre 1 e a quantidade máxima de períodos do curso. A carga
-// horária da disciplina deve ser múltiplo de 15, variando entre 30 e 90. 
-void validar_cargahoraria(int *validar, int cargahoraria){
-    if (cargahoraria % 15 == 0 && (cargahoraria >= 30 && cargahoraria <= 90))
-        *validar = 1;
-}
-
-void validar_periodo(Cursos *curso,int *validar, int periodo){
-    if (curso->qntdperiodos < periodo && periodo >= 1)
-        *validar = 1;
-}
-
-int insere_disc(Disciplina **disc, Disciplina *No){
-    int insere = 0;
-    if (*disc == NULL){
-        *disc = No;
-        No->esq = NULL;
-        No->dir = NULL;
-    }
-    else if (No->cod_disciplina < (*disc)->cod_disciplina)
-            insere_disc(&((*disc)->esq), No);
-    else if (No->cod_disciplina > (*disc)->cod_disciplina)
-            insere_disc(&((*disc)->dir), No);
-    else
-        insere = 1;
-    
-    return insere;
-}
-
-int caddisc(Cursos **curso, Disciplina *No, int idcurso){
-    int validar_h = 0, validar_p = 0, validar_cod = 0;
-    // Função para validar se a carga horaria e múltiplo de 15 é se varia entre 30 e 90.
-    validar_cargahoraria(&validar_h, No->cargah);
-    if(validar_h == 1){
-        if (*curso != NULL){
-            if((*curso)->idcurso == idcurso){
-                // Função para validar se o periodo está no intervalo do periodo do curso.
-                validar_periodo(*curso, &validar_p, No->periodo);
-                if (validar_p == 1)
-                    validar_cod = insere_disc(&((*curso)->disc), No);
-            }
-            else{
-                if(idcurso < (*curso)->idcurso)
-                    caddisc((*curso)->esq, No, idcurso);
-                else
-                    caddisc((*curso)->dir, No, idcurso);
-            }
-        }
-    }
-
-    return validar_cod;
-}
-
 // Essa buscamat vai mudar de lugar, para o main quando este for criado. Isto para otimizar
 void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
     int enc;
@@ -138,7 +94,7 @@ void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
             novo->esq = NULL;
             novo->dir = NULL;
             *n = novo;
-            // Implementar aqui a remoção da árvore de matrícula confome especificado
+            rmvmatricula(m, cod);
         }
         else{
             if(cod < (*n)->coddisc)
@@ -148,7 +104,6 @@ void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
         }
     }
 }
-
 
 // i) Cadastrar alunos a qualquer momento na lista, de forma que só possa cadastrar um código de curso que
 // já tenha sido cadastrado na árvore de cursos. 
@@ -292,6 +247,5 @@ void exibir_disc_aluno_main(Alunos *aluno, Cursos *cursos, int matricula){
         if(aluno->matricula == matricula){
             exibir_disc_matriculadas(aluno->mat, cursos, aluno->codcurso);
         }
-    } else
-        exibir_disc_aluno(aluno->prox, cursos, matricula);
+    }
 }

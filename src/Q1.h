@@ -1,35 +1,32 @@
-#pragma once
+#ifndef Q1_H
+#define Q1_H
 
 typedef struct disciplina {
     int cod_disciplina;
     char nomedisc[50];
     int cargah;
     int periodo;
-    struct disciplina *esq;
-    struct disciplina *dir;
+    struct disciplina *esq, *dir;
 } Disciplina;
 
 typedef struct cursos {
     int idcurso;
     char nomecurso[50];
     int qntdperiodos;
-    struct cursos *esq;
-    struct cursos *dir;
+    struct cursos *esq, *dir;
     Disciplina *disc;
 } Cursos;
 
 typedef struct notas {
     int coddisc;
     int semestre;
-    int notafinal;
-    struct notas *esq;
-    struct notas *dir;
+    float notafinal;
+    struct notas *esq, *dir;
 } Notas;
 
 typedef struct matricula {
     int coddisc;
-    struct matricula *esq;
-    struct matricula *dir;
+    struct matricula *esq, *dir;
 } Matricula;
 
 typedef struct alunos {
@@ -40,3 +37,9 @@ typedef struct alunos {
     Notas *nota;
     Matricula *mat;
 } Alunos;
+
+// ### CURSO ###
+void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos);
+void exibircurso(Cursos *c);
+
+#endif
