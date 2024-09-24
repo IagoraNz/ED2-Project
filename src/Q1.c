@@ -208,52 +208,6 @@ void exibir_cursos(Cursos *curso) {
     }
 }
 
-// viii) Mostrar todas as disciplinas de um determinado curso. 
-void exibir_disc_curso(Cursos *curso, int idcurso) {
-    if (curso != NULL) {
-        if (curso->idcurso == idcurso) {
-            Disciplina *disc = curso->disc;
-            while (disc != NULL) {
-                printf("Código: %d\n", disc->cod_disciplina);
-                printf("Nome: %s\n", disc->nomedisc);
-                printf("Carga horária: %d\n", disc->cargah);
-                printf("Período: %d\n", disc->periodo);
-                printf("\n");
-                disc = disc->dir;
-            }
-        }
-        else if (idcurso < curso->idcurso) {
-            exibir_disciplinas(curso->esq, idcurso);
-        }
-        else {
-            exibir_disciplinas(curso->dir, idcurso);
-        }
-    }
-}
-
-// ix) Mostrar todas as disciplinas de um determinado período de um curso. 
-void exibir_disc_periodo(Cursos *curso, int idcurso, int periodo){
-    if(curso != NULL){
-        if(curso->idcurso == idcurso){
-            Disciplina *disc = curso->disc;
-            while(disc != NULL){
-                if(disc->periodo == periodo){
-                    printf("Código: %d\n", disc->cod_disciplina);
-                    printf("Nome: %s\n", disc->nomedisc);
-                    printf("Carga horária: %d\n", disc->cargah);
-                    printf("Período: %d\n", disc->periodo);
-                    printf("\n");
-                }
-            }
-        }
-        else if(idcurso < curso->idcurso){
-            exibir_disc_periodo(curso->esq, idcurso, periodo);
-        }
-        else{
-            exibir_disc_periodo(curso->dir, idcurso, periodo);
-        }
-    }
-
 // Essa buscacurso vai mudar de lugar, para o main quando este for criado. Isto para otimizar
 void alunosporcurso(Alunos **a, Cursos **c, int codcurso){
     int enc;
