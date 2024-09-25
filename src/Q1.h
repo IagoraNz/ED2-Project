@@ -69,6 +69,10 @@ void rmvmatricula(Matricula **m, int cod);
 
 /* iii. DISCIPLINA */
 
+void validar_periodo(Cursos *curso,int *validar, int periodo);
+void validar_cargahoraria(int *validar, int cargahoraria);
+int insere_disc(Disciplina **disc, Disciplina *No);
+int caddisc(Cursos **curso, Disciplina *No, int idcurso);
 void exibir_disc_curso(Disciplina *disc);
 void exibir_disc_periodo(Disciplina *disc, int periodo);
 void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc);
