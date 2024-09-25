@@ -177,13 +177,21 @@ void menualuno(){
 }
 
 int main(){
-    int opc, opc1, sucesso, idcurso, qtdperiodos;
+    int opc, opc1, sucesso, idcurso, qtdperiodos, cpf;
+    int matricula, curso, coddisc;
+    int matcomp, idcursocomp, coddisccomp;
     char buffer[50], nomecurso[50];
 
-    Cursos *c;
-    Matricula *m;
-    c = NULL;
-    m = NULL;
+    Alunos *aluno;
+    Cursos *curso;
+    Disciplina *disc;
+    Notas *nota;
+    Matricula *mat;
+    curso = NULL;
+    matricula = NULL;
+    disc = NULL;
+    nota = NULL;
+    mat = NULL;
 
     while(1){
         system("cls");
@@ -242,18 +250,78 @@ int main(){
             switch (opc1)
             {
             case 1:
+                printf("\n\nCADASTRO DE ALUNO\n");
+                printf("\nDigite o nome do aluno: ");
+                scanf("%s", buffer);
+                printf("\nDigite o CPF do aluno: ");
+                scanf("%d", &cpf);
+                printf("\nDigite o codigo do curso: ");
+                scanf("%d", &idcursocomp);
+                gerarMatriculaAluno(idcursocomp, &matricula);
+                cadaluno(&aluno, matricula, buffer, idcursocomp);
+                printf("\nMatricula gerada: %d\n", matricula);
+                printf("Aluno cadastrado com sucesso!\n");
+                system("PAUSE");
                 break;
             case 2:
+                printf("\nCADASTRO DE CURSO\n");
+                printf("\nDigite o nome do curso: ");
+                scanf("%s", nomecurso);
+                printf("\nDigite a quantidade de periodos: ");
+                scanf("%d", &qtdperiodos);
+                gerarIdCurso(qtdperiodos, &idcurso);
+                cadcurso(&curso, idcurso, nomecurso, qtdperiodos);
+                printf("\nCodigo do curso gerado: %d\n", idcurso);
+                printf("Curso cadastrado com sucesso!\n");
+                system("PAUSE");
                 break;
             case 3:
+                printf("\nCADASTRO DE DISCIPLINA\n");
+                printf("\nDigite o nome da disciplina: ");
+                scanf("%s", disc->nomedisc);
+                printf("\nDigite a carga horaria da disciplina: ");
+                scanf("%d", &disc->cargah);
+                printf("\nDigite o periodo da disciplina: ");
+                scanf("%d", &disc->periodo);
+                gerarCodDisciplina(disc->cargah, disc->periodo, &coddisc);
+                disc->cod_disciplina = coddisc;
+                printf("\nCodigo da disciplina gerado: %s\n", coddisc);
+                sucesso = caddisc(&curso, disc, idcurso);
+                if(sucesso == 1)
+                    printf("Disciplina cadastrada com sucesso!\n");
+                else
+                    printf("Erro ao cadastrar disciplina!\n");
+                system("PAUSE");
                 break;
             case 4:
+                printf("\nCADASTRO DE MATRICULA\n");
+                printf("\nDigite o codigo da disciplina: ");
+                scanf("%d", &coddisccomp);
+                cadmatricula(&mat, coddisccomp);
+                printf("Matricula cadastrada com sucesso!\n");
+                system("PAUSE");
                 break;
             case 5:
+                printf("\nCADASTRO DE NOTA\n");
+                printf("\nDigite o codigo da disciplina: ");
+                scanf("%d", &coddisccomp);
+                printf("\nDigite o semestre: ");
+                scanf("%d", &nota->semestre);
+                printf("\nDigite a nota final: ");
+                scanf("%d", &nota->notafinal);
+                cadnota(&mat, &nota, coddisccomp, nota->semestre, nota->notafinal);
+                printf("Nota cadastrada com sucesso!\n");
+                system("PAUSE");
                 break;
             case 6:
+                printf("\nDigite o codigo do curso: ");
+                scanf("%d", &idcursocomp);
+                alunosporcurso(&aluno, &curso, idcursocomp);
+                system("PAUSE");
                 break;
             case 7:
+                exibir_cursos(curso);
+                system("PAUSE");
                 break;
             case 8:
                 break;

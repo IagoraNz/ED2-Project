@@ -165,19 +165,21 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso){
 /* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
 uma disciplina do curso do aluno. */
 
-void cadmatricula(Matricula **m, int codigo){
-    if(*m == NULL){
+void cadmatricula(Alunos **a, int codigo){
+    if((*a)->mat == NULL){
         Matricula *novo = (Matricula*)malloc(sizeof(Matricula));
         novo->coddisc = codigo;
         novo->esq = NULL;
         novo->dir = NULL;
-        *m = novo;
+        (*a)->mat = novo;
     }
     else{
-        if(codigo < (*m)->coddisc)
-            cadmatricula(&((*m)->esq), codigo);
+        if(codigo < (*a)->mat->coddisc)
+            cadmatricula(&(*a)->mat->esq, codigo);
+        else if(codigo > (*a)->mat->coddisc)
+            cadmatricula(&(*a)->mat->dir, codigo);
         else
-            cadmatricula(&((*m)->dir), codigo);
+            printf("Disciplina ja cadastrada\n");
     }
 }
 
@@ -210,28 +212,45 @@ void exibirmat(Matricula *m){
 matricula, e quando a nota for cadastrada a disciplina deve ser removida da árvore de matricula para
 árvore de notas.*/
 
-// Essa buscamat vai mudar de lugar, para o main quando este for criado. Isto para otimizar
-void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal){
-    int enc;
-    // buscamat(&m, cod, &enc);
-    
+// Verifica se existe a disciplina existe na árvore de matrícula do aluno
+int verificadisc(Matricula *m, int cod){
+    int enc = 0;
+    if(m != NULL){
+        if(m->coddisc == cod)
+            enc = 1;
+        else{
+            if(cod < m->coddisc)
+                enc = verificadisc(m->esq, cod);
+            else
+                enc = verificadisc(m->dir, cod);
+        }
+    }
+    return enc;
+}
+
+void cadnota(Alunos **a, int mat, int cod, int semestre, int notafinal){
+    int enc = verificadisc((*a)->mat, cod);
+
     if(enc == 1){
-        if(*n == NULL){
+        if((*a)->nota == NULL){
             Notas *novo = (Notas*)malloc(sizeof(Notas));
             novo->coddisc = cod;
             novo->semestre = semestre;
             novo->notafinal = notafinal;
             novo->esq = NULL;
             novo->dir = NULL;
-            *n = novo;
-            rmvmatricula(m, cod);
+            (*a)->nota = novo;
+            rmvmatricula(&(*a)->mat, cod);
         }
         else{
-            if(cod < (*n)->coddisc)
-                cadnota(m, &((*n)->esq), cod, semestre, notafinal);
+            if(cod < (*a)->nota->coddisc)
+                cadnota(&((*a)->nota->esq), mat, cod, semestre, notafinal);
             else
-                cadnota(m, &((*n)->dir), cod, semestre, notafinal);
+                cadnota(&((*a)->nota->dir), mat, cod, semestre, notafinal);
         }
+    }
+    else{
+        printf("Disciplina nao encontrada na arvore de matricula do aluno %s\n", (*a)->nome);
     }
 }
 
