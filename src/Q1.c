@@ -482,6 +482,96 @@ void notadiscporaluno(Alunos *a, int matricula, int coddisc){
 
 /* xiii)Remover uma disciplina de um determinado curso desde que não tenha nenhum aluno matriculado na
 mesma */
+int ehfolhadisc(Disciplina *disc){
+    int folha = 0;
+    if (disc != NULL){
+        if (disc->dir == NULL && disc->esq == NULL)
+            folha = 1;
+    }
+    return folha;
+}
+
+Disciplina* soumfilhodisc(Disciplina *disc){
+    Disciplina *aux;
+    aux = NULL;
+    if (disc != NULL){
+        if (disc->dir != NULL)
+            aux = disc->dir;
+        else
+            aux = disc->esq;
+    }
+    return aux;
+}
+
+Disciplina* menorfilhoesq(Disciplina *disc){
+    Disciplina *aux;
+    aux = NULL;
+    if (disc != NULL){
+        if (disc->esq != NULL){
+            aux = menorfilhoesq(disc->esq);
+        }
+    }
+    return aux;
+}
+
+int rmvdisc(Disciplina **disc, int cod_disc){
+    int remove = 0;
+    if ((*disc != NULL)){    
+        Disciplina *aux;
+        Disciplina *endfilho;
+        Disciplina *endmenorfilho;
+        if ((*disc)->cod_disciplina == cod_disc){
+            if(ehfolhadisc(disc)){
+            aux = *disc;
+            *disc = NULL;
+            free(aux);
+            } else if((endfilho = soumfilhodisc(*disc)) != NULL){
+                aux = *disc;
+                *disc = endfilho;  
+                free(aux); 
+            } else {
+                endmenorfilho = menorfilhoesq((*disc)->dir);
+                (*disc)->cod_disciplina = endmenorfilho->cod_disciplina;
+                (*disc)->cargah = endmenorfilho->cargah;
+                (*disc)->periodo = endmenorfilho->periodo;
+                strcpy((*disc)->nomedisc, endmenorfilho->nomedisc);
+                rmvdisc(&(*disc)->dir, endmenorfilho->cod_disciplina);
+            }
+            remove = 1;
+        }
+        else if ((*disc)->cod_disciplina < cod_disc)
+            remove = rmvdisc(&(*disc)->dir, cod_disc);
+        else 
+            remove = rmvdisc(&(*disc)->esq, cod_disc);
+    }
+    return remove;
+}
+
+void validar_rmv_disciplina(Alunos *alunos, int cod_disc, int *validar_disc){
+    int enc = 0;
+    if(alunos != NULL){
+        buscamat(alunos->mat, cod_disc, &enc);
+        if(enc != 0)
+            *validar_disc = 1;
+        validar_rmv_disciplina(alunos->prox, cod_disc, validar_disc);
+    }
+}
+
+int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc){
+    int remove = 0, validar_disc = 0;
+    if ((*cursos)){
+        validar_rmv_disciplina(alunos, cod_disc, &validar_disc);
+        if (validar_disc != 0){
+            if ((*cursos)->idcurso == idcurso)
+                remove = rmvdisc(&(*cursos)->disc, cod_disc);   
+            else if (idcurso < (*cursos)->idcurso)
+                remove = rmvdisc_curso(&(*cursos)->esq, alunos, idcurso, cod_disc);
+            else
+                remove = rmvdisc_curso(&(*cursos)->dir, alunos, idcurso, cod_disc);
+        }
+    }
+    return remove;
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
