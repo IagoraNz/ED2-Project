@@ -115,7 +115,7 @@ void validar_cargahoraria(int *validar, int cargahoraria){
 }
 
 void validar_periodo(Cursos *curso,int *validar, int periodo){
-    if (curso->qntdperiodos < periodo && periodo >= 1)
+    if (periodo <= curso->qntdperiodos && periodo >= 1)
         *validar = 1;
 }
 
