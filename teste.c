@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
+#include <string.h>
 #include "./src/Q1.h"
 
 int main(){
@@ -28,28 +29,23 @@ int main(){
 
     exibircurso(c);
 
-    printf("Cadastrando matriculas\n");
+    printf("Cadastrando disciplinas\n");
 
-    cadmatricula(&m, 4);
-    cadmatricula(&m, 2);
-    cadmatricula(&m, 7);
-    cadmatricula(&m, 10);
-    cadmatricula(&m, 5);
-    cadmatricula(&m, 3);
-    cadmatricula(&m, 1);
-    cadmatricula(&m, 11);
+    Disciplina *d;
+    d = (Disciplina*)malloc(sizeof(Disciplina));
+    strcpy(d->nomedisc, "Algoritmos e Estruturas de Dados");
+    d->cargah = 60;
+    d->periodo = 1;
+    d->cod_disciplina = 1001;
+    int suc = caddisc(&c, d, 4);
+    if (suc)
+        printf("Disciplina cadastrada com sucesso!\n");
+    else
+        printf("Erro ao cadastrar disciplina!\n");
 
-    printf("Exibindo as matriculas\n");
+    printf("Exibindo as disciplinas\n");
 
-    exibirmat(m);
-
-    printf("Removendo matricula\n");
-
-    rmvmatricula(&m, 7);
-
-    printf("Exibindo as matriculas\n");
-
-    exibirmat(m);
+    exibir_disc_curso_main(c, 4);
 
     getchar();
 
