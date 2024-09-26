@@ -58,10 +58,8 @@ void exibir_cursos(Cursos *curso);
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* ii. MATRÍCULA */
-
-Matricula* menorDireita(Matricula *no, Matricula **filho);
 void buscamat(Matricula *m, int codigo, int *enc);
-void cadmatricula(Matricula **m, int coddisc);
+void cadmatricula(Alunos **m, int coddisc);
 void exibirmat(Matricula *m);
 void rmvmatricula(Matricula **m, int cod);
 
@@ -89,7 +87,7 @@ void alunosporcurso(Alunos **a, Cursos **c, int codcurso);
 
 /* v. NOTA */
 
-void cadnota(Matricula **m, Notas **n, int cod, int semestre, int notafinal);
+int cadnota(Alunos **a, int mat, int cod, int semestre, int notafinal);
 void notasdiscperiodoaluno(Alunos *a, int periodo, int mat);
 void notadiscporaluno(Alunos *a, int matricula, int coddisc);
 
