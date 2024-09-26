@@ -213,7 +213,8 @@ matricula, e quando a nota for cadastrada a disciplina deve ser removida da árv
 árvore de notas.*/
 
 // Verifica se existe a disciplina existe na árvore de matrícula do aluno
-int verificadisc(Matricula *m, int cod){
+
+int busca_disc(Matricula *m, int cod){ // Iago Alterei o nome da função de verificadisc para busca_disc.
     int enc = 0;
     if(m != NULL){
         if(m->coddisc == cod)
@@ -228,96 +229,86 @@ int verificadisc(Matricula *m, int cod){
     return enc;
 }
 
-void cadnota(Alunos **a, int mat, int cod, int semestre, int notafinal){
-    int enc = verificadisc((*a)->mat, cod);
-
-    if(enc == 1){
-        if((*a)->nota == NULL){
-            Notas *novo = (Notas*)malloc(sizeof(Notas));
-            novo->coddisc = cod;
-            novo->semestre = semestre;
-            novo->notafinal = notafinal;
-            novo->esq = NULL;
-            novo->dir = NULL;
-            (*a)->nota = novo;
-            rmvmatricula(&(*a)->mat, cod);
-        }
-        else{
-            if(cod < (*a)->nota->coddisc)
-                cadnota(&((*a)->nota->esq), mat, cod, semestre, notafinal);
-            else
-                cadnota(&((*a)->nota->dir), mat, cod, semestre, notafinal);
-        }
+int ehfolhamat(Matricula *m){
+    int folha = 0;
+    if (m != NULL){
+        if (m->dir == NULL && m->esq == NULL)
+            folha = 1;
     }
-    else{
-        printf("Disciplina nao encontrada na arvore de matricula do aluno %s\n", (*a)->nome);
-    }
+    return folha;
 }
 
-Matricula* menorDireita(Matricula *no, Matricula **filho){
+Matricula* soumfilhomat(Matricula *m){
+    Matricula *aux = NULL;
+    if (m->esq != NULL)
+        aux = m->esq;
+    else
+        aux = m->dir;
+    return aux;
+}
+
+Matricula* menorfilhoesqmat(Matricula *m){
     Matricula *aux;
     aux = NULL;
-
-    if(no != NULL){
-        aux = menorDireita(no->esq, filho);
-        if(!aux){
-            aux = no;
-            *filho = no->dir;
-        }
+    if (m != NULL){
+        if (m->esq != NULL)
+            aux = menorfilhoesqmat(m->esq);
     }
     return aux;
 }
 
 void rmvmatricula(Matricula **m, int cod){
-    int temp;
-
-    if((*m)){
-        if(cod < (*m)->coddisc)
-            rmvmatricula(&(*m)->esq, cod);
-        else if(cod > (*m)->coddisc)
-            rmvmatricula(&(*m)->dir, cod);
-        else{
-            Matricula *aux = *m;
-            if((*m)->esq == NULL && (*m)->dir == NULL){
-                free(aux);
+    if((*m != NULL)){
+        if ((*m)->coddisc == cod){
+            Matricula *aux, *endfilho, *endmenorfilho;
+            if (ehfolhamat(*m)){
+                aux = *m;
                 *m = NULL;
-            }
-            /* Só tem o filho da direita */
-            else if((*m)->esq == NULL){
-                (*m) = (*m)->dir;
-                aux->dir = NULL;
                 free(aux);
-                aux = NULL;
-            }
-            /* Só tem o filho da esquerda */
-            else if((*m)->dir == NULL){
-                (*m) = (*m)->esq;
-                aux->esq = NULL;
-                free(aux);
-                aux = NULL;
-            }
-            /* O nó mais a esquerda da sub-árvore à direita */
-            else {
-                Matricula *no = NULL;
-                Matricula *subs = (*m)->dir;
-
-                while(subs->esq != NULL){
-                    no = subs;
-                    subs = subs->esq;
-                }
-
-                if(no != NULL){
-                    no->esq = subs->dir;
-                } 
-                else{
-                    (*m)->dir = subs->dir;
-                }
-
-                (*m)->coddisc = subs->coddisc;
-                free(subs);
+            } else if ((endfilho = soumfilhomat(*m)) != NULL){
+                *m = endfilho;
+                free(endfilho);
+            } else {
+                endmenorfilho = menorfilhoesqmat((*m)->dir);
+                (*m)->coddisc = endmenorfilho->coddisc;
+                rmvmatricula(&(*m)->dir, endmenorfilho->coddisc);
             }
         }
+        else if(cod < (*m)->coddisc)
+            rmvmatricula(&(*m)->esq, cod);
+        else
+            rmvmatricula(&(*m)->dir, cod);
     }
+}
+
+int cadnota(Alunos **a, int mat, int cod, int semestre, int notafinal){
+    int enc; 
+    if ((*a) != NULL){
+        enc = busca_disc((*a)->mat, cod);
+        if(enc == 1){
+            if ((*a)->matricula == mat){ // Coloquei isso por que não estava vendo o uso do "int mat" na função.
+                if((*a)->nota == NULL){
+                    Notas *novo = (Notas*)malloc(sizeof(Notas));
+                    novo->coddisc = cod;
+                    novo->semestre = semestre;
+                    novo->notafinal = notafinal;
+                    novo->esq = NULL;
+                    novo->dir = NULL;
+                    (*a)->nota = novo;
+                    rmvmatricula(&(*a)->mat, cod);
+                }
+                else{
+                    if(cod < (*a)->nota->coddisc)
+                        cadnota(&((*a)->nota->esq), mat, cod, semestre, notafinal);
+                    else
+                        cadnota(&((*a)->nota->dir), mat, cod, semestre, notafinal);
+                }
+            }
+            else
+                cadnota(&(*a)->prox, mat, cod, semestre, notafinal);
+        }
+    }
+    return enc; // Iago alterei para retornar o valor de enc para retirar o printf da função cadnota.
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -523,12 +514,12 @@ Disciplina* soumfilhodisc(Disciplina *disc){
     return aux;
 }
 
-Disciplina* menorfilhoesq(Disciplina *disc){
+Disciplina* menorfilhoesqdisc(Disciplina *disc){
     Disciplina *aux;
     aux = NULL;
     if (disc != NULL){
         if (disc->esq != NULL){
-            aux = menorfilhoesq(disc->esq);
+            aux = menorfilhoesqdisc(disc->esq);
         }
     }
     return aux;
@@ -550,7 +541,7 @@ int rmvdisc(Disciplina **disc, int cod_disc){
                 *disc = endfilho;  
                 free(aux); 
             } else {
-                endmenorfilho = menorfilhoesq((*disc)->dir);
+                endmenorfilho = menorfilhoesqdisc((*disc)->dir);
                 (*disc)->cod_disciplina = endmenorfilho->cod_disciplina;
                 (*disc)->cargah = endmenorfilho->cargah;
                 (*disc)->periodo = endmenorfilho->periodo;
