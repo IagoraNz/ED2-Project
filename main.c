@@ -178,8 +178,8 @@ void menualuno(){
 
 int main(){
     int opc, opc1, sucesso, idcurso, qtdperiodos, cpf;
-    int matricula, curso, coddisc;
-    int matcomp, idcursocomp, coddisccomp;
+    int matricula, coddisc;
+    int matcomp, idcursocomp, coddisccomp, periodocomp;
     char buffer[50], nomecurso[50];
 
     Alunos *aluno;
@@ -188,7 +188,6 @@ int main(){
     Notas *nota;
     Matricula *mat;
     curso = NULL;
-    matricula = NULL;
     disc = NULL;
     nota = NULL;
     mat = NULL;
@@ -261,7 +260,6 @@ int main(){
                 cadaluno(&aluno, matricula, buffer, idcursocomp);
                 printf("\nMatricula gerada: %d\n", matricula);
                 printf("Aluno cadastrado com sucesso!\n");
-                system("PAUSE");
                 break;
             case 2:
                 printf("\nCADASTRO DE CURSO\n");
@@ -273,7 +271,6 @@ int main(){
                 cadcurso(&curso, idcurso, nomecurso, qtdperiodos);
                 printf("\nCodigo do curso gerado: %d\n", idcurso);
                 printf("Curso cadastrado com sucesso!\n");
-                system("PAUSE");
                 break;
             case 3:
                 printf("\nCADASTRO DE DISCIPLINA\n");
@@ -291,57 +288,91 @@ int main(){
                     printf("Disciplina cadastrada com sucesso!\n");
                 else
                     printf("Erro ao cadastrar disciplina!\n");
-                system("PAUSE");
                 break;
             case 4:
                 printf("\nCADASTRO DE MATRICULA\n");
                 printf("\nDigite o codigo da disciplina: ");
                 scanf("%d", &coddisccomp);
-                cadmatricula(&mat, coddisccomp);
+                printf("\nDigite o matricula do aluno: ");
+                scanf("%d", &matcomp);
+                cadmatricula(&aluno, coddisccomp, matcomp);
                 printf("Matricula cadastrada com sucesso!\n");
-                system("PAUSE");
                 break;
             case 5:
                 printf("\nCADASTRO DE NOTA\n");
                 printf("\nDigite o codigo da disciplina: ");
                 scanf("%d", &coddisccomp);
+                printf("\nDigite o matricula do aluno: ");
+                scanf("%d", &matcomp);
                 printf("\nDigite o semestre: ");
-                scanf("%d", &nota->semestre);
+                scanf("%d", &aluno->nota->semestre);
                 printf("\nDigite a nota final: ");
-                scanf("%d", &nota->notafinal);
-                cadnota(&mat, &nota, coddisccomp, nota->semestre, nota->notafinal);
-                printf("Nota cadastrada com sucesso!\n");
-                system("PAUSE");
+                scanf("%d", &aluno->nota->notafinal);
+                int sucesso = cadnota(&aluno, matcomp, coddisccomp, aluno->nota->semestre, aluno->nota->notafinal);
+                if(sucesso == 1)
+                    printf("Nota cadastrada com sucesso!\n");
                 break;
             case 6:
                 printf("\nDigite o codigo do curso: ");
                 scanf("%d", &idcursocomp);
                 alunosporcurso(&aluno, &curso, idcursocomp);
-                system("PAUSE");
                 break;
             case 7:
                 exibir_cursos(curso);
-                system("PAUSE");
                 break;
             case 8:
+                printf("\nDigite o codigo do curso: ");
+                scanf("%d", &idcursocomp);
+                exibir_disc_curso_main(curso, idcursocomp);
                 break;
             case 9:
+                printf("\nDigite o codigo do curso: ");
+                scanf("%d", &idcursocomp);
+                printf("\nDigite o periodo da disciplina: ");
+                scanf("%d", &periodocomp);
+                exibir_disc_periodo_main(curso, idcursocomp, periodocomp);
                 break;
             case 10:
+                printf("\nDigite o codigo do aluno: ");
+                scanf("%d", &matcomp);
+                exibir_disc_aluno_main(aluno, curso, matcomp);
                 break;
             case 11:
+                printf("\nDigite o codigo do aluno: ");
+                scanf("%d", &matcomp);
+                printf("\nDigite o periodo: ");
+                scanf("%d", &periodocomp);
+                notasdiscperiodoaluno(aluno, periodocomp, matcomp);
                 break;
             case 12:
+                printf("\nDigite o codigo do aluno: ");
+                scanf("%d", &matcomp);
+                printf("\nDigite o codigo da disciplina: ");
+                scanf("%d", &coddisccomp);
+                notadiscporaluno(aluno, matcomp, coddisccomp);
                 break;
             case 13:
+                printf("\nDigite o codigo do curso: ");
+                scanf("%d", &idcursocomp);
+                printf("\nDigite o codigo da disciplina: ");
+                scanf("%d", &coddisccomp);
+                rmvdisc(&curso, idcursocomp, coddisccomp);
+                printf("Disciplina removida com sucesso!\n");
                 break;
             case 14:
+                printf("\nDigite o codigo do aluno: ");
+                scanf("%d", &matcomp);
+                printf("\nDigite o codigo da disciplina: ");
+                scanf("%d", &coddisccomp);
+                rmvmatdealuno(&aluno, mat, matcomp, coddisccomp);
+                printf("Disciplina removida com sucesso!\n");
                 break;
             case 15:
                 break;
             default:
                 break;
             }
+            system("PAUSE");
             break;
             /*--------------------------------------------------------------------------------------------------------*/
             /* ii. Os demais menus a seguir contém as funções de cadastro, remoção e exibição de disciplinas e

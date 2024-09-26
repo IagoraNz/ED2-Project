@@ -150,9 +150,9 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso){
             }
             else{
                 if(idcurso < (*curso)->idcurso)
-                    caddisc((*curso)->esq, No, idcurso);
+                    caddisc(&(*curso)->esq, No, idcurso);
                 else
-                    caddisc((*curso)->dir, No, idcurso);
+                    caddisc(&(*curso)->dir, No, idcurso);
             }
         }
     }
@@ -165,8 +165,18 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso){
 /* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
 uma disciplina do curso do aluno. */
 
-void cadmatricula(Alunos **a, int codigo){
-    if((*a)->mat == NULL){
+void cadmatricula(Alunos **a, int codigo, int mat){
+
+    int enc = 0;
+
+    while((*a) != NULL || enc == 0){
+        if((*a)->matricula == mat){
+            enc = 1;
+        }
+        a = &(*a)->prox;
+    }
+    
+    if((*a)->mat == NULL && enc == 1){
         Matricula *novo = (Matricula*)malloc(sizeof(Matricula));
         novo->coddisc = codigo;
         novo->esq = NULL;
@@ -174,12 +184,9 @@ void cadmatricula(Alunos **a, int codigo){
         (*a)->mat = novo;
     }
     else{
-        if(codigo < (*a)->mat->coddisc)
-            cadmatricula(&(*a)->mat->esq, codigo);
-        else if(codigo > (*a)->mat->coddisc)
-            cadmatricula(&(*a)->mat->dir, codigo);
-        else
-            printf("Disciplina ja cadastrada\n");
+        while((*a) != NULL && (*a)->matricula != mat){
+            a = &(*a)->prox;
+        }
     }
 }
 
@@ -221,9 +228,9 @@ int busca_disc(Matricula *m, int cod){ // Iago Alterei o nome da função de ver
             enc = 1;
         else{
             if(cod < m->coddisc)
-                enc = verificadisc(m->esq, cod);
+                enc = busca_disc(m->esq, cod);
             else
-                enc = verificadisc(m->dir, cod);
+                enc = busca_disc(m->dir, cod);
         }
     }
     return enc;
@@ -281,6 +288,17 @@ void rmvmatricula(Matricula **m, int cod){
     }
 }
 
+int cadnota_nota(Notas **nota, int cod, int semestre, int notafinal){
+    if(*nota != NULL){
+        if (cod < (*nota)->coddisc)
+            cadnota_nota(&((*nota)->esq), cod, semestre, notafinal);
+        else
+            cadnota_nota(&((*nota)->dir), cod, semestre, notafinal);
+    }
+    return 1;
+}
+
+
 int cadnota(Alunos **a, int mat, int cod, int semestre, int notafinal){
     int enc; 
     if ((*a) != NULL){
@@ -299,9 +317,9 @@ int cadnota(Alunos **a, int mat, int cod, int semestre, int notafinal){
                 }
                 else{
                     if(cod < (*a)->nota->coddisc)
-                        cadnota(&((*a)->nota->esq), mat, cod, semestre, notafinal);
+                        cadnota_nota(&((*a)->nota), cod, semestre, notafinal);
                     else
-                        cadnota(&((*a)->nota->dir), mat, cod, semestre, notafinal);
+                        cadnota_nota(&((*a)->nota), cod, semestre, notafinal);
                 }
             }
             else
@@ -433,10 +451,10 @@ void exibir_disc_aluno(Matricula *mat, Cursos *cursos, int codcurso){
 void exibir_disc_aluno_main(Alunos *aluno, Cursos *cursos, int matricula){
     if(aluno != NULL){
         if(aluno->matricula == matricula){
-            exibir_disc_matriculadas(aluno->mat, cursos, aluno->codcurso);
+            exibir_disc_aluno(aluno->mat, cursos, aluno->codcurso);
         }
     } else
-        exibir_disc_aluno(aluno->prox, cursos, matricula);
+        exibir_disc_aluno_main(aluno->prox, cursos, matricula);
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -532,7 +550,7 @@ int rmvdisc(Disciplina **disc, int cod_disc){
         Disciplina *endfilho;
         Disciplina *endmenorfilho;
         if ((*disc)->cod_disciplina == cod_disc){
-            if(ehfolhadisc(disc)){
+            if(ehfolhadisc(*disc)){
             aux = *disc;
             *disc = NULL;
             free(aux);
@@ -587,7 +605,7 @@ int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc){
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
-void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
+void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int *coddisc){
     int enc = 0;
     if((*a) != NULL){
         while((*a) != NULL && (*a)->matricula == matricula){
@@ -615,7 +633,7 @@ nota organizadas pelo período que a disciplina está cadastrada no curso. */
 
 /* extra) Função agregadas, associadas ou adicionais para complementar a coesão do software */
 
-void gerarCodDisciplina(int cargah, int periodo, char *coddisc){
+void gerarCodDisciplina(int cargah, int periodo, int *coddisc){
     // Passo 1: obtendo o ano atual
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -645,7 +663,6 @@ void gerarMatriculaAluno(int idcurso, int *matricula){
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     int ano = tm.tm_year + 1900;
-
     srand(time(NULL));
     int num4 = rand() % 10000;
     int num3 = rand() % 1000;

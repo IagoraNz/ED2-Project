@@ -59,7 +59,7 @@ void exibir_cursos(Cursos *curso);
 
 /* ii. MATRÍCULA */
 void buscamat(Matricula *m, int codigo, int *enc);
-void cadmatricula(Alunos **m, int coddisc);
+void cadmatricula(Alunos **m, int coddisc, int matricula);
 void exibirmat(Matricula *m);
 void rmvmatricula(Matricula **m, int cod);
 
@@ -73,7 +73,7 @@ int insere_disc(Disciplina **disc, Disciplina *No);
 int caddisc(Cursos **curso, Disciplina *No, int idcurso);
 void exibir_disc_curso(Disciplina *disc);
 void exibir_disc_periodo(Disciplina *disc, int periodo);
-void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc);
+void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int *coddisc);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -95,7 +95,7 @@ void notadiscporaluno(Alunos *a, int matricula, int coddisc);
 
 /* vi. EXTRAS */
 
-void gerarCodDisciplina(int cargah, int periodo, char *coddisc);
+void gerarCodDisciplina(int cargah, int periodo, int *coddisc);
 void gerarIdCurso(int qntperiodos, int *idcurso);
 void gerarMatriculaAluno(int idcurso, int *matricula);
 
