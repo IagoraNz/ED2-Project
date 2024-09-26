@@ -73,7 +73,11 @@ int insere_disc(Disciplina **disc, Disciplina *No);
 int caddisc(Cursos **curso, Disciplina *No, int idcurso);
 void exibir_disc_curso(Disciplina *disc);
 void exibir_disc_periodo(Disciplina *disc, int periodo);
+void exibir_disc_curso_main(Cursos *curso, int idcurso);
+void exibir_disc_periodo_main(Cursos *curso, int idcurso, int periodo);
+void exibir_disc_aluno_main(Alunos *aluno, Cursos *cursos, int matricula);
 void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int *coddisc);
+int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

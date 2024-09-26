@@ -125,13 +125,12 @@ int insere_disc(Disciplina **disc, Disciplina *No){
         *disc = No;
         No->esq = NULL;
         No->dir = NULL;
+        insere = 1;
     }
     else if (No->cod_disciplina < (*disc)->cod_disciplina)
-            insere_disc(&((*disc)->esq), No);
+        insere_disc(&((*disc)->esq), No);
     else if (No->cod_disciplina > (*disc)->cod_disciplina)
-            insere_disc(&((*disc)->dir), No);
-    else
-        insere = 1;
+        insere_disc(&((*disc)->dir), No);
     
     return insere;
 }
@@ -614,10 +613,10 @@ void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int *coddisc){
         }
     }
 
-    buscamat((*a)->mat, coddisc, &enc);
+    buscamat((*a)->mat, *coddisc, &enc);
 
     if(enc == 1){
-        rmvmatricula(&(*a)->mat, coddisc);
+        rmvmatricula(&(*a)->mat, *coddisc);
     }
     else{
         printf("Matricula nao encontrada para o aluno %s\n", (*a)->nome);
@@ -633,7 +632,7 @@ nota organizadas pelo período que a disciplina está cadastrada no curso. */
 
 /* extra) Função agregadas, associadas ou adicionais para complementar a coesão do software */
 
-void gerarCodDisciplina(int cargah, int periodo, int *coddisc){
+void gerarCodDisciplina(int cargah, int periodo, int *coddisc) {
     // Passo 1: obtendo o ano atual
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -643,11 +642,11 @@ void gerarCodDisciplina(int cargah, int periodo, int *coddisc){
     srand(time(NULL));
     int num5 = rand() % 100000; // Gera um número entre 0 e 99999
 
-    // Passo 3:gerando o código no formato AAAACCPNNNNN
-    sprintf(coddisc, "%04d%02d%d%05d", anoatual, cargah, periodo, num5);
+    // Passo 3: gerando o código no formato AAAACCPNNNNN como número inteiro
+    *coddisc = anoatual * 100000000 + cargah * 1000000 + periodo * 100000 + num5;
 }
 
-void gerarIdCurso(int qntperiodos, int *idcurso){
+void gerarIdCurso(int qntperiodos, int *idcurso) {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     int ano = tm.tm_year + 1900;
@@ -655,19 +654,23 @@ void gerarIdCurso(int qntperiodos, int *idcurso){
     srand(time(NULL));
     int num4 = rand() % 10000;
 
-    // Formato PPPAAAANNNN
-    sprintf(idcurso, "%d%d%d%d%04d", qntperiodos, (qntperiodos * 3), (qntperiodos * 5), ano, num4);
+    // Combina os componentes no formato PPPAAAANNNN como um único número inteiro.
+    *idcurso = qntperiodos * 100000000 + (qntperiodos * 3) * 1000000 + (qntperiodos * 5) * 10000 + ano * 10000 + num4;
 }
 
-void gerarMatriculaAluno(int idcurso, int *matricula){
+void gerarMatriculaAluno(int idcurso, int *matricula) {
+    // Passo 1: obtendo o ano atual
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     int ano = tm.tm_year + 1900;
-    srand(time(NULL));
-    int num4 = rand() % 10000;
-    int num3 = rand() % 1000;
 
-    sprintf(matricula, "%d%04d%d%03d", ano, num4, idcurso, num3);
+    // Passo 2: gerando números aleatórios
+    srand(time(NULL));
+    int num4 = rand() % 10000;  // Gera um número entre 0000 e 9999
+    int num3 = rand() % 1000;   // Gera um número entre 000 e 999
+
+    // Passo 3: combinando tudo em um número inteiro no formato AAAANNNNCCCCC
+    *matricula = ano * 1000000000 + num4 * 100000 + idcurso * 1000 + num3;
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
