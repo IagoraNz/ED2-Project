@@ -50,7 +50,7 @@ typedef struct alunos {
 
 /* i. CURSO */
 
-void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos);
+int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos);
 void exibircurso(Cursos *c);
 void buscacurso(Cursos *curso, int idcurso, int *enc);
 void exibir_cursos(Cursos *curso);
