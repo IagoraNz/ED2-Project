@@ -269,9 +269,9 @@ int main(){
                     printf("\nDigite a quantidade de periodos: ");
                     scanf("%d", &qtdperiodos);
                     gerarIdCurso(qtdperiodos, &idcurso);
+                    printf("\nCodigo do curso gerado: %d\n", idcurso);
                     sucesso = cadcurso(&curso, idcurso, nomecurso, qtdperiodos);
                     if(sucesso){
-                        printf("\nCodigo do curso gerado: %d\n", idcurso);
                         printf("Curso cadastrado com sucesso!\n");
                     }
                     else{

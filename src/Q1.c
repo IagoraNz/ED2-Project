@@ -90,9 +90,9 @@ int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos
     }
     else{
         if(idcurso < (*curso)->idcurso)
-            cadcurso(&((*curso)->esq), idcurso, nomecurso, qntperiodos);
+            sucesso = cadcurso(&((*curso)->esq), idcurso, nomecurso, qntperiodos);
         else
-            cadcurso(&((*curso)->dir), idcurso, nomecurso, qntperiodos);
+            sucesso = cadcurso(&((*curso)->dir), idcurso, nomecurso, qntperiodos);
     }
     return sucesso;
 }
@@ -122,7 +122,6 @@ void validar_periodo(Cursos *curso, int *validar, int periodo){
         *validar = 1;
     } 
 }
-
 
 int insere_disc(Disciplina **disc, Disciplina *No){
     int insere = 0;
