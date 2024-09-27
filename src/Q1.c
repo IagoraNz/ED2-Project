@@ -464,21 +464,27 @@ void exibir_disc_aluno_main(Alunos *aluno, Cursos *cursos, int matricula){
 
 /* xi) Mostrar todas as notas de disciplinas de um determinado período de um determinado aluno.*/
 
-void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
-    if(a == NULL){
-        printf("Nao existe alunos cadastrados\n");
-    }
-    else{
-        if(a->nota != NULL){
-            if(a->nota->semestre == periodo){
-                // printf("EXIBINDO NOTAS DO SEMESTRE %d\n", a->nota->semestre);
-                // printf("%d %.2f", a->nota->coddisc, a->nota->notafinal);
-                // notasdiscperiodoaluno((*a)->nota->esq, periodo, mat);
-                // notasdiscperiodoaluno((*a)->nota->dir, periodo, mat);
-            }
+void exibirNotasPeriodo(Notas *nota, int periodo){
+    if(nota != NULL){
+        exibirNotasPeriodo(nota->esq, periodo);
+        if(nota->semestre == periodo){
+            printf("Codigo: %d\n", nota->coddisc);
+            printf("Nota Final: %d\n", nota->notafinal);
+            printf("Semestre: %d\n", nota->semestre);
+            printf("\n");
         }
-        else
-            printf("Nota nao encontrada\n");
+        exibirNotasPeriodo(nota->dir, periodo);
+    }
+}
+
+void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
+    if(a != NULL){
+        if(a->matricula == mat){
+            exibirNotasPeriodo(a->nota, periodo);
+        } 
+        else{
+            notasdiscperiodoaluno(a->prox, periodo, mat);
+        }
     }
 } // IAGO ARRUME!
 
