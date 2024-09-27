@@ -630,6 +630,31 @@ void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int *coddisc){
 /* xv) Mostrar o histórico de um determinado aluno, contendo o nome do curso, as disciplinas e sua respectiva
 nota organizadas pelo período que a disciplina está cadastrada no curso. */
 
+void exibir_hist_aluno(Alunos *aluno, Cursos *curso, int mat_aluno){
+    if (aluno != NULL){
+        if (aluno->matricula == mat_aluno){
+            printf("Aluno: %s\n", aluno->nome);
+            if(curso != NULL){
+                if (curso->idcurso == aluno->codcurso){
+                    printf("Curso: %s\n", curso->nomecurso);
+                    printf("Disciplinas e notas:\n");
+                    for (int i = 1; i <= curso->qntdperiodos; i++){
+                        printf("Periodo: %d\n", i);
+                        exibir_disc_periodo_main(curso, aluno->codcurso, i);
+                        exibirNotasPeriodo(aluno->nota, i);
+                    }
+                }
+                else if (aluno->codcurso < curso->idcurso)
+                    exibir_hist_aluno(aluno, curso->esq, mat_aluno);
+                else
+                    exibir_hist_aluno(aluno, curso->dir, mat_aluno);
+            }                
+        } 
+        else
+            exibir_hist_aluno(aluno->prox, curso, mat_aluno);
+    } 
+}
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* extra) Função agregadas, associadas ou adicionais para complementar a coesão do software */
