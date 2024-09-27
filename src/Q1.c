@@ -75,7 +75,8 @@ void buscacurso(Cursos *curso, int idcurso, int *enc){
     }
 }
 
-void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos){
+int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos){
+    int sucesso = 0;
     if(*curso == NULL){
         Cursos *novo = (Cursos*)malloc(sizeof(Cursos));
         novo->idcurso = idcurso;
@@ -85,6 +86,7 @@ void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodo
         novo->dir = NULL;
         novo->esq = NULL;
         *curso = novo;
+        sucesso = 1;
     }
     else{
         if(idcurso < (*curso)->idcurso)
@@ -92,6 +94,7 @@ void cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodo
         else
             cadcurso(&((*curso)->dir), idcurso, nomecurso, qntperiodos);
     }
+    return sucesso;
 }
 
 void exibircurso(Cursos *c){
@@ -114,10 +117,12 @@ void validar_cargahoraria(int *validar, int cargahoraria){
         *validar = 1;
 }
 
-void validar_periodo(Cursos *curso,int *validar, int periodo){
-    if (periodo <= curso->qntdperiodos && periodo >= 1)
+void validar_periodo(Cursos *curso, int *validar, int periodo){
+    if(periodo >= 1 && periodo <= curso->qntdperiodos){
         *validar = 1;
+    } 
 }
+
 
 int insere_disc(Disciplina **disc, Disciplina *No){
     int insere = 0;
@@ -135,29 +140,46 @@ int insere_disc(Disciplina **disc, Disciplina *No){
     return insere;
 }
 
-int caddisc(Cursos **curso, Disciplina *No, int idcurso){
-    int validar_h = 0, validar_p = 0, validar_cod = 0;
-    // Função para validar se a carga horaria e múltiplo de 15 é se varia entre 30 e 90.
+int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
+    int validar_h = 0, validar_p = 0, validar_cod = 0, sucesso = 0;
+
+    // Validação da carga horária
     validar_cargahoraria(&validar_h, No->cargah);
-    if(validar_h == 1){
-        if (*curso != NULL){
-            if((*curso)->idcurso == idcurso){
-                // Função para validar se o periodo está no intervalo do periodo do curso.
-                validar_periodo(*curso, &validar_p, No->periodo);
-                if (validar_p == 1)
-                    validar_cod = insere_disc(&((*curso)->disc), No);
-            }
+    if (validar_h != 1) {
+        printf("Carga horária inválida! Deve ser um múltiplo de 15 entre 30 e 90.\n");
+        sucesso = 0;
+    }
+    else if(*curso != NULL){
+        if((*curso)->idcurso == idcurso){
+            // Validação do período
+            validar_periodo(*curso, &validar_p, No->periodo);
+            if (validar_p != 1) {
+                printf("Período inválido! O período deve estar dentro do intervalo do curso.\n");
+                sucesso = 0;
+            } 
             else{
-                if(idcurso < (*curso)->idcurso)
-                    caddisc(&(*curso)->esq, No, idcurso);
-                else
-                    caddisc(&(*curso)->dir, No, idcurso);
+                // Inserir disciplina
+                validar_cod = insere_disc(&((*curso)->disc), No);
+                if(validar_cod == 0){
+                    printf("Código da disciplina já cadastrado!\n");
+                    sucesso = 0;
+                } 
+                else{
+                    sucesso = 1;
+                }
             }
+        } 
+        else{
+            if (idcurso < (*curso)->idcurso)
+                sucesso = caddisc(&(*curso)->esq, No, idcurso);
+            else
+                sucesso = caddisc(&(*curso)->dir, No, idcurso);
         }
     }
 
-    return validar_cod;
+    return sucesso;
 }
+
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

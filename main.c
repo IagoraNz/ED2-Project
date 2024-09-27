@@ -269,9 +269,14 @@ int main(){
                     printf("\nDigite a quantidade de periodos: ");
                     scanf("%d", &qtdperiodos);
                     gerarIdCurso(qtdperiodos, &idcurso);
-                    cadcurso(&curso, idcurso, nomecurso, qtdperiodos);
-                    printf("\nCodigo do curso gerado: %d\n", idcurso);
-                    printf("Curso cadastrado com sucesso!\n");
+                    sucesso = cadcurso(&curso, idcurso, nomecurso, qtdperiodos);
+                    if(sucesso){
+                        printf("\nCodigo do curso gerado: %d\n", idcurso);
+                        printf("Curso cadastrado com sucesso!\n");
+                    }
+                    else{
+                        printf("Erro ao cadastrar curso!\n");
+                    }
                     break;
                 case 3:
                     disc = (Disciplina*)malloc(sizeof(Disciplina));
@@ -286,13 +291,13 @@ int main(){
                     scanf("%d", &idcursocomp);
                     gerarCodDisciplina(disc->cargah, disc->periodo, &coddisc);
                     disc->cod_disciplina = coddisc;
-                    printf("\nCodigo da disciplina gerado: %s\n", coddisc);
                     sucesso = caddisc(&curso, disc, idcurso);
-                    if(sucesso == 1)
-                        printf("Disciplina cadastrada com sucesso!\n");
+                    if(sucesso){
+                        printf("\nCodigo da disciplina gerado: %d\n", coddisc);
+                        printf("\nDisciplina cadastrada com sucesso!\n");
+                    }
                     else
                         printf("Erro ao cadastrar disciplina!\n");
-                    system("PAUSE");
                     break;
                 case 4:
                     printf("\nCADASTRO DE MATRICULA\n");
