@@ -60,19 +60,19 @@ void cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
 as disciplinas para permitir o cadastro do curso. */
 
 // Função para verificar se um idcurso ja está em uso ou para procurar algum curso.
-void buscacurso(Cursos *curso, int idcurso, int *enc){
-    if(curso == NULL)
-        *enc = 0;
-    else{
+int buscacurso(Cursos *curso, int idcurso){
+    int enc = 0;
+    if (curso != NULL){
         if(curso->idcurso == idcurso)
-            *enc = 1;
+            enc = 1;
         else{
             if(idcurso < curso->idcurso)
-                buscacurso(curso->esq, idcurso, enc);
+                buscacurso(curso->esq, idcurso);
             else
-                buscacurso(curso->dir, idcurso, enc);
+                buscacurso(curso->dir, idcurso);
         }
     }
+    return enc;
 }
 
 int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos){
@@ -118,64 +118,49 @@ void validar_cargahoraria(int *validar, int cargahoraria){
 }
 
 void validar_periodo(Cursos *curso, int *validar, int periodo){
-    if(periodo >= 1 && periodo <= curso->qntdperiodos){
+    if(periodo >= 1 && periodo <= curso->qntdperiodos)
         *validar = 1;
-    } 
 }
 
-int insere_disc(Disciplina **disc, Disciplina *No){
-    int insere = 0;
+void insere_disc(Disciplina **disc, Disciplina *No, int *insere){
     if (*disc == NULL){
         *disc = No;
         No->esq = NULL;
         No->dir = NULL;
-        insere = 1;
+        *insere = 1;
     }
     else if (No->cod_disciplina < (*disc)->cod_disciplina)
-        insere_disc(&((*disc)->esq), No);
+        insere_disc(&((*disc)->esq), No, insere);
     else if (No->cod_disciplina > (*disc)->cod_disciplina)
-        insere_disc(&((*disc)->dir), No);
-    
-    return insere;
+        insere_disc(&((*disc)->dir), No, insere);
 }
 
 int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
-    int validar_h = 0, validar_p = 0, validar_cod = 0, sucesso = 0;
+    int validar_h = 0, validar_p = 0, sucesso = 0;
 
     // Validação da carga horária
     validar_cargahoraria(&validar_h, No->cargah);
-    if (validar_h != 1) {
-        printf("Carga horária inválida! Deve ser um múltiplo de 15 entre 30 e 90.\n");
-        sucesso = 0;
-    }
-    else if(*curso != NULL){
-        if((*curso)->idcurso == idcurso){
-            // Validação do período
-            validar_periodo(*curso, &validar_p, No->periodo);
-            if (validar_p != 1) {
-                printf("Período inválido! O período deve estar dentro do intervalo do curso.\n");
-                sucesso = 0;
-            } 
-            else{
-                // Inserir disciplina
-                validar_cod = insere_disc(&((*curso)->disc), No);
-                if(validar_cod == 0){
-                    printf("Código da disciplina já cadastrado!\n");
-                    sucesso = 0;
+    if (validar_h == 1) {
+        if(*curso != NULL){
+            if((*curso)->idcurso == idcurso){
+                // Validação do período
+                validar_periodo(*curso, &validar_p, No->periodo);
+                if (validar_p == 1) {
+                    // Inserir disciplina
+                    insere_disc(&((*curso)->disc), No, &sucesso);
+                    if(sucesso != 0)
+                        sucesso = 1;
                 } 
-                else{
-                    sucesso = 1;
-                }
             }
-        } 
-        else{
-            if (idcurso < (*curso)->idcurso)
-                sucesso = caddisc(&(*curso)->esq, No, idcurso);
-            else
-                sucesso = caddisc(&(*curso)->dir, No, idcurso);
+            else{
+                if (idcurso < (*curso)->idcurso)
+                    sucesso = caddisc(&(*curso)->esq, No, idcurso);
+                else
+                    sucesso = caddisc(&(*curso)->dir, No, idcurso);
+            }
         }
     }
-
+    
     return sucesso;
 }
 
@@ -366,7 +351,7 @@ void alunosporcurso(Alunos **a, Cursos **c, int codcurso){
     }
     else
         printf("Curso nao encontrado!\n");
-}
+} // IAGO ARRUME!
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -430,9 +415,8 @@ void exibir_disc_periodo(Disciplina *disc, int periodo) {
 
 void exibir_disc_periodo_main(Cursos *curso, int idcurso, int periodo){
     if(curso != NULL){
-        if(curso->idcurso == idcurso){
+        if(curso->idcurso == idcurso)
             exibir_disc_periodo(curso->disc, periodo);
-        }
         else if(idcurso < curso->idcurso)
             exibir_disc_periodo_main(curso->esq, idcurso, periodo);
         else
@@ -469,11 +453,10 @@ void exibir_disc_aluno(Matricula *mat, Cursos *cursos, int codcurso){
 }
 
 void exibir_disc_aluno_main(Alunos *aluno, Cursos *cursos, int matricula){
-    if(aluno != NULL){
-        if(aluno->matricula == matricula){
+    if(aluno != NULL)
+        if(aluno->matricula == matricula)
             exibir_disc_aluno(aluno->mat, cursos, aluno->codcurso);
-        }
-    } else
+    else
         exibir_disc_aluno_main(aluno->prox, cursos, matricula);
 }
 
@@ -497,7 +480,7 @@ void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
         else
             printf("Nota nao encontrada\n");
     }
-}
+} // IAGO ARRUME!
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -533,10 +516,9 @@ void notadiscporaluno(Alunos *a, int matricula, int coddisc){
 mesma */
 int ehfolhadisc(Disciplina *disc){
     int folha = 0;
-    if (disc != NULL){
+    if (disc != NULL)
         if (disc->dir == NULL && disc->esq == NULL)
             folha = 1;
-    }
     return folha;
 }
 
@@ -555,11 +537,9 @@ Disciplina* soumfilhodisc(Disciplina *disc){
 Disciplina* menorfilhoesqdisc(Disciplina *disc){
     Disciplina *aux;
     aux = NULL;
-    if (disc != NULL){
-        if (disc->esq != NULL){
+    if (disc != NULL)
+        if (disc->esq != NULL)
             aux = menorfilhoesqdisc(disc->esq);
-        }
-    }
     return aux;
 }
 
@@ -633,16 +613,11 @@ void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int *coddisc){
             *a = (*a)->prox;
         }
     }
-
     buscamat((*a)->mat, *coddisc, &enc);
 
-    if(enc == 1){
+    if(enc == 1)
         rmvmatricula(&(*a)->mat, *coddisc);
-    }
-    else{
-        printf("Matricula nao encontrada para o aluno %s\n", (*a)->nome);
-    }
-}
+} // IAGO ARRUME!
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -691,7 +666,7 @@ void gerarMatriculaAluno(int idcurso, int *matricula) {
     int num3 = rand() % 1000;   // Gera um número entre 000 e 999
 
     // Passo 3: combinando tudo em um número inteiro no formato AAAANNNNCCCCC
-    *matricula = ano * 1000000000 + num4 * 100000 + idcurso * 1000 + num3;
+    *matricula = ano * 10000000 + num4 * 100000 + idcurso * 1000 + num3;
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/

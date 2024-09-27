@@ -241,7 +241,7 @@ int main(){
         case 1:
             /*--------------------------------------------------------------------------------------------------------*/
             /* i. O menu geral contém as principais funções listadas no escopo e descrição do projeto */
-            while(1){
+            while(opc1 != 16){
                 system("cls");
                 menugeral();
                 printf("Digite a opcao desejada: ");
@@ -257,10 +257,13 @@ int main(){
                     scanf("%d", &cpf);
                     printf("\nDigite o codigo do curso: ");
                     scanf("%d", &idcursocomp);
-                    gerarMatriculaAluno(idcursocomp, &matricula);
-                    cadaluno(&aluno, matricula, buffer, idcursocomp);
-                    printf("\nMatricula gerada: %d\n", matricula);
-                    printf("Aluno cadastrado com sucesso!\n");
+                    if (buscacurso(curso, idcursocomp) == 1){
+                        gerarMatriculaAluno(idcursocomp, &matricula);
+                        cadaluno(&aluno, matricula, buffer, idcursocomp);
+                        printf("\nMatricula gerada: %d\n", matricula);
+                        printf("Aluno cadastrado com sucesso!\n");
+                    } else
+                        printf("Curso nao encontrado!\n");
                     break;
                 case 2:
                     printf("\nCADASTRO DE CURSO\n");
@@ -378,6 +381,9 @@ int main(){
                     printf("Disciplina removida com sucesso!\n");
                     break;
                 case 15:
+                    break;
+                case 16:
+                    printf("Voltando ao menu principal...\n");
                     break;
                 default:
                     printf("Opcao invalida!\n");

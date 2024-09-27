@@ -52,7 +52,7 @@ typedef struct alunos {
 
 int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos);
 void exibircurso(Cursos *c);
-void buscacurso(Cursos *curso, int idcurso, int *enc);
+int buscacurso(Cursos *curso, int idcurso);
 void exibir_cursos(Cursos *curso);
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -69,7 +69,7 @@ void rmvmatricula(Matricula **m, int cod);
 
 void validar_periodo(Cursos *curso,int *validar, int periodo);
 void validar_cargahoraria(int *validar, int cargahoraria);
-int insere_disc(Disciplina **disc, Disciplina *No);
+void insere_disc(Disciplina **disc, Disciplina *No, int *insere);
 int caddisc(Cursos **curso, Disciplina *No, int idcurso);
 void exibir_disc_curso(Disciplina *disc);
 void exibir_disc_periodo(Disciplina *disc, int periodo);
