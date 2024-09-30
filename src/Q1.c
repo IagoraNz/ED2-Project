@@ -170,28 +170,34 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
 /* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
 uma disciplina do curso do aluno. */
 
-void cadmatricula(Alunos **a, int codigo, int mat){
-
-    int enc = 0;
-
-    while((*a) != NULL || enc == 0){
-        if((*a)->matricula == mat){
-            enc = 1;
-        }
-        a = &(*a)->prox;
-    }
-    
-    if((*a)->mat == NULL && enc == 1){
-        Matricula *novo = (Matricula*)malloc(sizeof(Matricula));
+int inserirMatricula(Matricula **mat, int codigo){
+    int igual = 0;
+    if(*mat == NULL){
+        Matricula *novo = (Matricula *)malloc(sizeof(Matricula));
         novo->coddisc = codigo;
         novo->esq = NULL;
         novo->dir = NULL;
-        (*a)->mat = novo;
+        *mat = novo;
+    } 
+    else if(codigo < (*mat)->coddisc){
+        inserirMatricula(&(*mat)->esq, codigo);
+    }
+    else if(codigo > (*mat)->coddisc){
+        inserirMatricula(&(*mat)->dir, codigo);
     }
     else{
-        while((*a) != NULL && (*a)->matricula != mat){
-            a = &(*a)->prox;
+        igual = -1;
+    }
+}
+
+void cadmatricula(Alunos **a, int codigo, int mat){
+    int inserido = 0, res;
+    while((*a) != NULL  && inserido == 0 && res != -1){
+        if((*a)->matricula == mat){
+            res = inserirMatricula(&(*a)->mat, codigo);
+            inserido = 1;
         }
+        (*a) = (*a)->prox;
     }
 }
 
@@ -373,10 +379,10 @@ void exibir_cursos(Cursos *curso) {
 void exibir_disc_curso(Disciplina *disc) {
     if (disc != NULL) {
         exibir_disc_curso(disc->esq);
-        printf("Código: %d\n", disc->cod_disciplina);
+        printf("Codigo: %d\n", disc->cod_disciplina);
         printf("Nome: %s\n", disc->nomedisc);
-        printf("Carga horária: %d\n", disc->cargah);
-        printf("Período: %d\n", disc->periodo);
+        printf("Carga horaria: %d\n", disc->cargah);
+        printf("Periodo: %d\n", disc->periodo);
         printf("\n");
         exibir_disc_curso(disc->dir);
     }
@@ -698,6 +704,16 @@ void gerarMatriculaAluno(int idcurso, int *matricula) {
 
     // Passo 3: combinando tudo em um número inteiro no formato AAAANNNNCCCCC
     *matricula = ano * 10000000 + num4 * 100000 + idcurso * 1000 + num3;
+}
+
+void exibiralunos(Alunos *a){
+    if(a != NULL){
+        printf("Matricula: %d\n", a->matricula);
+        printf("Nome: %s\n", a->nome);
+        printf("Codigo do Curso: %d\n", a->codcurso);
+        printf("\n");
+        exibiralunos(a->prox);
+    }
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
