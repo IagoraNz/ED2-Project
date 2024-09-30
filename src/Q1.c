@@ -170,8 +170,7 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
 /* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
 uma disciplina do curso do aluno. */
 
-int inserirMatricula(Matricula **mat, int codigo){
-    int igual = 0;
+void inserirMatricula(Matricula **mat, int codigo, int *igual){ //Iago alterei o tipo da função para void e botei a variavel igual por passagem de referencia.
     if(*mat == NULL){
         Matricula *novo = (Matricula *)malloc(sizeof(Matricula));
         novo->coddisc = codigo;
@@ -180,24 +179,24 @@ int inserirMatricula(Matricula **mat, int codigo){
         *mat = novo;
     } 
     else if(codigo < (*mat)->coddisc){
-        inserirMatricula(&(*mat)->esq, codigo);
+        inserirMatricula(&(*mat)->esq, codigo, igual);
     }
     else if(codigo > (*mat)->coddisc){
-        inserirMatricula(&(*mat)->dir, codigo);
+        inserirMatricula(&(*mat)->dir, codigo, igual);
     }
     else{
-        igual = -1;
+        *igual = -1;
     }
 }
 
-void cadmatricula(Alunos **a, int codigo, int mat){
-    int inserido = 0, res;
-    while((*a) != NULL  && inserido == 0 && res != -1){
-        if((*a)->matricula == mat){
-            res = inserirMatricula(&(*a)->mat, codigo);
-            inserido = 1;
+void cadmatricula(Alunos **a, int codigo, int mat){ //Alterei a logica de inicio do cadmatricula
+    if (*a != NULL){
+        if ((*a)->matricula == mat){
+            int igual = 0;
+            inserirMatricula(&(*a)->mat, codigo, &igual);
         }
-        (*a) = (*a)->prox;
+        else
+            cadmatricula(&(*a)->prox, codigo, mat);
     }
 }
 
@@ -433,37 +432,51 @@ void exibir_disc_periodo_main(Cursos *curso, int idcurso, int periodo){
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* x) Mostrar todas as disciplinas que um determinado aluno está matriculado */
-void exibir_disc(Cursos *curso, int idcurso) {
+void exibir_disc(Cursos *curso, int cod_disc, int idcurso) {
     if (curso != NULL) {
         if (curso->idcurso == idcurso) {
-            Disciplina *disc = curso->disc;
-            printf("Código: %d\n", disc->cod_disciplina);
-            printf("Nome: %s\n", disc->nomedisc);
-            printf("Carga horária: %d\n", disc->cargah);
-            printf("Período: %d\n", disc->periodo);
-            printf("\n");
+            if (curso->disc != NULL) {
+                Disciplina *disc = curso->disc;
+                while (disc != NULL) {
+                    if (disc->cod_disciplina == cod_disc) {
+                        printf("Código: %d\n", disc->cod_disciplina);
+                        printf("Nome: %s\n", disc->nomedisc);
+                        printf("Carga horária: %d\n", disc->cargah);
+                        printf("Período: %d\n", disc->periodo);
+                        printf("\n");
+                    }
+                    if (cod_disc < disc->cod_disciplina)
+                        disc = disc->esq;
+                    else 
+                        disc = disc->dir;
+                }
+            }
         }
         else if (idcurso < curso->idcurso)
-            exibir_disc(curso->esq, idcurso);
+            exibir_disc(curso->esq, cod_disc, idcurso);
         else
-            exibir_disc(curso->dir, idcurso);
+            exibir_disc(curso->dir, cod_disc, idcurso);
     }
 }
-
 void exibir_disc_aluno(Matricula *mat, Cursos *cursos, int codcurso){
     if (mat != NULL){
-        exibir_disc(cursos, mat->coddisc);
+        exibir_disc(cursos, mat->coddisc, codcurso);
         exibir_disc_aluno(mat->esq, cursos, codcurso);
         exibir_disc_aluno(mat->dir, cursos, codcurso);
     }
 }
 
 void exibir_disc_aluno_main(Alunos *aluno, Cursos *cursos, int matricula){
-    if(aluno != NULL)
-        if(aluno->matricula == matricula)
+    if (aluno != NULL){
+        if (aluno->matricula == matricula){
+            printf("Encontrado!\n");
             exibir_disc_aluno(aluno->mat, cursos, aluno->codcurso);
-    else
-        exibir_disc_aluno_main(aluno->prox, cursos, matricula);
+        }
+        else{
+            printf("Nao encontrado!\n");
+            exibir_disc_aluno_main(aluno->prox, cursos, matricula);
+        }
+    }
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
