@@ -92,13 +92,17 @@ int main(){
     cadmatricula(&a, 1001, 2021000002);
     cadmatricula(&a, 1001, 2021000013);
     cadmatricula(&a, 991, 2021000444);
-    cadmatricula(&a, 1010, 2021000005);
+    cadmatricula(&a, 1010, 2021000301);
     cadmatricula(&a, 1001, 2021100006);
     printf("\nAlunos matriculados com sucesso!\n");
 
+    printf("Exibindo os alunos\n");
+
+    exibiralunos(a);
+
     printf("\nExibindo as disciplinas dos alunos\n");
 
-    // exibir_disc_aluno_main(a, c, 2021000301);
+    exibir_disc_aluno_main(a, c, 2021000301);
 
     system("PAUSE");
 
