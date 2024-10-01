@@ -85,7 +85,7 @@ int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc);
 
 void converternome(char *nome);
 void cadaluno(Alunos **a, int mat, char *nome, int codcurso);
-void alunosporcurso(Alunos **a, Cursos **c, int codcurso);
+void alunosporcurso(Alunos *a, int codcurso);
 void exibiralunos(Alunos *a);
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -94,7 +94,7 @@ void exibiralunos(Alunos *a);
 
 int cadnota(Alunos **a, int mat, int cod, int semestre, float notafinal);
 void notasdiscperiodoaluno(Alunos *a, int periodo, int mat);
-void notadiscporaluno(Alunos *a, int matricula, int coddisc);
+void notadiscporaluno(Alunos *a, Cursos *c, int matricula, int coddisc);
 void exibir_hist_aluno(Alunos *aluno, Cursos *curso, int mat_aluno);
 
 /*---------------------------------------------------------------------------------------------------------------*/
