@@ -71,6 +71,8 @@ int main(){
     printf("\nCadastrando alunos\n");
 
     Alunos *a;
+    Alunos *aux;
+    aux = NULL;
     a = NULL;
 
     cadaluno(&a, 2021000301, "Joao", 4);
@@ -96,6 +98,10 @@ int main(){
     cadmatricula(&a, 1001, 2021100006);
     printf("\nAlunos matriculados com sucesso!\n");
 
+    printf("Exibindo Matriculas\n");
+    printf("Nome: %s\n", a->nome);
+    exibirmat(a->mat);
+
     printf("Exibindo os alunos\n");
 
     exibiralunos(a);
@@ -104,6 +110,24 @@ int main(){
 
     exibir_disc_aluno_main(a, c, 2021000301);
 
+    printf("Exibindo as disciplinas dos alunos\n");
+    exibir_disc_aluno_main(a, c, 2021000301);
+
+    printf("Cadastrando notas\n");
+    int teste = 0;
+
+    printf("\n");
+
+    teste = cadnota(&a, 2021000301, 1001, 1,  8.5);
+    printf("%d\n", teste);    
+
+    teste = cadnota(&a, 2021000444, 1010, 3,  7.5);
+    printf("%d\n", teste);
+
+    printf("Exibindo as notas\n");
+
+    exibir_hist_aluno(a, c, 2021000301);
+    
     system("PAUSE");
 
     getchar();
