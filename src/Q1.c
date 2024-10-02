@@ -168,7 +168,7 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
 /* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
 uma disciplina do curso do aluno. */
 
-void inserirMatricula(Matricula **mat, int codigo, int *igual){ //Iago alterei o tipo da função para void e botei a variavel igual por passagem de referencia.
+void inserirMatricula(Matricula **mat, int codigo, int *igual){
     if(*mat == NULL){
         Matricula *novo = (Matricula*)malloc(sizeof(Matricula));
         novo->coddisc = codigo;
@@ -184,7 +184,7 @@ void inserirMatricula(Matricula **mat, int codigo, int *igual){ //Iago alterei o
         *igual = -1;
 }
 
-void cadmatricula(Alunos **a, int codigo, int mat){ //Alterei a logica de inicio do cadmatricula
+void cadmatricula(Alunos **a, int codigo, int mat){
     if (*a != NULL){
         if ((*a)->matricula == mat){
             int igual = 0;
@@ -624,7 +624,7 @@ void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
         else
             rmvmatdealuno(&(*a)->prox, m, matricula, coddisc);
     }
-} // IAGO ARRUME!
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
