@@ -197,6 +197,11 @@ int main(){
 
     exibir_hist_aluno(a, c, 2021100006);
     
+    // Liberando a memória alocada
+    liberar_cursos(c);
+    liberar_alunos(a);
+    liberar_matriculas(m);
+
     system("PAUSE");
 
     getchar();

@@ -104,6 +104,11 @@ void exibir_hist_aluno(Alunos *aluno, Cursos *curso, int mat_aluno);
 void gerarCodDisciplina(int cargah, int periodo, int *coddisc);
 void gerarIdCurso(int qntperiodos, int *idcurso);
 void gerarMatriculaAluno(int idcurso, int *matricula);
+void liberar_notas(Notas *n);
+void liberar_disciplinas(Disciplina *d);
+void liberar_cursos(Cursos *c);
+void liberar_alunos(Alunos *a);
+void liberar_matriculas(Matricula *m);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 #endif

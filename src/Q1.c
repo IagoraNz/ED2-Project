@@ -32,9 +32,8 @@ void cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
     novo->mat = NULL;
 
     // Se a lista estiver vazia, insere o primeiro aluno
-    if (*a == NULL) {
+    if (*a == NULL)
         *a = novo;
-    }
     else {
         // Verifica se o novo nome deve ser inserido na primeira posição
         if (strcmp(aux_nome, (*a)->nome) < 0) {
@@ -44,9 +43,8 @@ void cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
         else {
             Alunos *aux = *a;
             // Percorre a lista e encontra a posição correta
-            while (aux->prox != NULL && strcmp(aux_nome, aux->prox->nome) > 0) {
+            while (aux->prox != NULL && strcmp(aux_nome, aux->prox->nome) > 0)
                 aux = aux->prox;
-            }
             // Insere o novo aluno na posição correta
             novo->prox = aux->prox;
             aux->prox = novo;
@@ -178,15 +176,12 @@ void inserirMatricula(Matricula **mat, int codigo, int *igual){ //Iago alterei o
         novo->dir = NULL;
         *mat = novo;
     } 
-    else if(codigo < (*mat)->coddisc){
+    else if(codigo < (*mat)->coddisc)
         inserirMatricula(&(*mat)->esq, codigo, igual);
-    }
-    else if(codigo > (*mat)->coddisc){
+    else if(codigo > (*mat)->coddisc)
         inserirMatricula(&(*mat)->dir, codigo, igual);
-    }
-    else{
+    else
         *igual = -1;
-    }
 }
 
 void cadmatricula(Alunos **a, int codigo, int mat){ //Alterei a logica de inicio do cadmatricula
@@ -294,13 +289,11 @@ void rmvmatricula(Matricula **m, int cod) {
             }
         } 
         // Se o código é menor, continua na subárvore esquerda
-        else if (cod < (*m)->coddisc) {
+        else if (cod < (*m)->coddisc)
             rmvmatricula(&(*m)->esq, cod);
-        } 
         // Se o código é maior, continua na subárvore direita
-        else {
+        else
             rmvmatricula(&(*m)->dir, cod);
-        }
     }
 }
 
@@ -334,9 +327,8 @@ int cadnota(Alunos **a, int mat, int cod, int semestre, float notafinal) {
                 cadnota_nota(&(*a)->nota, cod, semestre, notafinal);
                 enc = 1;
             }
-        } else {
+        } else
             enc = cadnota(&(*a)->prox, mat, cod, semestre, notafinal);
-        }
     }
     
     return enc; // Retorna 1 se a nota foi cadastrada, 0 caso contrário
@@ -497,14 +489,12 @@ void exibirNotasPeriodo(Notas *nota, int periodo){
 
 void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
     if(a != NULL){
-        if(a->matricula == mat){
+        if(a->matricula == mat)
             exibirNotasPeriodo(a->nota, periodo);
-        } 
-        else{
+        else
             notasdiscperiodoaluno(a->prox, periodo, mat);
-        }
     }
-} // IAGO ARRUME!
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -518,24 +508,19 @@ void notadiscporaluno(Alunos *a, Cursos *c, int matricula, int coddisc){
                 if(nota->coddisc == coddisc){
                     Disciplina *d = c->disc;
                     while(d != NULL){
-                        if(d->cod_disciplina == coddisc){
+                        if(d->cod_disciplina == coddisc)
                             printf("Aluno: %s\nDisciplina: %d\nPeriodo: %d\nCH: %d\nNota Final: %.2f\n", 
                             a->nome, nota->coddisc, d->periodo, d->cargah, nota->notafinal);
-                        }
-                        if(coddisc < d->cod_disciplina){
+                        if(coddisc < d->cod_disciplina)
                             d = d->esq;
-                        } 
-                        else{
+                        else
                             d = d->dir;
-                        }
                     }
                 }
-                if(coddisc < nota->coddisc){
+                if(coddisc < nota->coddisc)
                     nota = nota->esq;
-                } 
-                else{
+                else
                     nota = nota->dir;
-                }
             }
         }
         else
@@ -649,15 +634,12 @@ nota organizadas pelo período que a disciplina está cadastrada no curso. */
 // Função para exibir a disciplina correspondente a uma nota
 void exibir_disciplina(Disciplina *d, int cod_disciplina) {
     if(d != NULL) {
-        if(d->cod_disciplina == cod_disciplina) {
+        if(d->cod_disciplina == cod_disciplina) 
             printf("Disciplina: %s\n", d->nomedisc);
-        }
-        else if(cod_disciplina < d->cod_disciplina) {
+        else if(cod_disciplina < d->cod_disciplina)
             exibir_disciplina(d->esq, cod_disciplina);
-        }
-        else {
+        else
             exibir_disciplina(d->dir, cod_disciplina);
-        }
     }
 }
 
@@ -700,10 +682,8 @@ void exibir_hist_aluno(Alunos *a, Cursos *c, int matricula){
             int qntperiodos = 0;
             qntperiodos = exibir_nome_curso(c, a->codcurso);
             printf("Historico:\n");
-            for (int i = 1; i <= qntperiodos; i++) {
+            for (int i = 1; i <= qntperiodos; i++)
                 exibir_notas(a->nota, c->disc, i);
-            }
-            
         }
         else
             exibir_hist_aluno(a->prox, c, matricula);
@@ -764,6 +744,48 @@ void exibiralunos(Alunos *a){
         printf("Codigo do Curso: %d\n", a->codcurso);
         printf("\n");
         exibiralunos(a->prox);
+    }
+}
+
+void liberar_notas(Notas *n){
+    if(n != NULL){
+        liberar_notas(n->esq);
+        liberar_notas(n->dir);
+        free(n);
+    }
+}
+
+void liberar_matriculas(Matricula *m){
+    if(m != NULL){
+        liberar_matriculas(m->esq);
+        liberar_matriculas(m->dir);
+        free(m);
+    }
+}
+
+void liberar_disciplinas(Disciplina *d){
+    if(d != NULL){
+        liberar_disciplinas(d->esq);
+        liberar_disciplinas(d->dir);
+        free(d);
+    }
+}
+
+void liberar_alunos(Alunos *a){
+    if(a != NULL){
+        liberar_alunos(a->prox);
+        liberar_notas(a->nota);
+        liberar_matriculas(a->mat);
+        free(a);
+    }
+}
+
+void liberar_cursos(Cursos *c){
+    if(c != NULL){
+        liberar_cursos(c->esq);
+        liberar_cursos(c->dir);
+        liberar_disciplinas(c->disc);
+        free(c);
     }
 }
 
