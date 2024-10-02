@@ -715,11 +715,13 @@ void gerarMatriculaAluno(int idcurso, int *matricula) {
 
     // Passo 2: gerando números aleatórios
     srand(time(NULL));
-    int num4 = rand() % 10000;  // Gera um número entre 0000 e 9999
-    int num3 = rand() % 1000;   // Gera um número entre 000 e 999
+    int num4 = rand() % 1000;  // Gera um número entre 000 e 999 para reduzir o tamanho
 
-    // Passo 3: combinando tudo em um número inteiro no formato AAAANNNNCCCCC
-    *matricula = ano * 10000000 + num4 * 100000 + idcurso * 1000 + num3;
+    // Passo 3: Garantindo que o idcurso tenha no máximo 3 dígitos
+    int idcursoModificado = idcurso % 1000;  // Reduzir o número de dígitos do curso para no máximo 3
+
+    // Passo 4: combinando tudo em um número no formato AAAANNNCC
+    *matricula = ano * 100000 + num4 * 1000 + idcursoModificado;
 }
 
 void exibiralunos(Alunos *a){
