@@ -178,7 +178,7 @@ void menualuno(){
 
 int main(){
     int opc, opc1, sucesso, idcurso, qtdperiodos, cpf;
-    int matricula, coddisc;
+    int matricula, coddisc, intbuffer;
     int matcomp, idcursocomp, coddisccomp, periodocomp;
     char buffer[50], nomecurso[50], nomedisc[50];
 
@@ -187,6 +187,7 @@ int main(){
     Disciplina *disc;
     Notas *nota;
     Matricula *mat;
+    aluno = NULL;
     curso = NULL;
     disc = NULL;
     nota = NULL;
@@ -250,19 +251,28 @@ int main(){
                 switch (opc1)
                 {
                 case 1:
+                    if(curso == NULL){
+                        printf("Nenhum curso cadastrado!\n");
+                        break;
+                    }
                     printf("\n\nCADASTRO DE ALUNO\n");
                     printf("\nDigite o nome do aluno: ");
                     scanf("%s", buffer);
                     printf("\nDigite o CPF do aluno: ");
                     scanf("%d", &cpf);
+                    printf("\nDeseja visualizar os cursos cadastrados? (1 para sim e 2 para nao): ");
+                    scanf("%d", &intbuffer);
+                    if(intbuffer == 1)
+                        exibircurso(curso);
                     printf("\nDigite o codigo do curso: ");
                     scanf("%d", &idcursocomp);
-                    if (buscacurso(curso, idcursocomp) == 1){
+                    if(buscacurso(curso, idcursocomp) == 1){
                         gerarMatriculaAluno(idcursocomp, &matricula);
                         cadaluno(&aluno, matricula, buffer, idcursocomp);
                         printf("\nMatricula gerada: %d\n", matricula);
                         printf("Aluno cadastrado com sucesso!\n");
-                    } else
+                    } 
+                    else
                         printf("Curso nao encontrado!\n");
                     break;
                 case 2:
@@ -282,6 +292,10 @@ int main(){
                     }
                     break;
                 case 3:
+                    if(curso == NULL){
+                        printf("Nenhum curso cadastrado!\n");
+                        break;
+                    }
                     disc = (Disciplina*)malloc(sizeof(Disciplina));
                     printf("\nCADASTRO DE DISCIPLINA\n");
                     printf("\nDigite o nome da disciplina: ");
@@ -290,6 +304,10 @@ int main(){
                     scanf("%d", &disc->cargah);
                     printf("\nDigite o periodo da disciplina: ");
                     scanf("%d", &disc->periodo);
+                    printf("\nDeseja visualizar os cursos cadastrados? (1 para sim e 2 para nao): ");
+                    scanf("%d", &intbuffer);
+                    if(intbuffer == 1)
+                        exibircurso(curso);
                     printf("\nDigite o codigo do curso: ");
                     scanf("%d", &idcursocomp);
                     gerarCodDisciplina(disc->cargah, disc->periodo, &coddisc);
@@ -303,18 +321,70 @@ int main(){
                         printf("Erro ao cadastrar disciplina!\n");
                     break;
                 case 4:
+                    if(curso == NULL){
+                        printf("Nenhum curso cadastrado!\n");
+                        break;
+                    }
+                    if(aluno == NULL){
+                        printf("Nenhum aluno cadastrado!\n");
+                        break;
+                    }
                     printf("\nCADASTRO DE MATRICULA\n");
+                    printf("\nDeseja visualizar as disciplinas do curso (1 para sim 2 para nao): ");
+                    scanf("%d", &intbuffer);
+                    if(intbuffer == 1){
+                        exibircurso(curso);
+                        printf("\nDigite o codigo do curso: ");
+                        scanf("%d", &idcursocomp);
+                        exibir_disc_curso_main(curso, idcursocomp);
+                    }
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
+                    printf("\nDesaja visualizar os alunos cadastrados (1 para sim 2 para nao): ");
+                    scanf("%d", &intbuffer);
+                    if(intbuffer == 1)
+                        exibir_alunos(aluno);
                     printf("\nDigite o matricula do aluno: ");
                     scanf("%d", &matcomp);
                     cadmatricula(&aluno, coddisccomp, matcomp);
                     printf("Matricula cadastrada com sucesso!\n");
                     break;
                 case 5:
+                    if(curso == NULL){
+                        printf("Nenhum curso cadastrado!\n");
+                        break;
+                    }
+                    if(aluno == NULL){
+                        printf("Nenhum aluno cadastrado!\n");
+                        break;
+                    }
+                    if(nota == NULL){
+                        printf("Nenhuma nota cadastrada!\n");
+                        break;
+                    }
+                    if(mat == NULL){
+                        printf("Nenhuma matricula cadastrada!\n");
+                        break;
+                    }
+                    if(disc == NULL){
+                        printf("Nenhuma disciplina cadastrada!\n");
+                        break;
+                    }
                     printf("\nCADASTRO DE NOTA\n");
+                    printf("\nDeseja visualizar as disciplinas cadastradas (1 para sim 2 para nao): ");
+                    scanf("%d", &intbuffer);
+                    if(intbuffer == 1){
+                        exibircurso(curso);
+                        printf("\nDigite o codigo do curso: ");
+                        scanf("%d", &idcursocomp);
+                        exibir_disc_curso_main(curso, idcursocomp);
+                    }
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
+                    printf("\nDesaja visualizar os alunos cadastrados (1 para sim 2 para nao): ");
+                    scanf("%d", &intbuffer);
+                    if(intbuffer == 1)
+                        exibir_alunos(aluno);
                     printf("\nDigite o matricula do aluno: ");
                     scanf("%d", &matcomp);
                     printf("\nDigite o semestre: ");
@@ -328,7 +398,7 @@ int main(){
                 case 6:
                     printf("\nDigite o codigo do curso: ");
                     scanf("%d", &idcursocomp);
-                    alunosporcurso(&aluno, &curso, idcursocomp);
+                    alunosporcurso(aluno, idcursocomp);
                     break;
                 case 7:
                     exibir_cursos(curso);
@@ -362,7 +432,7 @@ int main(){
                     scanf("%d", &matcomp);
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
-                    notadiscporaluno(aluno, matcomp, coddisccomp);
+                    notadiscporaluno(aluno, curso, matcomp, coddisccomp);
                     break;
                 case 13:
                     printf("\nDigite o codigo do curso: ");
@@ -377,7 +447,7 @@ int main(){
                     scanf("%d", &matcomp);
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
-                    rmvmatdealuno(&aluno, mat, matcomp, &coddisccomp);
+                    rmvmatdealuno(&aluno, mat, matcomp, coddisccomp);
                     printf("Disciplina removida com sucesso!\n");
                     break;
                 case 15:

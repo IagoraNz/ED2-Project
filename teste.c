@@ -195,7 +195,7 @@ int main(){
 
     printf("xv) Mostrar o historico de um determinado aluno, contendo o nome do curso, as disciplinas e sua respectiva nota organizadas pelo periodo que a disciplina esta cadastrada no curso.\n");
 
-    exibir_hist_aluno(a, c, 2021000301);
+    exibir_hist_aluno(a, c, 2021100006);
     
     system("PAUSE");
 
