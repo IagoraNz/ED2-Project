@@ -135,7 +135,6 @@ void insere_disc(Disciplina **disc, Disciplina *No, int *insere){
 
 int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
     int validar_h = 0, validar_p = 0, sucesso = 0;
-
     // Validação da carga horária
     validar_cargahoraria(&validar_h, No->cargah);
     if (validar_h == 1) {
@@ -700,8 +699,6 @@ void gerarCodDisciplina(int cargah, int periodo, int *coddisc) {
     struct tm tm = *localtime(&t);
     int anoatual = tm.tm_year + 1900;
 
-    // Passo 2: gerando 5 dígitos aleatórios
-    srand(time(NULL));
     int num5 = rand() % 100000; // Gera um número entre 0 e 99999
 
     // Passo 3: gerando o código no formato AAAACCPNNNNN como número inteiro
@@ -713,7 +710,6 @@ void gerarIdCurso(int qntperiodos, int *idcurso) {
     struct tm tm = *localtime(&t);
     int ano = tm.tm_year + 1900;
 
-    srand(time(NULL));
     int num4 = rand() % 10000;
 
     // Combina os componentes no formato PPPAAAANNNN como um único número inteiro.
@@ -726,8 +722,6 @@ void gerarMatriculaAluno(int idcurso, int *matricula) {
     struct tm tm = *localtime(&t);
     int ano = tm.tm_year + 1900;
 
-    // Passo 2: gerando números aleatórios
-    srand(time(NULL));
     int num4 = rand() % 1000;  // Gera um número entre 000 e 999 para reduzir o tamanho
 
     // Passo 3: Garantindo que o idcurso tenha no máximo 3 dígitos
