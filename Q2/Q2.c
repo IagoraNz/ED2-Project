@@ -5,83 +5,177 @@
 #include "./src/Q1.h"
 
 #define QTD_CURSOS 1000
-#define QTD_DISCIPLINAS 10
 #define QTD_ALUNOS 1000
+#define QTD_DISCIPLINAS 10
+#define QTD_MATRICULAS 10
 
-void povoar_cursos(Cursos **raiz){
-    char *nomes[5] = {"Engenharia de Software", "Ciencia da Computacao", "Engenharia Eletrica", "Engenharia Mecanica", "Engenharia Civil"};
-    int qntperiodos[5] = {8, 8, 10, 10, 10};
+// Povoamento das Arvores de Forma Crescente, ou seja tendendo a direita.
+
+void povoar_cursos_crescente(Cursos **raiz){ 
     for (int i = 1; i < QTD_CURSOS; i++){
-        cadcurso(raiz, i, nomes[rand() % 5], qntperiodos[rand() % 5]);
+        cadcurso(raiz, i, "Engenharia de Software", 8);
     }
 }
 
-void povoar_disciplinas(Cursos **raiz){
+void povoar_disciplinas_crescente(Cursos **raiz){
     if (*raiz != NULL){
-        char *nomes[6] = {"Algoritmos e Estruturas de Dados", "Calculo I", "Calculo II", "Calculo III", "Calculo IV", "Fisica I"};
-        int carga_horaria[6] = {60, 90, 90, 90, 90, 60};
-        for (int i = QTD_DISCIPLINAS; i > 0; i--){
+        for (int i = 1; i < QTD_DISCIPLINAS; i++){
             Disciplina *d = (Disciplina*)malloc(sizeof(Disciplina));
-            strcpy(d->nomedisc, nomes[rand() % 6]);
-            d->cargah = carga_horaria[rand() % 6];
+            strcpy(d->nomedisc, "Algoritmos e Estruturas de Dados");
+            d->cargah = 60;
             d->periodo = 3;
             d->cod_disciplina = i;
-            caddisc(raiz, d, rand() % QTD_CURSOS);
+            caddisc(raiz, d, 1);
         }
-        povoar_disciplinas(&(*raiz)->esq);
-        povoar_disciplinas(&(*raiz)->dir);
+        povoar_disciplinas_crescente(&(*raiz)->esq);
+        povoar_disciplinas_crescente(&(*raiz)->dir);
     }
 }
 
-void povoar_alunos(Alunos **raiz, Cursos *curso){
-    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
-    for (int i = 1; i < QTD_ALUNOS; i++){
-        cadaluno(raiz, i, nomes[rand() % 5], rand() % QTD_CURSOS);
-    }
-}
-
-void povoar_matriculas(Alunos *raiz){
-    for (int i = 1; i < QTD_ALUNOS; i++){
-        for (int j = 1; j < QTD_DISCIPLINAS; j++){
-            cadmatricula(&raiz, j, i);
+void povoar_matriculas_crescente(Alunos *aluno){
+    if (aluno != NULL){
+        for (int i = 1; i < QTD_MATRICULAS; i++){
+            cadmatricula(&aluno, i, aluno->matricula);
         }
+        povoar_matriculas_crescente(aluno->prox);
     }
 }
 
-void povoar_notas(Alunos *raiz){
-    for (int i = 1; i < QTD_ALUNOS; i++){
-        for (int j = 1; j < QTD_DISCIPLINAS; j++){
+void povoar_notas_crescente(Alunos *aluno){
+    if (aluno != NULL){
+        for (int i = 1; i < QTD_DISCIPLINAS; i++){
             Notas *n = (Notas*)malloc(sizeof(Notas));
-            n->coddisc = j;
+            n->coddisc = i;
             n->semestre = 3;
             n->notafinal = (rand() % 10) + 1;
-            cadnota(&raiz, i, j, n->semestre, n->notafinal);
+            cadnota(&aluno, aluno->matricula, i, n->semestre, n->notafinal);
         }
+        povoar_notas_crescente(aluno->prox);
+    }
+}
+
+// Povoamento das Arvores de forma decrecente, ou seja tendendo a esquerda.
+
+void povoar_cursos_decrescente(Cursos **raiz){
+    for (int i = QTD_CURSOS; i > 1; i--){
+        cadcurso(raiz, i, "Engenharia de Software", 8);
+    }
+}
+
+void povoar_disciplinas_decrescente(Cursos **raiz){
+    if (*raiz != NULL){
+        for (int i = QTD_DISCIPLINAS; i > 1; i--){
+            Disciplina *d = (Disciplina*)malloc(sizeof(Disciplina));
+            strcpy(d->nomedisc, "Algoritmos e Estruturas de Dados");
+            d->cargah = 60;
+            d->periodo = 3;
+            d->cod_disciplina = i;
+            caddisc(raiz, d, 1);
+        }
+        povoar_disciplinas_decrescente(&(*raiz)->esq);
+        povoar_disciplinas_decrescente(&(*raiz)->dir);
+    }
+}
+
+void povoar_matriculas_decrescente(Alunos *aluno){
+    if (aluno != NULL){
+        for (int i = QTD_MATRICULAS; i > 1; i--){
+            cadmatricula(&aluno, i, aluno->matricula);
+        }
+        povoar_matriculas_decrescente(aluno->prox);
+    }
+}
+
+void povoar_notas_decrescente(Alunos *aluno){
+    if (aluno != NULL){
+        for (int i = QTD_DISCIPLINAS; i > 1; i--){
+            Notas *n = (Notas*)malloc(sizeof(Notas));
+            n->coddisc = i;
+            n->semestre = 3;
+            n->notafinal = (rand() % 10) + 1;
+            cadnota(&aluno, aluno->matricula, i, n->semestre, n->notafinal);
+        }
+        povoar_notas_decrescente(aluno->prox);
+    }
+}
+
+// Povoamento das Arvores de forma aleatória.
+
+void povoar_cursos_aleatorio(Cursos **raiz){
+    int i = 1, sucesso = 0;
+    while (i < QTD_CURSOS){
+        if (cadcurso(raiz, rand() % QTD_CURSOS, "Engenharia de Software", 8) == 1)
+            i++;
+    }
+}
+
+void povoar_disciplinas_aleatorio(Cursos **raiz){
+    if (*raiz != NULL){
+        int i = 1, sucesso = 0;
+        while (i < QTD_DISCIPLINAS){
+            Disciplina *d = (Disciplina*)malloc(sizeof(Disciplina));
+            strcpy(d->nomedisc, "Algoritmos e Estruturas de Dados");
+            d->cargah = 60;
+            d->periodo = 3;
+            d->cod_disciplina = rand() % QTD_DISCIPLINAS;
+            if (caddisc(raiz, d, (*raiz)->idcurso) == 1)
+                i++;
+        }
+        povoar_disciplinas_aleatorio(&(*raiz)->esq);
+        povoar_disciplinas_aleatorio(&(*raiz)->dir);
+    }
+}
+
+void povoar_matriculas_aleatorio(Alunos *aluno){
+    if (aluno != NULL){
+        int i = 1, sucesso = 0;
+        while (i < QTD_MATRICULAS){
+            if (cadmatricula(&aluno, rand() % QTD_MATRICULAS, aluno->matricula) == 1)
+                i++;
+        }
+        povoar_matriculas_aleatorio(aluno->prox);
+    }
+}
+
+void povoar_notas_aleatorio(Alunos *aluno){
+    if (aluno != NULL){
+        int i = 1, sucesso = 0;
+        while (i < QTD_DISCIPLINAS){
+            Notas *n = (Notas*)malloc(sizeof(Notas));
+            n->coddisc = rand() % QTD_DISCIPLINAS;
+            n->semestre = 3;
+            n->notafinal = (rand() % 10) + 1;
+            if (cadnota(&aluno, aluno->matricula, n->coddisc, n->semestre, n->notafinal) == 1)
+                i++;
+        }
+        povoar_notas_aleatorio(aluno->prox);
+    }
+}
+
+// Povoamento dos Alunos
+
+void povoar_alunos(Alunos **aluno, Cursos *curso){
+    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
+    for (int i = 1, j = QTD_CURSOS; i < QTD_ALUNOS; i++, j--){
+        cadaluno(aluno, i, nomes[rand() % 5], j);
     }
 }
 
 int main (){
     srand(time(NULL));
-    Cursos *raiz = NULL;
-    povoar_cursos(&raiz);
-    povoar_disciplinas(&raiz);
-    exibircurso(raiz);
-    system("pause");
-    for (int i = 0; i < QTD_CURSOS; i++){
-        exibir_disc_curso_main(raiz, i);
-    }
-    system("pause");
-    Alunos *raiz_alunos = NULL;
-    povoar_alunos(&raiz_alunos, raiz);
-    exibiralunos(raiz_alunos);
-    system("pause");
-    povoar_matriculas(raiz_alunos);
-    exibirmat(raiz_alunos->mat);
-    system("pause");
-    povoar_notas(raiz_alunos);
-    for (int i = 1; i < QTD_ALUNOS; i++){
-        exibir_hist_aluno(raiz_alunos, raiz, i);
-    }
-    system("pause");
+    Cursos *raiz;
+    Alunos *alunos;
+    alunos = NULL;
+    raiz = NULL;
+
+    povoar_cursos_aleatorio(&raiz);
+    povoar_disciplinas_aleatorio(&raiz);
+
+    exibir_cursos(raiz);
+    exibir_disc_curso_main(raiz, 400);
+    // exibiralunos(alunos);
+    // exibir_disc_curso_main(raiz, 1);
+    liberar_alunos(alunos);
+    liberar_cursos(raiz);
     return 0;
 }
