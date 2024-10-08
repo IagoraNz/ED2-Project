@@ -87,7 +87,10 @@ int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos
         sucesso = 1;
     }
     else{
-        if(idcurso < (*curso)->idcurso)
+        if(idcurso == (*curso)->idcurso) {
+            sucesso = 0;
+        }
+        else if(idcurso < (*curso)->idcurso)
             sucesso = cadcurso(&((*curso)->esq), idcurso, nomecurso, qntperiodos);
         else
             sucesso = cadcurso(&((*curso)->dir), idcurso, nomecurso, qntperiodos);
@@ -110,46 +113,52 @@ seja, um disciplina só pode ser cadastrada se o curso já estiver sido cadastra
 disciplina deve ser válido, ou seja, estar entre 1 e a quantidade máxima de períodos do curso. A carga
 horária da disciplina deve ser múltiplo de 15, variando entre 30 e 90. */
 
-void validar_cargahoraria(int *validar, int cargahoraria){
+void validar_cargahoraria(int *validar, int cargahoraria) {
+    *validar = 0; // Inicializa como 0
     if (cargahoraria % 15 == 0 && (cargahoraria >= 30 && cargahoraria <= 90))
         *validar = 1;
 }
 
-void validar_periodo(Cursos *curso, int *validar, int periodo){
-    if(periodo >= 1 && periodo <= curso->qntdperiodos)
+void validar_periodo(Cursos *curso, int *validar, int periodo) {
+    *validar = 0; // Inicializa como 0
+    if (periodo >= 1 && periodo <= curso->qntdperiodos)
         *validar = 1;
 }
 
-void insere_disc(Disciplina **disc, Disciplina *No, int *insere){
-    if (*disc == NULL){
+void insere_disc(Disciplina **disc, Disciplina *No, int *insere) {
+    if (*disc == NULL) {
         *disc = No;
         No->esq = NULL;
         No->dir = NULL;
-        *insere = 1;
+        *insere = 1; // Insere com sucesso
     }
+    else if (No->cod_disciplina == (*disc)->cod_disciplina)
+        *insere = 0; // Disciplina já existe
     else if (No->cod_disciplina < (*disc)->cod_disciplina)
-        insere_disc(&((*disc)->esq), No, insere);
-    else if (No->cod_disciplina > (*disc)->cod_disciplina)
-        insere_disc(&((*disc)->dir), No, insere);
+        insere_disc(&((*disc)->esq), No, insere); // Vai para a esquerda
+    else
+        insere_disc(&((*disc)->dir), No, insere); // Vai para a direita
 }
 
 int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
     int validar_h = 0, validar_p = 0, sucesso = 0;
+    
     // Validação da carga horária
     validar_cargahoraria(&validar_h, No->cargah);
+    
     if (validar_h == 1) {
-        if(*curso != NULL){
-            if((*curso)->idcurso == idcurso){
+        if (*curso != NULL) {
+            if ((*curso)->idcurso == idcurso) {
                 // Validação do período
                 validar_periodo(*curso, &validar_p, No->periodo);
+                
                 if (validar_p == 1) {
                     // Inserir disciplina
                     insere_disc(&((*curso)->disc), No, &sucesso);
-                    if(sucesso != 0)
-                        sucesso = 1;
-                } 
+                }
             }
-            else{
+            else {
+                // Recorre na árvore de cursos
                 if (idcurso < (*curso)->idcurso)
                     sucesso = caddisc(&(*curso)->esq, No, idcurso);
                 else
@@ -158,8 +167,9 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
         }
     }
     
-    return sucesso;
+    return sucesso; // Retorna 1 se a disciplina foi cadastrada, 0 caso contrário
 }
+
 
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -174,24 +184,26 @@ void inserirMatricula(Matricula **mat, int codigo, int *igual){
         novo->esq = NULL;
         novo->dir = NULL;
         *mat = novo;
+        *igual = 1;
     } 
     else if(codigo < (*mat)->coddisc)
         inserirMatricula(&(*mat)->esq, codigo, igual);
     else if(codigo > (*mat)->coddisc)
         inserirMatricula(&(*mat)->dir, codigo, igual);
     else
-        *igual = -1;
+        *igual = 0;
 }
 
-void cadmatricula(Alunos **a, int codigo, int mat){
+int cadmatricula(Alunos **a, int codigo, int mat){
+    int igual = 0;
     if (*a != NULL){
         if ((*a)->matricula == mat){
-            int igual = 0;
             inserirMatricula(&(*a)->mat, codigo, &igual);
         }
         else
-            cadmatricula(&(*a)->prox, codigo, mat);
+            igual = cadmatricula(&(*a)->prox, codigo, mat);
     }
+    return igual;
 }
 
 void buscamat(Matricula *m, int codigo, int *enc){
@@ -296,7 +308,8 @@ void rmvmatricula(Matricula **m, int cod) {
     }
 }
 
-void cadnota_nota(Notas **nota, int cod, int semestre, float notafinal){
+int cadnota_nota(Notas **nota, int cod, int semestre, float notafinal){
+    int sucesso = 1;
     if (*nota == NULL){
         Notas *novo = (Notas*)malloc(sizeof(Notas));
         novo->coddisc = cod;
@@ -307,24 +320,27 @@ void cadnota_nota(Notas **nota, int cod, int semestre, float notafinal){
         *nota = novo;
     }
     else{
-        if(cod < (*nota)->coddisc)
-            cadnota_nota(&((*nota)->esq), cod, semestre, notafinal);
+        if (cod == (*nota)->coddisc)
+            sucesso = 0;
+        else if(cod < (*nota)->coddisc)
+            sucesso = cadnota_nota(&((*nota)->esq), cod, semestre, notafinal);
         else
-            cadnota_nota(&((*nota)->dir), cod, semestre, notafinal);
+            sucesso = cadnota_nota(&((*nota)->dir), cod, semestre, notafinal);
     }
+    return sucesso;
 }
 
 int cadnota(Alunos **a, int mat, int cod, int semestre, float notafinal) {
     int enc = 0;
-    
     if (*a != NULL) {
         if ((*a)->matricula == mat) {
             int enc_disc = 0;
             busca_disc((*a)->mat, cod, &enc_disc);
             if (enc_disc == 1) {
-                rmvmatricula(&(*a)->mat, cod);
-                cadnota_nota(&(*a)->nota, cod, semestre, notafinal);
-                enc = 1;
+                if (cadnota_nota(&(*a)->nota, cod, semestre, notafinal) == 1){
+                    rmvmatricula(&(*a)->mat, cod);
+                    enc = 1;
+                }
             }
         } else
             enc = cadnota(&(*a)->prox, mat, cod, semestre, notafinal);
