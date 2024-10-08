@@ -8,6 +8,7 @@
 #define QTD_ALUNOS 1000
 #define QTD_DISCIPLINAS 10
 #define QTD_MATRICULAS 10
+#define REPEAT 10000
 
 // Povoamento das Arvores de Forma Crescente, ou seja tendendo a direita.
 
@@ -54,6 +55,13 @@ void povoar_notas_crescente(Alunos *aluno){
     }
 }
 
+void povoar_alunos_crescente(Alunos **aluno, Cursos *curso){
+    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
+    for (int i = 1; i < QTD_ALUNOS; i++){
+        cadaluno(aluno, i, nomes[rand() % 5], rand() % QTD_CURSOS);
+    }
+}
+
 // Povoamento das Arvores de forma decrecente, ou seja tendendo a esquerda.
 
 void povoar_cursos_decrescente(Cursos **raiz){
@@ -96,6 +104,13 @@ void povoar_notas_decrescente(Alunos *aluno){
             cadnota(&aluno, aluno->matricula, i, n->semestre, n->notafinal);
         }
         povoar_notas_decrescente(aluno->prox);
+    }
+}
+
+void povoar_alunos_descrescente(Alunos **aluno, Cursos *curso){
+    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
+    for (int i = QTD_ALUNOS; i > 1; i--){
+        cadaluno(aluno, i, nomes[rand() % 5], rand() % QTD_CURSOS);
     }
 }
 
@@ -152,14 +167,68 @@ void povoar_notas_aleatorio(Alunos *aluno){
     }
 }
 
-// Povoamento dos Alunos
-
-void povoar_alunos(Alunos **aluno, Cursos *curso){
+void povoar_alunos_aleatorio(Alunos **aluno, Cursos *curso){
     char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
-    for (int i = 1, j = QTD_CURSOS; i < QTD_ALUNOS; i++, j--){
-        cadaluno(aluno, i, nomes[rand() % 5], j);
+    int i = 1, sucesso = 0;
+    while (i < QTD_ALUNOS){
+        if (cadaluno(aluno, rand() % QTD_ALUNOS, nomes[rand() % 5], rand() % QTD_CURSOS) == 1)
+            i++;
     }
 }
+
+void povoamento_crescente(Cursos **raiz, Alunos **alunos){
+    povoar_cursos_crescente(raiz);
+    povoar_disciplinas_crescente(raiz);
+    povoar_alunos_crescente(alunos, *raiz);
+    povoar_matriculas_crescente(*alunos);
+    povoar_notas_crescente(*alunos);
+}
+
+void povoamento_decrescente(Cursos **raiz, Alunos **alunos){
+    povoar_cursos_decrescente(raiz);
+    povoar_disciplinas_decrescente(raiz);
+    povoar_alunos_descrescente(alunos, *raiz);
+    povoar_matriculas_decrescente(*alunos);
+    povoar_notas_decrescente(*alunos);
+}
+
+void povoamento_aleatorio(Cursos **raiz, Alunos **alunos){
+    povoar_cursos_aleatorio(raiz);
+    povoar_disciplinas_aleatorio(raiz);
+    povoar_alunos_aleatorio(alunos, *raiz);
+    povoar_matriculas_aleatorio(*alunos);
+    povoar_notas_aleatorio(*alunos);
+}
+
+void menu_povoamento(){
+    printf("1 - Crescente\n");
+    printf("2 - Decrescente\n");
+    printf("3 - Aleatorio\n");
+    printf("Escolha a forma de povoamento das arvores:\n");
+}
+
+double metrificar_tempo_por_busca_nota(Alunos *alunos, Cursos *raiz) {
+    clock_t inicio, fim;
+    double tempo_total = 0.0;
+    int i;
+
+    int aluno_rand = 1;  // Escolhe aluno aleatório
+    int disc_rand = 5;  // Escolhe disciplina aleatória
+
+    // Executa a busca várias vezes para obter uma média mais precisa
+    for (i = 0; i < REPEAT; i++) {
+        inicio = clock();
+        notadiscporaluno(alunos, raiz, aluno_rand, disc_rand);  // Função de busca
+        fim = clock();
+
+        // Soma o tempo de cada execução
+        tempo_total += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    }
+
+    // Retorna o tempo médio por busca
+    return tempo_total / REPEAT;
+}
+
 
 int main (){
     srand(time(NULL));
@@ -167,14 +236,30 @@ int main (){
     Alunos *alunos;
     alunos = NULL;
     raiz = NULL;
+    int op;
+    menu_povoamento();
+    scanf("%d", &op);
+    switch (op)
+    {
+    case 1:
+        povoamento_crescente(&raiz, &alunos);
+        break;
+    case 2:
+        povoamento_decrescente(&raiz, &alunos);
+        break;
+    case 3:
+        povoamento_aleatorio(&raiz, &alunos);
+        break;
+    default:
+        break;
+    }
 
-    povoar_cursos_aleatorio(&raiz);
-    povoar_disciplinas_aleatorio(&raiz);
+    // Metreficando o tempo de busca da nota de uma disciplina de um determinado aluno.
+    for (int i = 0; i < 10; i++){
+        double tempo = metrificar_tempo_por_busca_nota(alunos, raiz);
+        printf("Tempo de busca da nota: %.10f\n", tempo);
+    }
 
-    exibir_cursos(raiz);
-    exibir_disc_curso_main(raiz, 400);
-    // exibiralunos(alunos);
-    // exibir_disc_curso_main(raiz, 1);
     liberar_alunos(alunos);
     liberar_cursos(raiz);
     return 0;

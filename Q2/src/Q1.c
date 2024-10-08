@@ -20,36 +20,42 @@ void converternome(char *nome) {
     }
 }
 
-void cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
+Alunos* criar_aluno(int mat, char *nome, int codcurso) {
     Alunos *novo = (Alunos*) malloc(sizeof(Alunos));
-    novo->prox = NULL;
     novo->matricula = mat;
-    char *aux_nome = strdup(nome);
-    converternome(aux_nome);
+    char *aux_nome = strdup(nome);  
+    converternome(aux_nome);       
     strcpy(novo->nome, aux_nome);
     novo->codcurso = codcurso;
     novo->nota = NULL;
     novo->mat = NULL;
+    novo->prox = NULL;
+    return novo;
+}
 
-    // Se a lista estiver vazia, insere o primeiro aluno
-    if (*a == NULL)
-        *a = novo;
-    else {
-        // Verifica se o novo nome deve ser inserido na primeira posição
-        if (strcmp(aux_nome, (*a)->nome) < 0) {
-            novo->prox = *a;
-            *a = novo;
-        }
-        else {
-            Alunos *aux = *a;
-            // Percorre a lista e encontra a posição correta
-            while (aux->prox != NULL && strcmp(aux_nome, aux->prox->nome) > 0)
-                aux = aux->prox;
-            // Insere o novo aluno na posição correta
-            novo->prox = aux->prox;
-            aux->prox = novo;
-        }
+int cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
+    int sucesso = 0;
+    
+    // Se a lista estiver vazia ou o ponto de inserção for alcançado
+    if (*a == NULL) {
+        *a = criar_aluno(mat, nome, codcurso);
+        sucesso = 1;
     }
+    else {
+        if ((*a)->matricula == mat)
+            sucesso = 0; 
+        // Verifica se o novo aluno deve ser inserido antes do aluno atual (ordenado por nome)
+        else if (strcmp(nome, (*a)->nome) < 0) {
+            Alunos *novo = criar_aluno(mat, nome, codcurso);  
+            novo->prox = *a; 
+            *a = novo;
+            sucesso = 1;
+        }
+        else 
+            sucesso = cadaluno(&(*a)->prox, mat, nome, codcurso);
+    }
+    
+    return sucesso; 
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -516,6 +522,7 @@ void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
 /* xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o período e a carga horária da
 disciplina. */
 void notadiscporaluno(Alunos *a, Cursos *c, int matricula, int coddisc){
+    int da = 0;
     if(a != NULL){
         if(a->matricula == matricula){
             Notas *nota = a->nota;
@@ -524,8 +531,9 @@ void notadiscporaluno(Alunos *a, Cursos *c, int matricula, int coddisc){
                     Disciplina *d = c->disc;
                     while(d != NULL){
                         if(d->cod_disciplina == coddisc)
-                            printf("Aluno: %s\nDisciplina: %d\nPeriodo: %d\nCH: %d\nNota Final: %.2f\n", 
-                            a->nome, nota->coddisc, d->periodo, d->cargah, nota->notafinal);
+                            // printf("Aluno: %s\nDisciplina: %d\nPeriodo: %d\nCH: %d\nNota Final: %.2f\n", 
+                            // a->nome, nota->coddisc, d->periodo, d->cargah, nota->notafinal);
+                            da = 1;
                         if(coddisc < d->cod_disciplina)
                             d = d->esq;
                         else

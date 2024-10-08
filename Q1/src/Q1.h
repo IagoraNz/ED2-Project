@@ -84,7 +84,7 @@ int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc);
 /* iv. ALUNO */
 
 void converternome(char *nome);
-void cadaluno(Alunos **a, int mat, char *nome, int codcurso);
+int cadaluno(Alunos **a, int mat, char *nome, int codcurso);
 void alunosporcurso(Alunos *a, int codcurso);
 void exibiralunos(Alunos *a);
 
