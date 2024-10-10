@@ -58,8 +58,8 @@ typedef struct alunos {
     char nome[50];
     int codcurso;
     struct alunos *prox;
-    Notas *nota;
-    Matricula *mat;
+    AVLNotas *nota;
+    AVLMatricula *mat;
 } Alunos;
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -70,6 +70,8 @@ typedef struct alunos {
 
 /* ii. MATRÍCULA */
 
+int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat);
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* iii. DISCIPLINA */
@@ -77,6 +79,8 @@ typedef struct alunos {
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* iv. ALUNO */
+
+int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

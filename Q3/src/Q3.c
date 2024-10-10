@@ -159,6 +159,66 @@ void giroDirCurso(AVLCurso **raiz){
 /* i) Cadastrar alunos a qualquer momento na lista, de forma que só possa cadastrar um código de curso que
 já tenha sido cadastrado na árvore de cursos. */
 
+void converternome(char *nome) {
+    int i = 0;
+    // Converte cada caractere para maiuscula enquanto não encontrar o caractere de terminação '\0'
+    while (nome[i] != '\0') {
+        nome[i] = toupper(nome[i]);
+        i++;
+    }
+}
+
+Alunos* criar_aluno(int mat, char *nome, int codcurso) {
+    Alunos *novo = (Alunos*) malloc(sizeof(Alunos));
+    novo->matricula = mat;
+    char *aux_nome = strdup(nome);  
+    converternome(aux_nome);       
+    strcpy(novo->nome, aux_nome);
+    novo->codcurso = codcurso;
+    novo->nota = NULL;
+    novo->mat = NULL;
+    novo->prox = NULL;
+    return novo;
+}
+
+void buscarCurso(AVLCurso *cursos, int mat, int *enc){
+    if (cursos != NULL){
+        if (cursos->info->idcurso == mat){
+            *enc = 1;
+        } else {
+            buscarCurso(cursos->esq, mat, enc);
+            buscarCurso(cursos->dir, mat, enc);
+        }
+    }
+}
+
+int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso) {
+    int sucesso = 0, enc = 0;
+    // Se a lista estiver vazia ou o ponto de inserção for alcançado
+    if (*a == NULL) {
+        buscarCurso(cursos, mat, &enc);
+        if (enc == 1){
+            *a = criar_aluno(mat, nome, codcurso);
+            sucesso = 1;
+        }
+    }
+    else {
+        if ((*a)->matricula == mat)
+            sucesso = 0; 
+        // Verifica se o novo aluno deve ser inserido antes do aluno atual (ordenado por nome)
+        else if (strcmp(nome, (*a)->nome) < 0) {
+            Alunos *novo = criar_aluno(mat, nome, codcurso);  
+            novo->prox = *a; 
+            *a = novo;
+            sucesso = 1;
+        }
+        else 
+            sucesso = cadaluno(&(*a)->prox, cursos, mat, nome, codcurso);
+    }
+    
+    return sucesso; 
+}
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* ii) Cadastrar cursos a qualquer momento na árvore de curso, de forma que o usuário não precise cadastrar
@@ -175,6 +235,111 @@ horária da disciplina deve ser múltiplo de 15, variando entre 30 e 90. */
 
 /* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
 uma disciplina do curso do aluno. */
+
+void AlturaAVlMatricula(AVLMatricula **mat){
+    int esq, dir;
+    if(*mat != NULL){
+        AlturaAVlMatricula(&(*mat)->esq);
+        AlturaAVlMatricula(&(*mat)->dir);
+        if(esq > dir)
+            (*mat)->altura = esq + 1;
+        else
+            (*mat)->altura = dir + 1;
+    }
+}
+
+int fbMatricula(AVLMatricula *mat){
+    return mat->esq->altura - mat->dir->altura;
+}
+
+void rotacaoEsqMatricula(AVLMatricula **mat){
+    AVLMatricula *aux = (AVLMatricula*)malloc(sizeof(AVLMatricula));
+    if(*mat != NULL){
+        aux = (*mat)->dir;
+        (*mat)->dir = aux->esq;
+        aux->esq = (*mat);
+        AlturaAVlMatricula(mat);
+        AlturaAVlMatricula(&aux);
+        *mat = aux;
+    }
+}
+
+void rotacaoDirMatricula(AVLMatricula **mat){
+    AVLMatricula *aux = (AVLMatricula*)malloc(sizeof(AVLMatricula));
+    if(*mat != NULL){
+        aux = (*mat)->esq;
+        (*mat)->esq = aux->dir;
+        aux->dir = (*mat);
+        AlturaAVlMatricula(mat);
+        AlturaAVlMatricula(&aux);
+        *mat = aux;
+    }
+}
+
+void BalanceamentoAVLMatricula(AVLMatricula **mat){
+    int fb;
+    fb = fbMatricula(*mat);
+    if (fb == -2){
+        if (fbMatricula((*mat)->dir) > 0)
+            rotacaoDirMatricula(&(*mat)->dir);
+        rotacaoEsqMatricula(mat);
+    } 
+    else if (fb == 2){
+        if (fbMatricula((*mat)->esq) < 0)
+            rotacaoEsqMatricula(&(*mat)->esq);
+        rotacaoDirMatricula(mat);
+    }
+}
+
+void inserirMatricula(AVLMatricula **mat, int codigo, int *igual){
+    if(*mat == NULL){
+        Matricula *novo = (Matricula*)malloc(sizeof(Matricula));
+        novo->coddisc = codigo;
+        (*mat)->info = novo;
+        (*mat)->altura = 0;
+        (*mat)->esq = NULL;
+        (*mat)->dir = NULL;
+        *igual = 1;
+    } 
+    else {
+        if(codigo < (*mat)->info->coddisc)
+            inserirMatricula(&(*mat)->esq, codigo, igual);
+        else{
+            if(codigo > (*mat)->info->coddisc)
+                inserirMatricula(&(*mat)->dir, codigo, igual);
+            else
+                *igual = 0;
+            BalanceamentoAVLMatricula(mat);
+            AlturaAVlMatricula(mat);
+        }
+    }
+}
+
+void buscarDisciplina(AVLDisc *disciplina, int cod_disc, int *encontrou) {
+    if (disciplina != NULL) {
+        if (disciplina->info->cod_disciplina == cod_disc) {
+            *encontrou = 1;
+        }
+        else if (cod_disc < disciplina->info->cod_disciplina)
+            buscarDisciplina(disciplina->esq, cod_disc, encontrou);
+        else
+            buscarDisciplina(disciplina->dir, cod_disc, encontrou);
+    }
+}
+
+int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat){
+    int sucesso = 0, enc = 0;
+    if (*aluno != NULL){
+        if ((*aluno)->matricula == mat){
+            buscarDisciplina(curso->info->disc, codigo, &enc);
+            if (enc == 1)
+                inserirMatricula(&(*aluno)->mat, codigo, &sucesso);
+        }
+        else
+            sucesso = cadmatricula(&(*aluno)->prox, curso, codigo, mat);
+    }
+    return sucesso;
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
