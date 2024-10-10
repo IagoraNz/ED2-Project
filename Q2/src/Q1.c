@@ -93,9 +93,8 @@ int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos
         sucesso = 1;
     }
     else{
-        if(idcurso == (*curso)->idcurso) {
+        if(idcurso == (*curso)->idcurso)
             sucesso = 0;
-        }
         else if(idcurso < (*curso)->idcurso)
             sucesso = cadcurso(&((*curso)->esq), idcurso, nomecurso, qntperiodos);
         else

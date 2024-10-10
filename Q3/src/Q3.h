@@ -66,6 +66,9 @@ typedef struct alunos {
 
 /* i. CURSO */
 
+int cadcurso(AVLCurso **curso, Cursos *c);
+void exibircurso(AVLCurso *curso);
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* ii. MATRÍCULA */

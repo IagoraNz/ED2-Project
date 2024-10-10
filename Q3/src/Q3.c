@@ -12,50 +12,21 @@
 
 /* AVL DISCIPLINA */
 
-int fator(AVLDisc *raiz){
+int alturaDisc(AVLDisc *raiz){
+    int res;
+    if(raiz != NULL)
+        res = 1 + (alturaDisc(raiz->esq) > alturaDisc(raiz->dir) ? alturaDisc(raiz->esq) : alturaDisc(raiz->dir));
+    else
+        res -1;
+    return res;
+}
+
+int fatorDisc(AVLDisc *raiz){
     return alturaDisc(raiz->esq) - alturaDisc(raiz->dir);
 }
 
-void balancearDisc(AVLDisc **raiz){
-    int fb;
-    AVLDisc *aux = (AVLDisc*)malloc(sizeof(AVLDisc));
-    fb = fator(*raiz);
-
-    if(fb >= 2){
-        aux = (*raiz)->esq;
-        fb = fator(aux);
-
-        if(fator((*raiz)->esq) < 0)
-            giroEsqDisc(&(*raiz)->esq);
-
-        giroDirDisc(raiz);
-    }
-    else if(fb <= -2){
-        aux = (*raiz)->dir;
-        fb = fator(aux);
-
-        if(fator((*raiz)->dir) > 0)
-            giroDirDisc(&(*raiz)->dir);
-
-        giroEsqDisc(raiz);
-    }
-}
-
-int alturaDisc(AVLDisc *raiz){
-    int altura = -1, esq, dir;
-
-    if(raiz != NULL){
-        esq = alturaDisc(raiz->esq);
-        dir = alturaDisc(raiz->dir);
-        if(esq > dir)
-            altura = esq + 1;
-        else
-            altura = dir + 1;
-    }
-}
-
 void giroEsqDisc(AVLDisc **raiz){
-    AVLDisc *aux = (AVLDisc*)malloc(sizeof(AVLDisc));
+    AVLDisc *aux;
     if(*raiz != NULL){
         aux = (*raiz)->dir;
         (*raiz)->dir = aux->esq;
@@ -69,7 +40,7 @@ void giroEsqDisc(AVLDisc **raiz){
 }
 
 void giroDirDisc(AVLDisc **raiz){
-    AVLDisc *aux = (AVLDisc*)malloc(sizeof(AVLDisc));
+    AVLDisc *aux;
     if(*raiz != NULL){
         aux = (*raiz)->esq;
         (*raiz)->esq = aux->dir;
@@ -82,52 +53,51 @@ void giroDirDisc(AVLDisc **raiz){
     }
 }
 
-/* AVL CURSOS */
-
-int fator(AVLCurso *raiz){
-    return alturaDisc(raiz->esq) - alturaDisc(raiz->dir);
-}
-
-void balancearCurso(AVLCurso **raiz){
+void balancearDisc(AVLDisc **raiz){
     int fb;
-    AVLCurso *aux = (AVLCurso*)malloc(sizeof(AVLDisc));
-    fb = fator(*raiz);
+    AVLDisc *aux;
+    fb = fatorDisc(*raiz);
 
     if(fb >= 2){
         aux = (*raiz)->esq;
-        fb = fator(aux);
+        fb = fatorDisc(aux);
 
-        if(fator((*raiz)->esq) < 0)
+        if(fatorDisc((*raiz)->esq) < 0)
             giroEsqDisc(&(*raiz)->esq);
 
         giroDirDisc(raiz);
     }
     else if(fb <= -2){
         aux = (*raiz)->dir;
-        fb = fator(aux);
+        fb = fatorDisc(aux);
 
-        if(fator((*raiz)->dir) > 0)
+        if(fatorDisc((*raiz)->dir) > 0)
             giroDirDisc(&(*raiz)->dir);
 
         giroEsqDisc(raiz);
     }
 }
 
-int alturaCurso(AVLCurso *raiz){
-    int altura = -1, esq, dir;
+/* AVL CURSOS */
 
-    if(raiz != NULL){
-        esq = alturaCurso(raiz->esq);
-        dir = alturaCurso(raiz->dir);
-        if(esq > dir)
-            altura = esq + 1;
-        else
-            altura = dir + 1;
+int alturaCurso(AVLCurso *raiz){
+    int res = -1, altesq, altdir;
+
+    if(raiz){
+        altesq = alturaCurso(raiz->esq);
+        altdir = alturaCurso(raiz->dir);
+        res = 1 + (altesq > altdir ? altesq : altdir);
     }
+
+    return res;
+}
+
+int fatorCurso(AVLCurso *raiz){
+    return alturaCurso(raiz->esq) - alturaCurso(raiz->dir);
 }
 
 void giroEsqCurso(AVLCurso **raiz){
-    AVLDisc *aux = (AVLDisc*)malloc(sizeof(AVLDisc));
+    AVLCurso *aux;
     if(*raiz != NULL){
         aux = (*raiz)->dir;
         (*raiz)->dir = aux->esq;
@@ -141,7 +111,7 @@ void giroEsqCurso(AVLCurso **raiz){
 }
 
 void giroDirCurso(AVLCurso **raiz){
-    AVLCurso *aux = (AVLCurso*)malloc(sizeof(AVLCurso));
+    AVLCurso *aux;
     if(*raiz != NULL){
         aux = (*raiz)->esq;
         (*raiz)->esq = aux->dir;
@@ -151,6 +121,31 @@ void giroDirCurso(AVLCurso **raiz){
         aux->altura = alturaCurso(aux);
 
         *raiz = aux;
+    }
+}
+
+void balancearCurso(AVLCurso **raiz){
+    int fb;
+    AVLCurso *aux;
+    fb = fatorCurso(*raiz);
+
+    if(fb >= 2){
+        aux = (*raiz)->esq;
+        fb = fatorCurso(aux);
+
+        if(fatorCurso((*raiz)->esq) < 0)
+            giroEsqCurso(&(*raiz)->esq);
+
+        giroDirCurso(raiz);
+    }
+    else if(fb <= -2){
+        aux = (*raiz)->dir;
+        fb = fatorCurso(aux);
+
+        if(fatorCurso((*raiz)->dir) > 0)
+            giroDirCurso(&(*raiz)->dir);
+
+        giroEsqCurso(raiz);
     }
 }
 
@@ -223,6 +218,35 @@ int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso) {
 
 /* ii) Cadastrar cursos a qualquer momento na árvore de curso, de forma que o usuário não precise cadastrar
 as disciplinas para permitir o cadastro do curso. */
+
+int cadcurso(AVLCurso **curso, Cursos *c){
+    int sucesso = 0;
+    if(*curso == NULL){
+        *curso = (AVLCurso*)malloc(sizeof(AVLCurso));
+        (*curso)->info = c;
+        (*curso)->esq = NULL;
+        (*curso)->dir = NULL;
+        (*curso)->altura = 0;
+        sucesso = 1;    
+    }
+    else{
+        if(c->idcurso < (*curso)->info->idcurso)
+            sucesso = cadcurso(&((*curso)->esq), c);
+        else 
+            sucesso = cadcurso(&((*curso)->dir), c);
+        balancearCurso(curso);
+        (*curso)->altura = alturaCurso(*curso);
+    }
+    return sucesso;
+}
+
+void exibircurso(AVLCurso *curso){
+    if(curso != NULL){
+        exibircurso(curso->esq);
+        printf("%d %s %d %d\n", curso->info->idcurso, curso->info->nomecurso, curso->info->qntdperiodos, curso->altura);
+        exibircurso(curso->dir);
+    }
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
