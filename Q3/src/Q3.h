@@ -89,6 +89,7 @@ int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso);
 
 /* v. NOTA */
 
+int cadnota(Alunos **a, int mat, Notas *n);
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* vi. EXTRAS */
