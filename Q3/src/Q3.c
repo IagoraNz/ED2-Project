@@ -261,10 +261,18 @@ horária da disciplina deve ser múltiplo de 15, variando entre 30 e 90. */
 uma disciplina do curso do aluno. */
 
 void AlturaAVlMatricula(AVLMatricula **mat){
-    int esq, dir;
+    int esq = 0, dir = 0;
     if(*mat != NULL){
         AlturaAVlMatricula(&(*mat)->esq);
         AlturaAVlMatricula(&(*mat)->dir);
+
+        // Obter alturas dos filhos esquerdo e direito
+        if((*mat)->esq != NULL)
+            esq = (*mat)->esq->altura;
+        if((*mat)->dir != NULL)
+            dir = (*mat)->dir->altura;
+
+        // Definir altura do nó atual
         if(esq > dir)
             (*mat)->altura = esq + 1;
         else
@@ -370,6 +378,188 @@ int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat){
 /* v) Cadastrar Notas, permitir o cadastro de notas somente de disciplinas que estejam na árvore de
 matricula, e quando a nota for cadastrada a disciplina deve ser removida da árvore de matricula para
 árvore de notas.*/
+
+void AlturaAVlNotas(AVLNotas **notas) {
+    int esq = 0, dir = 0;
+    if (*notas != NULL) {
+        AlturaAVlNotas(&(*notas)->esq);  
+        AlturaAVlNotas(&(*notas)->dir); 
+
+        // Obter alturas dos filhos esquerdo e direito
+        if ((*notas)->esq != NULL)
+            esq = (*notas)->esq->altura;
+        if ((*notas)->dir != NULL)
+            dir = (*notas)->dir->altura;
+
+        // Definir altura do nó atual
+        if (esq > dir)
+            (*notas)->altura = esq + 1;
+        else
+            (*notas)->altura = dir + 1;
+    }
+}
+
+
+int fbNotas(AVLNotas *notas){
+    return notas->esq->altura - notas->dir->altura;
+}
+
+void rotacaoEsqNotas(AVLNotas **notas){
+    AVLNotas *aux = (AVLNotas*)malloc(sizeof(AVLNotas));
+    if(*notas != NULL){
+        aux = (*notas)->dir;
+        (*notas)->dir = aux->esq;
+        aux->esq = (*notas);
+        AlturaAVlMatricula(notas);
+        AlturaAVlMatricula(&aux);
+        *notas = aux;
+    }
+}
+
+void rotacaoDirNotas(AVLNotas **notas){
+    AVLNotas *aux = (AVLNotas*)malloc(sizeof(AVLNotas));
+    if(*notas != NULL){
+        aux = (*notas)->esq;
+        (*notas)->esq = aux->dir;
+        aux->dir = (*notas);
+        AlturaAVlMatricula(notas);
+        AlturaAVlMatricula(&aux);
+        *notas = aux;
+    }
+}
+
+void BalanceamentoAVLNotas(AVLNotas **notas){
+    int fb;
+    fb = fbNotas(*notas);
+    if (fb == -2){
+        if (fbNotas((*notas)->dir) > 0)
+            rotacaoDirNotas(&(*notas)->dir);
+        rotacaoEsqNotas(notas);
+    } 
+    else if (fb == 2){
+        if (fbNotas((*notas)->esq) < 0)
+            rotacaoEsqNotas(&(*notas)->esq);
+        rotacaoDirNotas(notas);
+    }
+}
+
+void busca_disc(AVLMatricula *m, int cod, int *enc){ 
+    if(m != NULL){
+        if(m->info->coddisc == cod)
+            *enc = 1;
+        else if(cod < m->info->coddisc)
+            busca_disc(m->esq, cod, enc);
+        else
+            busca_disc(m->dir, cod, enc);
+    }
+}
+
+int ehfolhamat(AVLMatricula *m){
+    return (m->esq == NULL && m->dir == NULL);
+}
+
+AVLMatricula* soumfilhomat(AVLMatricula *m){
+    AVLMatricula *aux;
+    aux = NULL;
+    if (m->esq == NULL)
+        aux = m->dir;
+    else if (m->dir == NULL)
+        aux = m->esq;
+
+    return aux;
+}
+
+AVLMatricula* menorfilhoesqmat(AVLMatricula *m) {
+    AVLMatricula *aux;
+    aux = NULL;
+    if (m){
+        aux = menorfilhoesqmat(m->esq);
+        if (!aux)
+            aux = m;
+    }
+    return aux;
+}
+
+void rmvmatricula(AVLMatricula **m, int cod) {
+    if (*m != NULL) {
+        // Se encontrou o nó a ser removido
+        if ((*m)->info->coddisc == cod) {
+            AVLMatricula *aux;
+            
+            // Caso 1: O nó é uma folha (sem filhos)
+            if (ehfolhamat(*m)) {
+                aux = *m;
+                free(aux);
+                *m = NULL;
+            } 
+            // Caso 2: O nó tem apenas um filho
+            else if ((aux = soumfilhomat(*m)) != NULL) {
+                AVLMatricula *temp;
+                temp = *m;
+                free(temp);
+                *m = aux;  // Substitui o nó pelo seu único filho
+            } 
+            else {
+                AVLMatricula *menorfilho = menorfilhoesqmat((*m)->dir);
+                (*m)->info->coddisc = menorfilho->info->coddisc;
+                rmvmatricula(&(*m)->dir, menorfilho->info->coddisc);
+            }
+        } 
+        // Se o código é menor, continua na subárvore esquerda
+        else if (cod < (*m)->info->coddisc)
+            rmvmatricula(&(*m)->esq, cod);
+        // Se o código é maior, continua na subárvore direita
+        else
+            rmvmatricula(&(*m)->dir, cod);
+        
+        BalanceamentoAVLMatricula(m);
+        AlturaAVlMatricula(m);
+    }
+}
+
+int cadnota_nota(AVLNotas **nota, Notas *n){
+    int sucesso = 1;
+    if (*nota == NULL){
+        AVLNotas *novo = (Notas*)malloc(sizeof(Notas));
+        novo->info = n;
+        novo->esq = NULL;
+        novo->dir = NULL;
+        *nota = novo;
+    }
+    else{
+        if (n->coddisc == (*nota)->info->coddisc)
+            sucesso = 0;
+        else{
+            if(n->coddisc < (*nota)->info->coddisc)
+                sucesso = cadnota_nota(&((*nota)->esq), n);
+            else
+                sucesso = cadnota_nota(&((*nota)->dir), n);
+        }
+        
+        BalanceamentoAVLNotas(nota);
+        AlturaAVlNotas(nota);
+    }
+    return sucesso;
+}
+
+int cadnota(Alunos **a, int mat, Notas *n) {
+    int enc = 0;
+    if (*a != NULL) {
+        if ((*a)->matricula == mat) {
+            int enc_disc = 0;
+            busca_disc((*a)->mat, n->coddisc, &enc_disc);
+            if (enc_disc == 1) {
+                if (cadnota_nota(&(*a)->nota, n) == 1){
+                    rmvmatricula(&(*a)->mat, n->coddisc);
+                    enc = 1;
+                }
+            }
+        } else
+            enc = cadnota(&(*a)->prox, mat, n);
+    }
+    
+    return enc; // Retorna 1 se a nota foi cadastrada, 0 caso contrário
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
