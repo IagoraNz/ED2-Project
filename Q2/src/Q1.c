@@ -653,7 +653,6 @@ void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
 /* xv) Mostrar o histórico de um determinado aluno, contendo o nome do curso, as disciplinas e sua respectiva
 nota organizadas pelo período que a disciplina está cadastrada no curso. */
 
-// Função para exibir a disciplina correspondente a uma nota
 void exibir_disciplina(Disciplina *d, int cod_disciplina) {
     if(d != NULL) {
         if(d->cod_disciplina == cod_disciplina) 
@@ -665,16 +664,13 @@ void exibir_disciplina(Disciplina *d, int cod_disciplina) {
     }
 }
 
-// Função para percorrer a árvore de notas e exibir o histórico
 void exibir_notas(Notas *nota, Disciplina *d, int periodo) {
     if(nota != NULL) {
         if (nota->semestre == periodo) {
-            // Para cada nota, buscar a disciplina correspondente
             exibir_disciplina(d, nota->coddisc);
             printf("Nota: %.2f\n", nota->notafinal);
             printf("Semestre: %d\n\n", nota->semestre);
         }
-        // Continuar percorrendo a árvore de notas
         exibir_notas(nota->esq, d, periodo);
         exibir_notas(nota->dir, d, periodo);
     }
