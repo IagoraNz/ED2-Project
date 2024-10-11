@@ -565,30 +565,201 @@ int cadnota(Alunos **a, int mat, Notas *n) {
 
 /* vi) Mostrar todos os alunos de um determinado curso. */
 
+void alunosporcurso(Alunos *a, int codcurso){
+    if(a != NULL){
+        if(a->codcurso == codcurso){
+            printf("Matricula: %d\n", a->matricula);
+            printf("Nome: %s\n", a->nome);
+            printf("\n");
+        }
+        alunosporcurso(a->prox, codcurso);
+    }
+}
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* vii) Mostrar todos os cursos do Campus. */
+
+void exibir_cursos(AVLCurso *curso) {
+    if (curso != NULL) {
+        printf("ID: %d\n", curso->info->idcurso);
+        printf("Nome: %s\n", curso->info->nomecurso);
+        printf("Quantidade de períodos: %d\n", curso->info->qntdperiodos);
+        printf("\n");
+        exibir_cursos(curso->esq);
+        exibir_cursos(curso->dir);
+    }
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* viii) Mostrar todas as disciplinas de um determinado curso. */
 
+void exibir_disc_curso(AVLDisc *disc) {
+    if (disc != NULL) {
+        exibir_disc_curso(disc->esq);
+        printf("Codigo: %d\n", disc->info->cod_disciplina);
+        printf("Nome: %s\n", disc->info->nomedisc);
+        printf("Carga horaria: %d\n", disc->info->cargah);
+        printf("Periodo: %d\n", disc->info->periodo);
+        printf("\n");
+        exibir_disc_curso(disc->dir);
+    }
+}
+
+void exibir_disc_curso_main(AVLCurso *curso, int idcurso) {
+    if (curso != NULL) {
+        if (curso->info->idcurso == idcurso) {
+            AVLDisc *disc = curso->info->disc;
+            exibir_disc_curso(disc);
+        }
+        else if (idcurso < curso->info->idcurso)
+            exibir_disc_curso_main(curso->esq, idcurso);
+        else
+            exibir_disc_curso_main(curso->dir, idcurso);
+       
+    }
+}
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 // ix) Mostrar todas as disciplinas de um determinado período de um curso. 
+
+void exibir_disc_periodo(AVLDisc *disc, int periodo) {
+    if (disc != NULL) {
+        exibir_disc_periodo(disc->esq, periodo);
+        if (disc->info->periodo == periodo) {
+            printf("Codigo: %d\n", disc->info->cod_disciplina);
+            printf("Nome: %s\n", disc->info->nomedisc);
+            printf("Carga horaria: %d\n", disc->info->cargah);
+            printf("Periodo: %d\n", disc->info->periodo);
+            printf("\n");
+        }
+        exibir_disc_periodo(disc->dir, periodo);
+    }
+}
+
+void exibir_disc_periodo_main(AVLCurso *curso, int idcurso, int periodo){
+    if(curso != NULL){
+        if(curso->info->idcurso == idcurso)
+            exibir_disc_periodo(curso->info->disc, periodo);
+        else if(idcurso < curso->info->idcurso)
+            exibir_disc_periodo_main(curso->esq, idcurso, periodo);
+        else
+            exibir_disc_periodo_main(curso->dir, idcurso, periodo);
+    }
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* x) Mostrar todas as disciplinas que um determinado aluno está matriculado */
 
+void exibir_disciplinas(AVLDisc *disc, int cod_disc) {
+    if (disc != NULL) {
+        if (disc->info->cod_disciplina == cod_disc) {
+            printf("Codigo: %d\n", disc->info->cod_disciplina);
+            printf("Nome: %s\n", disc->info->nomedisc);
+            printf("Carga horaria: %d\n", disc->info->cargah);
+            printf("Periodo: %d\n", disc->info->periodo);
+            printf("\n");
+        }
+        else if (cod_disc < disc->info->cod_disciplina)
+            exibir_disciplinas(disc->esq, cod_disc);
+        else
+            exibir_disciplinas(disc->dir, cod_disc);
+    }
+}
+
+void exibir_disc(AVLCurso *curso, int cod_disc, int idcurso) {
+    if (curso != NULL) {
+        if (curso->info->idcurso == idcurso) {
+            if (curso->info->disc != NULL)
+                exibir_disciplinas(curso->info->disc, cod_disc);
+        }
+        else if (idcurso < curso->info->idcurso)
+            exibir_disc(curso->esq, cod_disc, idcurso);
+        else
+            exibir_disc(curso->dir, cod_disc, idcurso);
+    }
+}
+
+void exibir_disc_aluno(AVLMatricula *mat, AVLCurso *cursos, int codcurso){
+    if (mat != NULL){
+        exibir_disc(cursos, mat->info->coddisc, codcurso);
+        exibir_disc_aluno(mat->esq, cursos, codcurso);
+        exibir_disc_aluno(mat->dir, cursos, codcurso);
+    }
+}
+
+void exibir_disc_aluno_main(Alunos *aluno, AVLCurso *cursos, int matricula){
+    if (aluno != NULL){
+        if (aluno->matricula == matricula)
+            exibir_disc_aluno(aluno->mat, cursos, aluno->codcurso);
+        else
+            exibir_disc_aluno_main(aluno->prox, cursos, matricula);
+    }
+}
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xi) Mostrar todas as notas de disciplinas de um determinado período de um determinado aluno.*/
+
+void exibirNotasPeriodo(AVLNotas *nota, int periodo){
+    if(nota != NULL){
+        if(nota->info->semestre == periodo){
+            printf("Codigo: %d\n", nota->info->coddisc);
+            printf("Nota Final: %.2f\n", nota->info->notafinal);
+            printf("Semestre: %d\n", nota->info->semestre);
+            printf("\n");
+        }
+        exibirNotasPeriodo(nota->esq, periodo);
+        exibirNotasPeriodo(nota->dir, periodo);
+    }
+}
+
+void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
+    if(a != NULL){
+        if(a->matricula == mat)
+            exibirNotasPeriodo(a->nota, periodo);
+        else
+            notasdiscperiodoaluno(a->prox, periodo, mat);
+    }
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o período e a carga horária da
 disciplina. */
+
+void notadiscporaluno(Alunos *a, AVLCurso *c, int matricula, int coddisc){
+    int da = 0;
+    if(a != NULL){
+        if(a->matricula == matricula){
+            AVLNotas *nota = a->nota;
+            while(nota != NULL){
+                if(nota->info->coddisc == coddisc){
+                    AVLDisc *d = c->info->disc;
+                    while(d != NULL){
+                        if(d->info->cod_disciplina == coddisc)
+                            printf("Aluno: %s\nDisciplina: %d\nPeriodo: %d\nCH: %d\nNota Final: %.2f\n", 
+                            a->nome, nota->info->coddisc, d->info->periodo, d->info->cargah, nota->info->notafinal);
+                            da = 1;
+                        if(coddisc < d->info->cod_disciplina)
+                            d = d->esq;
+                        else
+                            d = d->dir;
+                    }
+                }
+                if(coddisc < nota->info->coddisc)
+                    nota = nota->esq;
+                else
+                    nota = nota->dir;
+            }
+        }
+        else
+            notadiscporaluno(a->prox, c, matricula, coddisc);
+    }
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -599,10 +770,74 @@ mesma */
 
 /* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
 
+void rmvmatdealuno(Alunos **a, AVLMatricula *m, int matricula, int coddisc){
+    if(*a != NULL){
+        if((*a)->matricula == matricula)
+            rmvmatricula(&(*a)->mat, coddisc);
+        else
+            rmvmatdealuno(&(*a)->prox, m, matricula, coddisc);
+    }
+}
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xv) Mostrar o histórico de um determinado aluno, contendo o nome do curso, as disciplinas e sua respectiva
 nota organizadas pelo período que a disciplina está cadastrada no curso. */
+
+void exibir_disciplina(AVLDisc *d, int cod_disciplina) {
+    if(d != NULL) {
+        if(d->info->cod_disciplina == cod_disciplina) 
+            printf("Disciplina: %s\n", d->info->nomedisc);
+        else if(cod_disciplina < d->info->cod_disciplina)
+            exibir_disciplina(d->esq, cod_disciplina);
+        else
+            exibir_disciplina(d->dir, cod_disciplina);
+    }
+}
+
+void exibir_notas(AVLNotas *nota, AVLDisc *d, int periodo) {
+    if(nota != NULL) {
+        if (nota->info->semestre == periodo) {
+            exibir_disciplina(d, nota->info->coddisc);
+            printf("Nota: %.2f\n", nota->info->notafinal);
+            printf("Semestre: %d\n\n", nota->info->semestre);
+        }
+        exibir_notas(nota->esq, d, periodo);
+        exibir_notas(nota->dir, d, periodo);
+    }
+}
+
+
+int exibir_nome_curso(AVLCurso *c, int idcurso){
+    int qntperiodos = 0;
+    if(c != NULL){
+        if(c->info->idcurso == idcurso){
+            printf("Curso: %s\n", c->info->nomecurso);
+            qntperiodos = c->info->qntdperiodos;
+        }
+        else if(idcurso < c->info->idcurso)
+            qntperiodos = exibir_nome_curso(c->esq, idcurso);
+        else
+            qntperiodos = exibir_nome_curso(c->dir, idcurso);
+    }
+    return qntperiodos;
+}
+
+void exibir_hist_aluno(Alunos *a, AVLCurso *c, int matricula){
+    if(a != NULL){
+        if(a->matricula == matricula){
+            printf("Aluno: %s\n", a->nome);
+            printf("Matricula: %d\n", a->matricula);
+            int qntperiodos = 0;
+            qntperiodos = exibir_nome_curso(c, a->codcurso);
+            printf("Historico:\n");
+            for (int i = 1; i <= qntperiodos; i++)
+                exibir_notas(a->nota, c->info->disc, i);
+        }
+        else
+            exibir_hist_aluno(a->prox, c, matricula);
+    }
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
