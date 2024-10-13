@@ -22,7 +22,7 @@ typedef struct cursos {
     int idcurso;
     char nomecurso[50];
     int qntdperiodos;
-    Disciplina *disc;
+    AVLDisc *disc;
 } Cursos;
 
 typedef struct avlcurso {
@@ -80,7 +80,8 @@ int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat);
 
 /* iii. DISCIPLINA */
 
-
+int insere_disc(AVLDisc **disc, Disciplina *d);
+int caddisc(AVLCurso **curso, Disciplina *d, int idcurso);
 void exibir_disc_aluno_main(Alunos *aluno, AVLCurso *cursos, int matricula);
 void exibir_disc_periodo_main(AVLCurso *curso, int idcurso, int periodo);
 void exibir_disc_curso_main(AVLCurso *curso, int idcurso);
@@ -109,6 +110,11 @@ void notasdiscperiodoaluno(Alunos *a, int periodo, int mat);
 void gerarCodDisciplina(int cargah, int periodo, int *coddisc);
 void gerarIdCurso(int qntperiodos, int *idcurso);
 void gerarMatriculaAluno(int idcurso, int *matricula);
+void liberarAVLDisc(AVLDisc **raiz);
+void liberarAVLCurso(AVLCurso **raiz);
+void liberarAVLNotas(AVLNotas **raiz);
+void liberarAVLMatricula(AVLMatricula **raiz);
+void liberarAlunos(Alunos **a);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 #endif

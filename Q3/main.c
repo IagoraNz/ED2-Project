@@ -13,6 +13,7 @@ int main() {
     curso->idcurso = 1;
     strcpy(curso->nomecurso, "Engenharia de Software");
     curso->qntdperiodos = 8;
+    curso->disc = NULL;
     int sucesso = cadcurso(&raiz, curso);
 
     if(sucesso == 1)
@@ -20,43 +21,22 @@ int main() {
     else
         printf("Curso ja cadastrado!\n");
 
-    curso = (Cursos*)malloc(sizeof(Cursos));
-
-    curso->idcurso = 2;
-    strcpy(curso->nomecurso, "Ciencia da Computacao");
-    curso->qntdperiodos = 8;
-    sucesso = cadcurso(&raiz, curso);
-
-    if(sucesso == 1)
-        printf("Curso cadastrado com sucesso!\n");
-    else
-        printf("Curso ja cadastrado!\n");
-
-    curso = (Cursos*)malloc(sizeof(Cursos));
-
-    curso->idcurso = 3;
-    strcpy(curso->nomecurso, "Sistemas de Informacao");
-    curso->qntdperiodos = 8;
-    sucesso = cadcurso(&raiz, curso);
-
-    if(sucesso == 1)
-        printf("Curso cadastrado com sucesso!\n");
-    else
-        printf("Curso ja cadastrado!\n");
-
-    curso = (Cursos*)malloc(sizeof(Cursos));
-
-    curso->idcurso = 4;
-    strcpy(curso->nomecurso, "Engenharia de Computacao");
-    curso->qntdperiodos = 8;
-    sucesso = cadcurso(&raiz, curso);
-
-    if(sucesso == 1)
-        printf("Curso cadastrado com sucesso!\n");
-    else
-        printf("Curso ja cadastrado!\n");
-
     exibircurso(raiz);
+
+    // Cadastrar disciplinas
+    AVLDisc *disc = NULL;
+    Disciplina *d = (Disciplina*)malloc(sizeof(Disciplina));
+
+    d->cod_disciplina = 1;
+    strcpy(d->nomedisc, "Algoritmos e Estruturas de Dados");
+    d->cargah = 60;
+    d->periodo = 1;
+
+    sucesso = caddisc(&raiz, d, 1);
+    if(sucesso == 1)
+        printf("Disciplina cadastrada com sucesso!\n");
+    else
+        printf("Disciplina ja cadastrada!\n");
 
     system("PAUSE");
 
