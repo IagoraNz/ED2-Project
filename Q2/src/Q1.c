@@ -151,20 +151,20 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
     // Validação da carga horária
     validar_cargahoraria(&validar_h, No->cargah);
     
-    if (validar_h == 1) {
-        if (*curso != NULL) {
-            if ((*curso)->idcurso == idcurso) {
+    if(validar_h == 1){
+        if(*curso != NULL){
+            if((*curso)->idcurso == idcurso){
                 // Validação do período
                 validar_periodo(*curso, &validar_p, No->periodo);
                 
-                if (validar_p == 1) {
+                if(validar_p == 1){
                     // Inserir disciplina
                     insere_disc(&((*curso)->disc), No, &sucesso);
                 }
             }
-            else {
+            else{
                 // Recorre na árvore de cursos
-                if (idcurso < (*curso)->idcurso)
+                if(idcurso < (*curso)->idcurso)
                     sucesso = caddisc(&(*curso)->esq, No, idcurso);
                 else
                     sucesso = caddisc(&(*curso)->dir, No, idcurso);
@@ -174,8 +174,6 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
     
     return sucesso; // Retorna 1 se a disciplina foi cadastrada, 0 caso contrário
 }
-
-
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

@@ -255,6 +255,66 @@ seja, um disciplina só pode ser cadastrada se o curso já estiver sido cadastra
 disciplina deve ser válido, ou seja, estar entre 1 e a quantidade máxima de períodos do curso. A carga
 horária da disciplina deve ser múltiplo de 15, variando entre 30 e 90. */
 
+int validar_ch(int cargahoraria){
+    int validar = 0;
+    if (cargahoraria % 15 == 0 && cargahoraria >= 30 && cargahoraria <= 90)
+        validar = 1;
+    return validar;
+}
+
+int validar_periodo(AVLCurso *curso, int periodo){
+    int validar = 0;
+    if (periodo >= 1 && periodo <= curso->info->qntdperiodos)
+        validar = 1;
+    return validar;
+}
+
+int insere_disc(AVLDisc **disc, Disciplina *d){
+    int suc = 0;
+    if((*disc) == NULL){
+        *disc = (AVLDisc*)malloc(sizeof(AVLDisc));
+        (*disc)->info = d;
+        (*disc)->esq = NULL;
+        (*disc)->dir = NULL;
+        (*disc)->altura = 0;
+        suc = 1;
+    } 
+    else{
+        if(d->cod_disciplina < (*disc)->info->cod_disciplina)
+            suc = insere_disc(&(*disc)->esq, d);
+        else if(d->cod_disciplina > (*disc)->info->cod_disciplina)
+            suc = insere_disc(&(*disc)->dir, d);
+        else
+            suc = 0;
+        
+        balancearDisc(disc);
+        (*disc)->altura = alturaDisc(*disc);
+    }
+
+    return suc;
+}
+
+int caddisc(AVLCurso **curso, Disciplina *no, int idcurso) {
+    int sucesso = 0;
+
+    if(validar_ch(no->cargah)){
+        if(*curso != NULL){
+            if((*curso)->info != NULL && (*curso)->info->idcurso == idcurso){
+                if(validar_periodo(*curso, no->periodo))
+                    sucesso = insere_disc(&(*curso)->info->disc, no);
+            } 
+            else{
+                if(idcurso < (*curso)->info->idcurso)
+                    sucesso = caddisc(&(*curso)->esq, no, idcurso);
+                else
+                    sucesso = caddisc(&(*curso)->dir, no, idcurso);
+            }
+        }
+    }
+
+    return sucesso;
+}
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
@@ -398,7 +458,6 @@ void AlturaAVlNotas(AVLNotas **notas) {
             (*notas)->altura = dir + 1;
     }
 }
-
 
 int fbNotas(AVLNotas *notas){
     return notas->esq->altura - notas->dir->altura;
@@ -595,8 +654,8 @@ void exibir_cursos(AVLCurso *curso) {
 
 /* viii) Mostrar todas as disciplinas de um determinado curso. */
 
-void exibir_disc_curso(AVLDisc *disc) {
-    if (disc != NULL) {
+void exibir_disc_curso(AVLDisc *disc){
+    if(disc != NULL){
         exibir_disc_curso(disc->esq);
         printf("Codigo: %d\n", disc->info->cod_disciplina);
         printf("Nome: %s\n", disc->info->nomedisc);
@@ -608,8 +667,8 @@ void exibir_disc_curso(AVLDisc *disc) {
 }
 
 void exibir_disc_curso_main(AVLCurso *curso, int idcurso) {
-    if (curso != NULL) {
-        if (curso->info->idcurso == idcurso) {
+    if(curso != NULL){
+        if(curso->info->idcurso == idcurso){
             AVLDisc *disc = curso->info->disc;
             exibir_disc_curso(disc);
         }
@@ -807,7 +866,6 @@ void exibir_notas(AVLNotas *nota, AVLDisc *d, int periodo) {
     }
 }
 
-
 int exibir_nome_curso(AVLCurso *c, int idcurso){
     int qntperiodos = 0;
     if(c != NULL){
@@ -842,3 +900,99 @@ void exibir_hist_aluno(Alunos *a, AVLCurso *c, int matricula){
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* extra) Função agregadas, associadas ou adicionais para complementar a coesão do software */
+
+// Gerar os códigos
+
+
+// Liberar estruturas com base nas novas configurações
+
+void gerarCodDisciplina(int cargah, int periodo, int *coddisc) {
+    // Passo 1: obtendo o ano atual
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    int anoatual = tm.tm_year + 1900;
+
+    int num5 = rand() % 100000; // Gera um número entre 0 e 99999
+
+    // Passo 3: gerando o código no formato AAAACCPNNNNN como número inteiro
+    *coddisc = anoatual * 100000000 + cargah * 1000000 + periodo * 100000 + num5;
+}
+
+void gerarIdCurso(int qntperiodos, int *idcurso) {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    int ano = tm.tm_year + 1900;
+
+    int num4 = rand() % 10000;
+
+    // Combina os componentes no formato PPPAAAANNNN como um único número inteiro.
+    *idcurso = qntperiodos * 100000000 + (qntperiodos * 3) * 1000000 + (qntperiodos * 5) * 10000 + ano * 10000 + num4;
+}
+
+void gerarMatriculaAluno(int idcurso, int *matricula) {
+    // Passo 1: obtendo o ano atual
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
+    int ano = tm.tm_year + 1900;
+
+    int num4 = rand() % 1000;  // Gera um número entre 000 e 999 para reduzir o tamanho
+
+    // Passo 3: Garantindo que o idcurso tenha no máximo 3 dígitos
+    int idcursoModificado = idcurso % 1000;  // Reduzir o número de dígitos do curso para no máximo 3
+
+    // Passo 4: combinando tudo em um número no formato AAAANNNCC
+    *matricula = ano * 100000 + num4 * 1000 + idcursoModificado;
+}
+
+void liberarAVLDisc(AVLDisc **raiz){
+    if(*raiz != NULL){
+        liberarAVLDisc(&(*raiz)->esq);
+        liberarAVLDisc(&(*raiz)->dir);
+        free((*raiz)->info);
+        free(*raiz);
+        *raiz = NULL;
+    }
+}
+
+void liberarAVLCurso(AVLCurso **raiz){
+    if(*raiz != NULL){
+        liberarAVLCurso(&(*raiz)->esq);
+        liberarAVLCurso(&(*raiz)->dir);
+        liberarAVLDisc(&(*raiz)->info->disc);
+        free((*raiz)->info);
+        free(*raiz);
+        *raiz = NULL;
+    }
+}
+
+void liberarAVLNotas(AVLNotas **raiz){
+    if(*raiz != NULL){
+        liberarAVLNotas(&(*raiz)->esq);
+        liberarAVLNotas(&(*raiz)->dir);
+        free((*raiz)->info);
+        free(*raiz);
+        *raiz = NULL;
+    }
+}
+
+void liberarAVLMatricula(AVLMatricula **raiz){
+    if(*raiz != NULL){
+        liberarAVLMatricula(&(*raiz)->esq);
+        liberarAVLMatricula(&(*raiz)->dir);
+        free((*raiz)->info);
+        free(*raiz);
+        *raiz = NULL;
+    }
+}
+
+void liberarAlunos(Alunos **a){
+    if(*a != NULL){
+        liberarAlunos(&(*a)->prox);
+        liberarAVLMatricula(&(*a)->mat);
+        liberarAVLNotas(&(*a)->nota);
+        free(*a);
+        *a = NULL;
+    }
+}
+
+/*---------------------------------------------------------------------------------------------------------------*/
