@@ -69,12 +69,14 @@ typedef struct alunos {
 int cadcurso(AVLCurso **curso, Cursos *c);
 void exibircurso(AVLCurso *curso);
 void exibir_cursos(AVLCurso *curso);
+void exibirAlturaCurso(AVLCurso *curso);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* ii. MATRÍCULA */
 
 int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat);
+void exibirAlturaMatriculaMain(Alunos *a, int matricula);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -85,6 +87,7 @@ int caddisc(AVLCurso **curso, Disciplina *d, int idcurso);
 void exibir_disc_aluno_main(Alunos *aluno, AVLCurso *cursos, int matricula);
 void exibir_disc_periodo_main(AVLCurso *curso, int idcurso, int periodo);
 void exibir_disc_curso_main(AVLCurso *curso, int idcurso);
+void exibirAlturaDisciplinaMain(AVLCurso *curso, int idcurso);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -102,6 +105,7 @@ void alunosporcurso(Alunos *a, int codcurso);
 int cadnota(Alunos **a, int mat, Notas *n);
 void notadiscporaluno(Alunos *a, AVLCurso *c, int matricula, int coddisc);
 void notasdiscperiodoaluno(Alunos *a, int periodo, int mat);
+void exibirAlturaNotasMain(Alunos *a, int matricula);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
