@@ -155,75 +155,84 @@ void povoamento_decrescente(AVLCurso **raiz, Alunos **alunos){
 Funções de povoamento das arvores de forma Aleatória.
 */
 
-void povoar_cursos_aleatorio(AVLCurso **raiz){
-    int i = 1, sucesso = 0;
-    while (i < QTD_CURSOS){
-        Cursos *c = (Cursos*)malloc(sizeof(Cursos));
-        c->idcurso = rand() % QTD_CURSOS + 1;
+void povoar_cursos_aleatorio(AVLCurso **raiz) {
+    int i = 0;
+    while (i < QTD_CURSOS) {
+        Cursos *c = (Cursos *)malloc(sizeof(Cursos));
+        c->idcurso = i + 1; // Definindo IDs únicos sequenciais
         c->qntdperiodos = 8;
         strcpy(c->nomecurso, "Engenharia de Computação");
         c->disc = NULL;
-        if (cadcurso(raiz, c) == 1)
+        if (cadcurso(raiz, c) == 1) {
             i++;
+        } else {
+            free(c); // Libera memória se não for cadastrado
+        }
     }
 }
 
-void povoar_disciplinas_aleatorio(AVLCurso **raiz){
-    if (*raiz != NULL){
-        int i = 1, sucesso = 0;
-        while (i < QTD_DISCIPLINAS){
-            Disciplina *d = (Disciplina*)malloc(sizeof(Disciplina));
+void povoar_disciplinas_aleatorio(AVLCurso **raiz) {
+    if (*raiz != NULL) {
+        int i = 0; // Começando em 0
+        while (i < QTD_DISCIPLINAS) {
+            Disciplina *d = (Disciplina *)malloc(sizeof(Disciplina));
             strcpy(d->nomedisc, "Calculo");
-            d->cod_disciplina = rand() % QTD_DISCIPLINAS + 1;
+            d->cod_disciplina = i + 1; // Definindo códigos únicos sequenciais
             d->cargah = 60;
             d->periodo = 3;
-            
-            sucesso = caddisc(raiz, d, (*raiz)->info->idcurso);
-            if (sucesso == 1) 
+
+            int sucesso = caddisc(raiz, d, (*raiz)->info->idcurso);
+            if (sucesso == 1) {
                 i++;
+            } else {
+                free(d); // Libera memória se não for cadastrado
+            }
         }
         povoar_disciplinas_aleatorio(&(*raiz)->esq);
         povoar_disciplinas_aleatorio(&(*raiz)->dir);
     }
 }
 
-
 void povoar_matriculas_aleatorio(Alunos *aluno, AVLCurso *curso) {
     if (aluno != NULL) {
-        int i = 1, sucesso;
-        while (i < QTD_DISCIPLINAS) {
-            int matricula_id = rand() % QTD_MATRICULAS + 1; // Gerar ID aleatório para matrícula
-            sucesso = cadmatricula(&aluno, curso, matricula_id, aluno->matricula);
-            if (sucesso == 1)
+        int i = 0; // Começando em 0
+        while (i < QTD_MATRICULAS) {
+            if (cadmatricula(&aluno, curso, rand() % QTD_MATRICULAS + 1, aluno->matricula) == 1) {
                 i++;
+            }
         }
         povoar_matriculas_aleatorio(aluno->prox, curso);
     }
 }
 
-void povoar_notas_aleatorio(Alunos *aluno){
-    if (aluno != NULL){
-        int i = 1, sucesso = 0;
-        while (i < QTD_DISCIPLINAS){
-            Notas *n = (Notas*)malloc(sizeof(Notas));
-            n->coddisc = rand() % QTD_DISCIPLINAS + 1;
+void povoar_notas_aleatorio(Alunos *aluno) {
+    if (aluno != NULL) {
+        int i = 0; // Começando em 0
+        while (i < QTD_DISCIPLINAS) {
+            Notas *n = (Notas *)malloc(sizeof(Notas));
+            n->coddisc = rand() % QTD_DISCIPLINAS + 1; // Código de disciplina mantido
             n->semestre = 3;
             n->notafinal = (rand() % 10) + 1;
-            if (cadnota(&aluno, aluno->matricula, n) == 1)
+            if (cadnota(&aluno, aluno->matricula, n) == 1) {
                 i++;
+            } else {
+                free(n); // Libera memória se não for cadastrado
+            }
         }
         povoar_notas_aleatorio(aluno->prox);
     }
 }
 
-void povoar_alunos_aleatorio(Alunos **aluno, AVLCurso *curso){
+void povoar_alunos_aleatorio(Alunos **aluno, AVLCurso *curso) {
     char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
-    int i = 1, sucesso = 0;
-    while (i < QTD_ALUNOS){
-        if (cadaluno(aluno, curso, rand() % QTD_ALUNOS, nomes[rand() % 5], rand() % QTD_CURSOS + 1) == 1)
+    int i = 0; // Começando em 0
+    while (i < QTD_ALUNOS) {
+        if (cadaluno(aluno, curso, rand() % QTD_ALUNOS, nomes[rand() % 5], rand() % QTD_CURSOS + 1) == 1) {
             i++;
+        }
     }
 }
+
 
 void exibir_alunos(Alunos *aluno){
     if (aluno != NULL){
@@ -253,21 +262,24 @@ void exibir_matriculas(Alunos *aluno){
 
 void povoamento_aleatorio(AVLCurso **raiz, Alunos **alunos){
     povoar_cursos_aleatorio(raiz);
-    exibir_cursos(*raiz);
-    system("pause");
+    printf("Cursos\n");
     povoar_disciplinas_aleatorio(raiz);
-    for (int i = 1; i < QTD_DISCIPLINAS; i++){
-        exibir_disc_curso_main(*raiz, i);
-    }
-    system("pause");
+    printf("Disciplinas\n");
+    // for (int i = 1; i < QTD_DISCIPLINAS; i++){
+    //     exibir_disc_curso_main(*raiz, i);
+    // }
+    // system("pause");
     povoar_alunos_aleatorio(alunos, *raiz);
-    exibir_alunos(*alunos);
-    system("pause");
+    printf("Alunos\n");
+    // exibir_alunos(*alunos);
+    // system("pause");
     povoar_matriculas_aleatorio(*alunos, *raiz);
-    exibir_matriculas(*alunos);
-    system("pause");
+    printf("Matriculas\n");
+    // exibir_matriculas(*alunos);
+    // system("pause");
 
     povoar_notas_aleatorio(*alunos);
+    printf("Notas\n");
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
