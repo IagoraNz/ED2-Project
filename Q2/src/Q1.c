@@ -33,13 +33,25 @@ Alunos* criar_aluno(int mat, char *nome, int codcurso) {
     return novo;
 }
 
-int cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
-    int sucesso = 0;
+void buscarCurso(Cursos *cursos, int codcurso, int *enc){
+    if(cursos != NULL){
+        if(cursos->idcurso == codcurso)
+            *enc = 1;
+        buscarCurso(cursos->esq, codcurso, enc);
+        buscarCurso(cursos->dir, codcurso, enc);
+    }
+}
+
+int cadaluno(Alunos **a, Cursos *curso, int mat, char *nome, int codcurso) {
+    int sucesso = 0, enc = 0;
     
     // Se a lista estiver vazia ou o ponto de inserção for alcançado
     if (*a == NULL) {
-        *a = criar_aluno(mat, nome, codcurso);
-        sucesso = 1;
+        buscarCurso(curso, codcurso, &enc);
+        if (enc == 1) {
+            *a = criar_aluno(mat, nome, codcurso);
+            sucesso = 1;
+        }
     }
     else {
         if ((*a)->matricula == mat)
@@ -52,7 +64,7 @@ int cadaluno(Alunos **a, int mat, char *nome, int codcurso) {
             sucesso = 1;
         }
         else 
-            sucesso = cadaluno(&(*a)->prox, mat, nome, codcurso);
+            sucesso = cadaluno(&(*a)->prox, curso, mat, nome, codcurso);
     }
     
     return sucesso; 

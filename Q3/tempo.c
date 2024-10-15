@@ -159,7 +159,7 @@ void povoar_cursos_aleatorio(AVLCurso **raiz) {
     int i = 0;
     while (i < QTD_CURSOS) {
         Cursos *c = (Cursos *)malloc(sizeof(Cursos));
-        c->idcurso = i + 1; // Definindo IDs únicos sequenciais
+        c->idcurso = rand() % QTD_CURSOS + 1; // Definindo IDs únicos sequenciais
         c->qntdperiodos = 8;
         strcpy(c->nomecurso, "Engenharia de Computação");
         c->disc = NULL;
@@ -177,7 +177,7 @@ void povoar_disciplinas_aleatorio(AVLCurso **raiz) {
         while (i < QTD_DISCIPLINAS) {
             Disciplina *d = (Disciplina *)malloc(sizeof(Disciplina));
             strcpy(d->nomedisc, "Calculo");
-            d->cod_disciplina = i + 1; // Definindo códigos únicos sequenciais
+            d->cod_disciplina = rand() % QTD_DISCIPLINAS + 1; // Definindo códigos únicos sequenciais
             d->cargah = 60;
             d->periodo = 3;
 
@@ -233,53 +233,12 @@ void povoar_alunos_aleatorio(Alunos **aluno, AVLCurso *curso) {
     }
 }
 
-
-void exibir_alunos(Alunos *aluno){
-    if (aluno != NULL){
-        printf("Matricula: %d\n", aluno->matricula);
-        printf("Nome: %s\n", aluno->nome);
-        printf("CodCurso: %d\n", aluno->codcurso);
-        printf("\n");
-        exibir_alunos(aluno->prox);
-    }
-}
-
-void exibirmat(AVLMatricula *mat){
-    if (mat != NULL){
-        printf("Codigo Disciplina: %d\n", mat->info->coddisc);
-        exibirmat(mat->esq);
-        exibirmat(mat->dir);
-    }
-}
-
-void exibir_matriculas(Alunos *aluno){
-    if (aluno != NULL){
-        printf("Matricula: %d\n", aluno->matricula);
-        exibirmat(aluno->mat);
-        exibir_matriculas(aluno->prox);
-    }
-}
-
 void povoamento_aleatorio(AVLCurso **raiz, Alunos **alunos){
     povoar_cursos_aleatorio(raiz);
-    printf("Cursos\n");
     povoar_disciplinas_aleatorio(raiz);
-    printf("Disciplinas\n");
-    // for (int i = 1; i < QTD_DISCIPLINAS; i++){
-    //     exibir_disc_curso_main(*raiz, i);
-    // }
-    // system("pause");
     povoar_alunos_aleatorio(alunos, *raiz);
-    printf("Alunos\n");
-    // exibir_alunos(*alunos);
-    // system("pause");
     povoar_matriculas_aleatorio(*alunos, *raiz);
-    printf("Matriculas\n");
-    // exibir_matriculas(*alunos);
-    // system("pause");
-
     povoar_notas_aleatorio(*alunos);
-    printf("Notas\n");
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/

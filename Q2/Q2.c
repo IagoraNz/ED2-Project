@@ -63,9 +63,10 @@ void povoar_notas_crescente(Alunos *aluno){
 }
 
 void povoar_alunos_crescente(Alunos **aluno, Cursos *curso){
+    int sucesso = 0;
     char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
     for (int i = 1; i < QTD_ALUNOS; i++){
-        cadaluno(aluno, i, nomes[rand() % 5], rand() % QTD_CURSOS);
+        cadaluno(aluno, curso, i, nomes[rand() % 5], rand() % QTD_CURSOS);
     }
 }
 
@@ -119,7 +120,7 @@ void povoar_notas_decrescente(Alunos *aluno){
 void povoar_alunos_descrescente(Alunos **aluno, Cursos *curso){
     char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
     for (int i = QTD_ALUNOS; i > 1; i--){
-        cadaluno(aluno, i, nomes[rand() % 5], rand() % QTD_CURSOS);
+        cadaluno(aluno, curso, i, nomes[rand() % 5], rand() % QTD_CURSOS);
     }
 }
 
@@ -182,8 +183,17 @@ void povoar_alunos_aleatorio(Alunos **aluno, Cursos *curso){
     char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
     int i = 1, sucesso = 0;
     while (i < QTD_ALUNOS){
-        if (cadaluno(aluno, rand() % QTD_ALUNOS, nomes[rand() % 5], rand() % QTD_CURSOS) == 1)
+        if (cadaluno(aluno, curso, rand() % QTD_ALUNOS, nomes[rand() % 5], rand() % QTD_CURSOS) == 1)
             i++;
+    }
+}
+
+void exibir_alunos(Alunos *aluno){
+    if (aluno != NULL){
+        printf("Matricula: %d\n", aluno->matricula);
+        printf("Nome: %s\n", aluno->nome);
+        printf("\n");
+        exibir_alunos(aluno->prox);
     }
 }
 
@@ -193,6 +203,8 @@ void povoamento_crescente(Cursos **raiz, Alunos **alunos){
     povoar_cursos_crescente(raiz);
     povoar_disciplinas_crescente(raiz);
     povoar_alunos_crescente(alunos, *raiz);
+    exibir_alunos(*alunos);
+    system("PAUSE");
     povoar_matriculas_crescente(*alunos);
     povoar_notas_crescente(*alunos);
 }
