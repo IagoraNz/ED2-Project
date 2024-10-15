@@ -414,9 +414,8 @@ void buscarDisciplina(AVLDisc *disc, int cod_disc, int *enc){
 
 void buscarDisciplinaMain(AVLCurso *curso, int cod_disc, int idcurso, int *encontrou) {
     if (curso != NULL) {
-        if (curso->info->idcurso == idcurso){
+        if (curso->info->idcurso == idcurso)
             buscarDisciplina(curso->info->disc, cod_disc, encontrou);
-        }
         else {
             buscarDisciplinaMain(curso->esq, cod_disc, idcurso, encontrou);
             buscarDisciplinaMain(curso->dir, cod_disc, idcurso, encontrou);
@@ -432,10 +431,8 @@ int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat){
             buscarDisciplinaMain(aux, codigo, (*aluno)->codcurso, &enc);
             if (enc == 1)
                 inserirMatricula(&(*aluno)->mat, codigo, &sucesso);
-        } else {
-            // Recursão para o próximo aluno
+        } else
             sucesso = cadmatricula(&(*aluno)->prox, curso, codigo, mat);
-        }
     }
     return sucesso;
 }
@@ -453,9 +450,8 @@ int AlturaAVlNotas(AVLNotas *notas) {
         int esq = AlturaAVlNotas(notas->esq);
         int dir = AlturaAVlNotas(notas->dir);
         res = 1 + (esq > dir ? esq : dir);
-    } else {
+    } else
         res = -1;
-    }
     return res;
 }
 
@@ -587,14 +583,13 @@ int cadnota_nota(AVLNotas **nota, Notas *n) {
         novo->altura = 0;  
         *nota = novo;
     } else {
-        if (n->coddisc == (*nota)->info->coddisc) {
+        if (n->coddisc == (*nota)->info->coddisc)
             sucesso = 0;  
-        } else {
-            if (n->coddisc < (*nota)->info->coddisc) {
+        else {
+            if (n->coddisc < (*nota)->info->coddisc)
                 sucesso = cadnota_nota(&((*nota)->esq), n);
-            } else {
+            else 
                 sucesso = cadnota_nota(&((*nota)->dir), n);
-            }
         }
         BalanceamentoAVLNotas(nota);
         (*nota)->altura = AlturaAVlNotas(*nota);
@@ -986,9 +981,8 @@ void exibirAlturaDisciplina(AVLDisc *disc){
 
 void exibirAlturaDisciplinaMain(AVLCurso *curso, int idcurso){
     if(curso != NULL){
-        if(curso->info->idcurso == idcurso){
+        if(curso->info->idcurso == idcurso)
             exibirAlturaDisciplina(curso->info->disc);
-        }
         else if(idcurso < curso->info->idcurso)
             exibirAlturaDisciplinaMain(curso->esq, idcurso);
         else
