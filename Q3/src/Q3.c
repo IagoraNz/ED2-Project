@@ -410,8 +410,9 @@ void buscarDisciplina(AVLDisc *disc, int cod_disc, int *enc){
 
 void buscarDisciplinaMain(AVLCurso *curso, int cod_disc, int idcurso, int *encontrou) {
     if (curso != NULL) {
-        if (curso->info->idcurso == idcurso)
+        if (curso->info->idcurso == idcurso){
             buscarDisciplina(curso->info->disc, cod_disc, encontrou);
+        }
         else {
             buscarDisciplinaMain(curso->esq, cod_disc, idcurso, encontrou);
             buscarDisciplinaMain(curso->dir, cod_disc, idcurso, encontrou);
@@ -783,35 +784,56 @@ void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
 /* xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o período e a carga horária da
 disciplina. */
 
-void notadiscporaluno(Alunos *a, AVLCurso *c, int matricula, int coddisc){
-    int da = 0;
-    if(a != NULL){
-        if(a->matricula == matricula){
-            AVLNotas *nota = a->nota;
-            while(nota != NULL){
-                if(nota->info->coddisc == coddisc){
-                    AVLDisc *d = c->info->disc;
-                    while(d != NULL){
-                        if(d->info->cod_disciplina == coddisc)
-                            printf("Aluno: %s\nDisciplina: %d\nPeriodo: %d\nCH: %d\nNota Final: %.2f\n", 
-                            a->nome, nota->info->coddisc, d->info->periodo, d->info->cargah, nota->info->notafinal);
-                            da = 1;
-                        if(coddisc < d->info->cod_disciplina)
-                            d = d->esq;
-                        else
-                            d = d->dir;
+AVLCurso* buscar_curso(AVLCurso *curso, int idcurso) {
+    AVLCurso *aux;
+    aux = NULL;
+    if (curso != NULL) {
+        if (curso->info->idcurso == idcurso)
+            aux = curso;
+        else if (idcurso < curso->info->idcurso)
+            aux = buscar_curso(curso->esq, idcurso);
+        else
+            aux = buscar_curso(curso->dir, idcurso);
+    }
+    return aux;
+}
+
+
+void notadiscporaluno(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc){
+    if (aluno != NULL){
+        if (aluno->matricula == matricula){
+            AVLCurso *c = buscar_curso(curso, aluno->codcurso);
+            if (c != NULL){
+                AVLDisc *d = c->info->disc;
+                while (d != NULL){
+                    if (d->info->cod_disciplina == coddisc){
+                        AVLNotas *nota = aluno->nota;
+                        while (nota != NULL){
+                            if (nota->info->coddisc == coddisc){
+                                printf("Aluno: %s\n", aluno->nome);
+                                printf("Disciplina: %d\n", nota->info->coddisc);
+                                printf("Periodo: %d\n", d->info->periodo);
+                                printf("Carga horaria: %d\n", d->info->cargah);
+                                printf("Nota Final: %.2f\n", nota->info->notafinal);
+                            }
+                            if (coddisc < nota->info->coddisc)
+                                nota = nota->esq;
+                            else
+                                nota = nota->dir;
+                        }
                     }
+                    if (coddisc < d->info->cod_disciplina)
+                        d = d->esq;
+                    else
+                        d = d->dir;
                 }
-                if(coddisc < nota->info->coddisc)
-                    nota = nota->esq;
-                else
-                    nota = nota->dir;
             }
         }
         else
-            notadiscporaluno(a->prox, c, matricula, coddisc);
+            notadiscporaluno(aluno->prox, curso, matricula, coddisc);
     }
 }
+
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

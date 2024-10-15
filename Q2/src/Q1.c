@@ -518,36 +518,55 @@ void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
 
 /* xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o período e a carga horária da
 disciplina. */
-void notadiscporaluno(Alunos *a, Cursos *c, int matricula, int coddisc){
-    int da = 0;
-    if(a != NULL){
-        if(a->matricula == matricula){
-            Notas *nota = a->nota;
-            while(nota != NULL){
-                if(nota->coddisc == coddisc){
-                    Disciplina *d = c->disc;
-                    while(d != NULL){
-                        if(d->cod_disciplina == coddisc)
-                            // printf("Aluno: %s\nDisciplina: %d\nPeriodo: %d\nCH: %d\nNota Final: %.2f\n", 
-                            // a->nome, nota->coddisc, d->periodo, d->cargah, nota->notafinal);
-                            da = 1;
-                        if(coddisc < d->cod_disciplina)
-                            d = d->esq;
-                        else
-                            d = d->dir;
+Cursos* buscar_curso(Cursos *curso, int idcurso) {
+    Cursos *aux;
+    aux = NULL;
+    if (curso != NULL) {
+        if (curso->idcurso == idcurso)
+            aux = curso;
+        else if (idcurso < curso->idcurso)
+            aux = buscar_curso(curso->esq, idcurso);
+        else
+            aux = buscar_curso(curso->dir, idcurso);
+    }
+    return aux;
+}
+
+
+void notadiscporaluno(Alunos *aluno, Cursos *curso, int matricula, int coddisc){
+    if (aluno != NULL){
+        if (aluno->matricula == matricula){
+            Cursos *c = buscar_curso(curso, aluno->codcurso);
+            if (c != NULL){
+                Disciplina *d = c->disc;
+                while (d != NULL){
+                    if (d->cod_disciplina == coddisc){
+                        Notas *nota = aluno->nota;
+                        while (nota != NULL){
+                            if (nota->coddisc == coddisc){
+                                printf("Aluno: %s\n", aluno->nome);
+                                printf("Disciplina: %d\n", nota->coddisc);
+                                printf("Periodo: %d\n", d->periodo);
+                                printf("Carga horaria: %d\n", d->cargah);
+                                printf("Nota Final: %.2f\n", nota->notafinal);
+                            }
+                            if (coddisc < nota->coddisc)
+                                nota = nota->esq;
+                            else
+                                nota = nota->dir;
+                        }
                     }
+                    if (coddisc < d->cod_disciplina)
+                        d = d->esq;
+                    else
+                        d = d->dir;
                 }
-                if(coddisc < nota->coddisc)
-                    nota = nota->esq;
-                else
-                    nota = nota->dir;
             }
         }
         else
-            notadiscporaluno(a->prox, c, matricula, coddisc);
+            notadiscporaluno(aluno->prox, curso, matricula, coddisc);
     }
 }
-
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xiii)Remover uma disciplina de um determinado curso desde que não tenha nenhum aluno matriculado na
@@ -763,6 +782,7 @@ void liberar_notas(Notas *n){
         liberar_notas(n->esq);
         liberar_notas(n->dir);
         free(n);
+        n = NULL;
     }
 }
 
@@ -771,6 +791,7 @@ void liberar_matriculas(Matricula *m){
         liberar_matriculas(m->esq);
         liberar_matriculas(m->dir);
         free(m);
+        m = NULL;
     }
 }
 
@@ -779,6 +800,7 @@ void liberar_disciplinas(Disciplina *d){
         liberar_disciplinas(d->esq);
         liberar_disciplinas(d->dir);
         free(d);
+        d = NULL;
     }
 }
 
@@ -788,15 +810,17 @@ void liberar_alunos(Alunos *a){
         liberar_notas(a->nota);
         liberar_matriculas(a->mat);
         free(a);
+        a = NULL;
     }
 }
 
-void liberar_cursos(Cursos *c){
-    if(c != NULL){
-        liberar_cursos(c->esq);
-        liberar_cursos(c->dir);
-        liberar_disciplinas(c->disc);
-        free(c);
+void liberar_cursos(Cursos **c){
+    if(*c != NULL){
+        liberar_cursos(&(*c)->esq);
+        liberar_cursos(&(*c)->dir);
+        liberar_disciplinas((*c)->disc);
+        free(*c);
+        *c = NULL;
     }
 }
 

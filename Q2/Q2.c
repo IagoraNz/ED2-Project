@@ -229,7 +229,7 @@ double metrificar_tempo_por_busca_nota(Alunos *alunos, Cursos *raiz) {
     double tempo_total = 0.0;
     int i;
 
-    int aluno_rand = 1;  // Escolhe aluno aleatório
+    int aluno_rand = 876;  // Escolhe aluno aleatório
     int disc_rand = 5;  // Escolhe disciplina aleatória
 
     // Executa a busca várias vezes para obter uma média mais precisa
@@ -258,6 +258,8 @@ double metrificar_tempo_por_insercao(Cursos **curso){
 
         tempo += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
     }
+    liberar_cursos(curso);
+    povoar_cursos_crescente(curso);
     return tempo / REPEAT;
 }
 
@@ -290,19 +292,20 @@ int main (){
         break;
     }
 
+    // Metrificando o tempo de busca da nota de uma disciplina de um determinado aluno.
+    for(i = 0; i < 10; i++){
+        tempo = metrificar_tempo_por_busca_nota(alunos, raiz);
+        printf("Tempo de busca da nota: %.10f\n", tempo);
+    }
+
     // Metrificando o tempo de inserção de um curso
     for(i = 0; i < 10; i++){
         tempo = metrificar_tempo_por_insercao(&raiz);
         printf("Tempo de insercao do curso: %.10f\n", tempo);
     }
 
-    // Metrificando o tempo de busca da nota de uma disciplina de um determinado aluno.
-    for(i = 0; i < 10; i++){
-        tempo = metrificar_tempo_por_busca_nota(alunos, raiz);
-        printf("Tempo de busca da nota: %.10f\n", tempo);
-    }
     system("PAUSE");
     liberar_alunos(alunos);
-    liberar_cursos(raiz);
+    liberar_cursos(&raiz);
     return 0;
 }

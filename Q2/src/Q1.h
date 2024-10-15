@@ -106,7 +106,7 @@ void gerarIdCurso(int qntperiodos, int *idcurso);
 void gerarMatriculaAluno(int idcurso, int *matricula);
 void liberar_notas(Notas *n);
 void liberar_disciplinas(Disciplina *d);
-void liberar_cursos(Cursos *c);
+void liberar_cursos(Cursos **c);
 void liberar_alunos(Alunos *a);
 void liberar_matriculas(Matricula *m);
 

@@ -70,6 +70,7 @@ int cadcurso(AVLCurso **curso, Cursos *c);
 void exibircurso(AVLCurso *curso);
 void exibir_cursos(AVLCurso *curso);
 void exibirAlturaCurso(AVLCurso *curso);
+AVLCurso* buscar_curso(AVLCurso *curso, int idcurso);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

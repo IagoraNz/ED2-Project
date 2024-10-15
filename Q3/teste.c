@@ -164,6 +164,10 @@ int main () {
     
     system("PAUSE");
 
+    notadiscporaluno(alunos, curso, 1, 1);
+
+    system("PAUSE");
+
     notasdiscperiodoaluno(alunos, 1, 1);
 
     exibirAlturaNotasMain(alunos, 1);
