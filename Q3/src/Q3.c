@@ -232,10 +232,13 @@ int cadcurso(AVLCurso **curso, Cursos *c){
         sucesso = 1;    
     }
     else{
-        if(c->idcurso < (*curso)->info->idcurso)
+        if (c->idcurso == (*curso)->info->idcurso)
+            sucesso = 0;
+        else if(c->idcurso < (*curso)->info->idcurso)
             sucesso = cadcurso(&((*curso)->esq), c);
         else 
             sucesso = cadcurso(&((*curso)->dir), c);
+        
         balancearCurso(curso);
         (*curso)->altura = alturaCurso(*curso);
     }
@@ -392,6 +395,7 @@ void inserirMatricula(AVLMatricula **mat, int codigo, int *igual) {
             inserirMatricula(&(*mat)->dir, codigo, igual);
         else 
             *igual = 0;  
+
         (*mat)->altura = alturaMatricula(*mat);  // Atualiza a altura do nó
         BalanceamentoAVLMatricula(mat);  // Balanceia a árvore após a inserção
     }
@@ -424,11 +428,14 @@ int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat){
     int sucesso = 0, enc = 0;
     if (*aluno != NULL) {
         if ((*aluno)->matricula == mat) {
-                buscarDisciplinaMain(curso, codigo, (*aluno)->codcurso, &enc);
-                if (enc == 1)
-                    inserirMatricula(&(*aluno)->mat, codigo, &sucesso);
-        } else
+            AVLCurso *aux = curso;
+            buscarDisciplinaMain(aux, codigo, (*aluno)->codcurso, &enc);
+            if (enc == 1)
+                inserirMatricula(&(*aluno)->mat, codigo, &sucesso);
+        } else {
+            // Recursão para o próximo aluno
             sucesso = cadmatricula(&(*aluno)->prox, curso, codigo, mat);
+        }
     }
     return sucesso;
 }
