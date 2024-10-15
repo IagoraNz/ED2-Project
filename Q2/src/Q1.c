@@ -544,11 +544,7 @@ void notadiscporaluno(Alunos *aluno, Cursos *curso, int matricula, int coddisc){
                         Notas *nota = aluno->nota;
                         while (nota != NULL){
                             if (nota->coddisc == coddisc){
-                                printf("Aluno: %s\n", aluno->nome);
-                                printf("Disciplina: %d\n", nota->coddisc);
-                                printf("Periodo: %d\n", d->periodo);
-                                printf("Carga horaria: %d\n", d->cargah);
-                                printf("Nota Final: %.2f\n", nota->notafinal);
+                                int a = 1;
                             }
                             if (coddisc < nota->coddisc)
                                 nota = nota->esq;
