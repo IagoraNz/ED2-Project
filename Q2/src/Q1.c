@@ -533,40 +533,56 @@ Cursos* buscar_curso(Cursos *curso, int idcurso) {
     return aux;
 }
 
+Disciplina* buscar_disciplina(Disciplina *d, int coddisc) {
+    Disciplina *resultado = NULL;
+    if (d != NULL) {
+        if (d->cod_disciplina == coddisc) {
+            resultado = d;
+        } else if (coddisc < d->cod_disciplina) {
+            resultado = buscar_disciplina(d->esq, coddisc);
+        } else {
+            resultado = buscar_disciplina(d->dir, coddisc);
+        }
+    }
+    return resultado;
+}
 
-void notadiscporaluno(Alunos *aluno, Cursos *curso, int matricula, int coddisc){
-    if (aluno != NULL){
-        if (aluno->matricula == matricula){
-            Cursos *c = buscar_curso(curso, aluno->codcurso);
-            if (c != NULL){
-                Disciplina *d = c->disc;
-                while (d != NULL){
-                    if (d->cod_disciplina == coddisc){
-                        Notas *nota = aluno->nota;
-                        while (nota != NULL){
-                            if (nota->coddisc == coddisc){
-                                printf("Codigo: %d\n", nota->coddisc);
-                                printf("Nota Final: %.2f\n", nota->notafinal);
-                                printf("Semestre: %d\n", nota->semestre);
-                                printf("Carga Horaria: %d\n", d->cargah);
-                            }
-                            if (coddisc < nota->coddisc)
-                                nota = nota->esq;
-                            else
-                                nota = nota->dir;
-                        }
-                    }
-                    if (coddisc < d->cod_disciplina)
-                        d = d->esq;
-                    else
-                        d = d->dir;
+Notas* buscar_nota(Notas *nota, int coddisc) {
+    Notas *resultado = NULL;
+    if (nota != NULL) {
+        if (nota->coddisc == coddisc) {
+            resultado = nota;
+        } else if (coddisc < nota->coddisc) {
+            resultado = buscar_nota(nota->esq, coddisc);
+        } else {
+            resultado = buscar_nota(nota->dir, coddisc);
+        }
+    }
+    return resultado;
+}
+
+void notadiscporaluno(Alunos *aluno, Cursos *curso, int matricula, int coddisc) {
+    Cursos *c = NULL;
+    Disciplina *d = NULL;
+    Notas *nota = NULL;
+    int sucesso = 0;
+    if (aluno != NULL) {
+        if (aluno->matricula == matricula) {
+            c = buscar_curso(curso, aluno->codcurso);
+            if (c != NULL) {
+                d = buscar_disciplina(c->disc, coddisc);  // Usando a função recursiva de disciplina
+                if (d != NULL) {
+                    nota = buscar_nota(aluno->nota, coddisc);  // Usando a função recursiva de nota
+                    if (nota != NULL) 
+                        sucesso = 1;
                 }
             }
+        } else {
+            notadiscporaluno(aluno->prox, curso, matricula, coddisc);  // Recorre ao próximo aluno
         }
-        else
-            notadiscporaluno(aluno->prox, curso, matricula, coddisc);
     }
 }
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xiii)Remover uma disciplina de um determinado curso desde que não tenha nenhum aluno matriculado na
