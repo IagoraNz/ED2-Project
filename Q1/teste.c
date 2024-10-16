@@ -75,14 +75,14 @@ int main(){
     aux = NULL;
     a = NULL;
 
-    cadaluno(&a, 2021000301, "Joao", 4);
-    cadaluno(&a, 2021000002, "Maria", 2);
-    cadaluno(&a, 2021000013, "Jose", 2);
-    cadaluno(&a, 2021000444, "Ana", 2);
-    cadaluno(&a, 2021000005, "Pedro", 4);
-    cadaluno(&a, 2021100006, "Paulo", 4);
-    cadaluno(&a, 2021000777, "Lucas", 4);
-    cadaluno(&a, 2021000088, "Fabio", 10);
+    cadaluno(&a, c, 2021000301, "Joao", 4);
+    cadaluno(&a, c, 2021000002, "Maria", 2);
+    cadaluno(&a, c, 2021000013, "Jose", 2);
+    cadaluno(&a, c, 2021000444, "Ana", 2);
+    cadaluno(&a, c, 2021000005, "Pedro", 4);
+    cadaluno(&a, c, 2021100006, "Paulo", 4);
+    cadaluno(&a, c, 2021000777, "Lucas", 4);
+    cadaluno(&a, c, 2021000088, "Fabio", 10);
 
     printf("Exibindo os alunos\n");
 
@@ -184,8 +184,12 @@ int main(){
     printf("\n\n");
 
     printf("xiv) Permita remover uma disciplina da arvore de matricula de um determinado aluno.\n");
-
-    rmvmatdealuno(&a, m, 2021000301, 1010);
+    int remove;
+    remove = rmvmatdealuno(&a, m, 2021000301, 1010);
+    if (remove == 1)
+        printf("Disciplina removida com sucesso!\n");
+    else
+        printf("Erro ao remover disciplina!\n");
 
     // Exibindo as disciplinas do aluno 2021000301 após a remoção da disciplina 1001
 
@@ -198,7 +202,7 @@ int main(){
     exibir_hist_aluno(a, c, 2021000301);
     
     // Liberando a memória alocada
-    liberar_cursos(c);
+    liberar_cursos(&c);
     liberar_alunos(a);
     liberar_matriculas(m);
 

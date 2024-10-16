@@ -33,12 +33,12 @@ Alunos* criar_aluno(int mat, char *nome, int codcurso) {
     return novo;
 }
 
-void buscarCurso(Cursos *cursos, int codcurso, int *enc){
+void ValidarCurso(Cursos *cursos, int codcurso, int *enc){
     if(cursos != NULL){
         if(cursos->idcurso == codcurso)
             *enc = 1;
-        buscarCurso(cursos->esq, codcurso, enc);
-        buscarCurso(cursos->dir, codcurso, enc);
+        ValidarCurso(cursos->esq, codcurso, enc);
+        ValidarCurso(cursos->dir, codcurso, enc);
     }
 }
 
@@ -47,7 +47,7 @@ int cadaluno(Alunos **a, Cursos *curso, int mat, char *nome, int codcurso) {
     
     // Se a lista estiver vazia ou o ponto de inserção for alcançado
     if (*a == NULL) {
-        buscarCurso(curso, codcurso, &enc);
+        ValidarCurso(curso, codcurso, &enc);
         if (enc == 1) {
             *a = criar_aluno(mat, nome, codcurso);
             sucesso = 1;
@@ -58,10 +58,13 @@ int cadaluno(Alunos **a, Cursos *curso, int mat, char *nome, int codcurso) {
             sucesso = 0; 
         // Verifica se o novo aluno deve ser inserido antes do aluno atual (ordenado por nome)
         else if (strcmp(nome, (*a)->nome) < 0) {
+            ValidarCurso(curso, codcurso, &enc);
+            if (enc == 1) {
             Alunos *novo = criar_aluno(mat, nome, codcurso);  
             novo->prox = *a; 
             *a = novo;
             sucesso = 1;
+            }
         }
         else 
             sucesso = cadaluno(&(*a)->prox, curso, mat, nome, codcurso);
@@ -74,22 +77,6 @@ int cadaluno(Alunos **a, Cursos *curso, int mat, char *nome, int codcurso) {
 
 /* ii) Cadastrar cursos a qualquer momento na árvore de curso, de forma que o usuário não precise cadastrar
 as disciplinas para permitir o cadastro do curso. */
-
-// Função para verificar se um idcurso ja está em uso ou para procurar algum curso.
-int buscacurso(Cursos *curso, int idcurso){
-    int enc = 0;
-    if (curso != NULL){
-        if(curso->idcurso == idcurso)
-            enc = 1;
-        else{
-            if(idcurso < curso->idcurso)
-                buscacurso(curso->esq, idcurso);
-            else
-                buscacurso(curso->dir, idcurso);
-        }
-    }
-    return enc;
-}
 
 int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos){
     int sucesso = 0;
@@ -289,7 +276,7 @@ Matricula* menorfilhoesqmat(Matricula *m) {
     return aux;
 }
 
-void rmvmatricula(Matricula **m, int cod) {
+void rmvmatricula(Matricula **m, int cod, int *remove) {
     if (*m != NULL) {
         // Se encontrou o nó a ser removido
         if ((*m)->coddisc == cod) {
@@ -300,6 +287,7 @@ void rmvmatricula(Matricula **m, int cod) {
                 aux = *m;
                 free(aux);
                 *m = NULL;
+                *remove = 1;
             } 
             // Caso 2: O nó tem apenas um filho
             else if ((aux = soumfilhomat(*m)) != NULL) {
@@ -307,19 +295,20 @@ void rmvmatricula(Matricula **m, int cod) {
                 temp = *m;
                 free(temp);
                 *m = aux;  // Substitui o nó pelo seu único filho
+                *remove = 1;
             } 
             else {
                 Matricula *menorfilho = menorfilhoesqmat((*m)->dir);
                 (*m)->coddisc = menorfilho->coddisc;
-                rmvmatricula(&(*m)->dir, menorfilho->coddisc);
+                rmvmatricula(&(*m)->dir, menorfilho->coddisc, remove);
             }
         } 
         // Se o código é menor, continua na subárvore esquerda
         else if (cod < (*m)->coddisc)
-            rmvmatricula(&(*m)->esq, cod);
+            rmvmatricula(&(*m)->esq, cod, remove);
         // Se o código é maior, continua na subárvore direita
         else
-            rmvmatricula(&(*m)->dir, cod);
+            rmvmatricula(&(*m)->dir, cod, remove);
     }
 }
 
@@ -346,14 +335,14 @@ int cadnota_nota(Notas **nota, int cod, int semestre, float notafinal){
 }
 
 int cadnota(Alunos **a, int mat, int cod, int semestre, float notafinal) {
-    int enc = 0;
+    int enc = 0, remove = 0;
     if (*a != NULL) {
         if ((*a)->matricula == mat) {
             int enc_disc = 0;
             busca_disc((*a)->mat, cod, &enc_disc);
             if (enc_disc == 1) {
                 if (cadnota_nota(&(*a)->nota, cod, semestre, notafinal) == 1){
-                    rmvmatricula(&(*a)->mat, cod);
+                    rmvmatricula(&(*a)->mat, cod, &remove);
                     enc = 1;
                 }
             }
@@ -556,7 +545,10 @@ void notadiscporaluno(Alunos *aluno, Cursos *curso, int matricula, int coddisc){
                         Notas *nota = aluno->nota;
                         while (nota != NULL){
                             if (nota->coddisc == coddisc){
-                                int a = 1;
+                                printf("Codigo: %d\n", nota->coddisc);
+                                printf("Nota Final: %.2f\n", nota->notafinal);
+                                printf("Semestre: %d\n", nota->semestre);
+                                printf("Carga Horaria: %d\n", d->cargah);
                             }
                             if (coddisc < nota->coddisc)
                                 nota = nota->esq;
@@ -664,13 +656,15 @@ int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc){
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
-void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
+int rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
+    int remove = 0;
     if(*a != NULL){
         if((*a)->matricula == matricula)
-            rmvmatricula(&(*a)->mat, coddisc);
+            rmvmatricula(&(*a)->mat, coddisc, &remove);
         else
-            rmvmatdealuno(&(*a)->prox, m, matricula, coddisc);
+            remove = rmvmatdealuno(&(*a)->prox, m, matricula, coddisc);
     }
+    return remove;
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/

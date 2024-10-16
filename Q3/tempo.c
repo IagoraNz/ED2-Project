@@ -272,7 +272,7 @@ void notadiscporaluno_Teste(Alunos *aluno, AVLCurso *curso, int matricula, int c
                         AVLNotas *nota = aluno->nota;
                         while (nota != NULL){
                             if (nota->info->coddisc == coddisc){
-                                int sucesso = 1;
+                                printf("Nota: %.2f\n", nota->info->notafinal);
                             }
                             if (coddisc < nota->info->coddisc)
                                 nota = nota->esq;

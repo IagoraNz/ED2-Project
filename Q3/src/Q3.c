@@ -178,13 +178,13 @@ Alunos* criar_aluno(int mat, char *nome, int codcurso) {
     return novo;
 }
 
-void buscarCurso(AVLCurso *cursos, int codcurso, int *enc){
+void ValidarCurso(AVLCurso *cursos, int codcurso, int *enc){
     if (cursos != NULL){
         if (cursos->info->idcurso == codcurso){
             *enc = 1;
         } else {
-            buscarCurso(cursos->esq, codcurso, enc);
-            buscarCurso(cursos->dir, codcurso, enc);
+            ValidarCurso(cursos->esq, codcurso, enc);
+            ValidarCurso(cursos->dir, codcurso, enc);
         }
     }
 }
@@ -193,7 +193,7 @@ int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso) {
     int sucesso = 0, enc = 0;
     // Se a lista estiver vazia ou o ponto de inserção for alcançado
     if (*a == NULL) {
-        buscarCurso(cursos, codcurso, &enc);
+        ValidarCurso(cursos, codcurso, &enc);
         if (enc == 1){
             *a = criar_aluno(mat, nome, codcurso);
             sucesso = 1;
@@ -204,10 +204,13 @@ int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso) {
             sucesso = 0; 
         // Verifica se o novo aluno deve ser inserido antes do aluno atual (ordenado por nome)
         else if (strcmp(nome, (*a)->nome) < 0) {
+            ValidarCurso(cursos, codcurso, &enc);
+            if (enc == 1){
             Alunos *novo = criar_aluno(mat, nome, codcurso);  
             novo->prox = *a; 
             *a = novo;
             sucesso = 1;
+            }
         }
         else 
             sucesso = cadaluno(&(*a)->prox, cursos, mat, nome, codcurso);
