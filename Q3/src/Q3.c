@@ -803,35 +803,47 @@ AVLCurso* buscar_curso(AVLCurso *curso, int idcurso) {
     return aux;
 }
 
+AVLDisc* buscar_disciplina(AVLDisc *disc, int cod_disc) {
+    AVLDisc *aux;
+    aux = NULL;
+    if (disc != NULL) {
+        if (disc->info->cod_disciplina == cod_disc)
+            aux = disc;
+        else if (cod_disc < disc->info->cod_disciplina)
+            aux = buscar_disciplina(disc->esq, cod_disc);
+        else
+            aux = buscar_disciplina(disc->dir, cod_disc);
+    }
+    return aux;
+}
+
+AVLNotas* buscar_nota(AVLNotas *nota, int cod_disc) {
+    AVLNotas *aux;
+    aux = NULL;
+    if (nota != NULL) {
+        if (nota->info->coddisc == cod_disc)
+            aux = nota;
+        else if (cod_disc < nota->info->coddisc)
+            aux = buscar_nota(nota->esq, cod_disc);
+        else
+            aux = buscar_nota(nota->dir, cod_disc);
+    }
+    return aux;
+}
+
 
 void notadiscporaluno(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc){
-    if (aluno != NULL){
-        if (aluno->matricula == matricula){
+    if(aluno != NULL){
+        if(aluno->matricula == matricula){
             AVLCurso *c = buscar_curso(curso, aluno->codcurso);
-            if (c != NULL){
-                AVLDisc *d = c->info->disc;
-                while (d != NULL){
-                    if (d->info->cod_disciplina == coddisc){
-                        AVLNotas *nota = aluno->nota;
-                        while (nota != NULL){
-                            if (nota->info->coddisc == coddisc){
-                                printf("Aluno: %s\n", aluno->nome);
-                                printf("Disciplina: %d\n", nota->info->coddisc);
-                                printf("Periodo: %d\n", d->info->periodo);
-                                printf("Carga horaria: %d\n", d->info->cargah);
-                                printf("Nota Final: %.2f\n", nota->info->notafinal);
-                            }
-                            if (coddisc < nota->info->coddisc)
-                                nota = nota->esq;
-                            else
-                                nota = nota->dir;
-                        }
-                    }
-                    if (coddisc < d->info->cod_disciplina)
-                        d = d->esq;
-                    else
-                        d = d->dir;
-                }
+            AVLDisc *d = buscar_disciplina(c->info->disc, coddisc);
+            AVLNotas *n = buscar_nota(aluno->nota, coddisc);
+            if(d != NULL && n != NULL){
+                printf("Codigo: %d\n", d->info->cod_disciplina);
+                printf("Nome: %s\n", d->info->nomedisc);
+                printf("Carga horaria: %d\n", d->info->cargah);
+                printf("Nota Final: %.2f\n", n->info->notafinal);
+                printf("Semestre: %d\n", n->info->semestre);
             }
         }
         else

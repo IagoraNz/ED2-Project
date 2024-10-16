@@ -9,7 +9,7 @@
 #define QTD_ALUNOS 1000
 #define QTD_DISCIPLINAS 10
 #define QTD_MATRICULAS 10
-#define REPEAT 10000
+#define REPEAT 1000
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -165,8 +165,6 @@ void povoar_cursos_aleatorio(AVLCurso **raiz) {
         c->disc = NULL;
         if (cadcurso(raiz, c) == 1) {
             i++;
-        } else {
-            free(c); // Libera memória se não for cadastrado
         }
     }
 }
@@ -184,8 +182,6 @@ void povoar_disciplinas_aleatorio(AVLCurso **raiz) {
             int sucesso = caddisc(raiz, d, (*raiz)->info->idcurso);
             if (sucesso == 1) {
                 i++;
-            } else {
-                free(d); // Libera memória se não for cadastrado
             }
         }
         povoar_disciplinas_aleatorio(&(*raiz)->esq);
@@ -215,8 +211,6 @@ void povoar_notas_aleatorio(Alunos *aluno) {
             n->notafinal = (rand() % 10) + 1;
             if (cadnota(&aluno, aluno->matricula, n) == 1) {
                 i++;
-            } else {
-                free(n); // Libera memória se não for cadastrado
             }
         }
         povoar_notas_aleatorio(aluno->prox);
@@ -225,11 +219,8 @@ void povoar_notas_aleatorio(Alunos *aluno) {
 
 void povoar_alunos_aleatorio(Alunos **aluno, AVLCurso *curso) {
     char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
-    int i = 0; // Começando em 0
-    while (i < QTD_ALUNOS) {
-        if (cadaluno(aluno, curso, rand() % QTD_ALUNOS, nomes[rand() % 5], rand() % QTD_CURSOS + 1) == 1) {
-            i++;
-        }
+    for (int i = 0; i < QTD_ALUNOS; i++) {
+        cadaluno(aluno, curso, i, nomes[rand() % 5], rand() % QTD_CURSOS + 1);
     }
 }
 
@@ -262,29 +253,14 @@ Função de busca de notas para metrificar.
 
 
 void notadiscporaluno_Teste(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc){
-    if (aluno != NULL){
-        if (aluno->matricula == matricula){
+    int encontrou = 0;
+    if(aluno != NULL){
+        if(aluno->matricula == matricula){
             AVLCurso *c = buscar_curso(curso, aluno->codcurso);
-            if (c != NULL){
-                AVLDisc *d = c->info->disc;
-                while (d != NULL){
-                    if (d->info->cod_disciplina == coddisc){
-                        AVLNotas *nota = aluno->nota;
-                        while (nota != NULL){
-                            if (nota->info->coddisc == coddisc){
-                                printf("Nota: %.2f\n", nota->info->notafinal);
-                            }
-                            if (coddisc < nota->info->coddisc)
-                                nota = nota->esq;
-                            else
-                                nota = nota->dir;
-                        }
-                    }
-                    if (coddisc < d->info->cod_disciplina)
-                        d = d->esq;
-                    else
-                        d = d->dir;
-                }
+            AVLDisc *d = buscar_disciplina(c->info->disc, coddisc);
+            AVLNotas *n = buscar_nota(aluno->nota, coddisc);
+            if(d != NULL && n != NULL){
+                encontrou = 1;
             }
         }
         else
