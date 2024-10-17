@@ -624,9 +624,9 @@ void rmvdisc(Disciplina **disc, int cod_disc, int *remove){
         Disciplina *endmenorfilho;
         if ((*disc)->cod_disciplina == cod_disc){
             if(ehfolhadisc(*disc)){
-            aux = *disc;
-            free(aux);
-            *disc = NULL;
+                aux = *disc;
+                free(aux);
+                *disc = NULL;
             } else if((endfilho = soumfilhodisc(*disc)) != NULL){
                 aux = *disc;
                 free(aux); 

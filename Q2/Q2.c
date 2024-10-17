@@ -9,7 +9,7 @@
 #define QTD_ALUNOS 1000
 #define QTD_DISCIPLINAS 10
 #define QTD_MATRICULAS 10
-#define REPEAT 100000
+#define REPEAT 10000
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -301,10 +301,8 @@ double metrificar_tempo_por_busca_nota(Alunos *alunos, Cursos *raiz) {
 
     // Executa a busca várias vezes para obter uma média mais precisa
     for (i = 0; i < REPEAT; i++) {
-        Alunos *aux = alunos;
-        Cursos *aux2 = raiz;
         inicio = clock();
-        notadiscporaluno(aux, aux2, aluno_rand, disc_rand);  // Função de busca
+        notadiscporaluno(alunos, raiz, aluno_rand, disc_rand);  // Função de busca
         fim = clock();
 
         // Soma o tempo de cada execução
@@ -315,23 +313,87 @@ double metrificar_tempo_por_busca_nota(Alunos *alunos, Cursos *raiz) {
     return tempo_total / REPEAT;
 }
 
+int ehfolhacurso(Cursos *curso){
+    return (curso->esq == NULL && curso->dir == NULL);
+}
+
+Cursos* soumfilhocurso(Cursos *raiz){
+    Cursos *aux;
+    aux = NULL;
+    if (raiz->esq == NULL)
+        aux = raiz->dir;
+    else if (raiz->dir == NULL)
+        aux = raiz->esq;
+
+    return aux;
+}
+
+Cursos* menorfilhoesqcurso(Cursos *raiz){
+    Cursos *aux;
+    aux = NULL;
+    if (raiz){
+        aux = menorfilhoesqcurso(raiz->esq);
+        if (!aux)
+            aux = raiz;
+    }
+    return aux;
+}
+
+void rmvcurso(Cursos **raiz, int idcurso, int *remove){
+    Cursos *aux;
+    if (*raiz != NULL){
+        if (idcurso == (*raiz)->idcurso){
+            if(ehfolhacurso(*raiz)){
+                aux = *raiz;
+                free(aux);
+                *raiz = NULL;
+            }
+            else if((aux = soumfilhocurso(*raiz)) != NULL){
+                Cursos *temp;
+                temp = *raiz;
+                free(temp);
+                *raiz = aux;
+            }
+            else{
+                aux = menorfilhoesqcurso((*raiz)->dir);
+                (*raiz)->idcurso = aux->idcurso;
+                (*raiz)->qntdperiodos = aux->qntdperiodos;
+                strcpy((*raiz)->nomecurso, aux->nomecurso);
+                rmvcurso(&(*raiz)->dir, aux->idcurso, remove);
+            }
+            *remove = 1;
+        }
+        else if (idcurso < (*raiz)->idcurso)
+            rmvcurso(&(*raiz)->esq, idcurso, remove);
+        else
+            rmvcurso(&(*raiz)->dir, idcurso, remove);
+    }
+}
+
 double metrificar_tempo_por_insercao(Cursos **curso, int opc){
     clock_t inicio, fim;
     double tempo = 0.0;
     int i;
-    for(i = 0; i < REPEAT; i++){
-        inicio = clock();
-        cadcurso(curso, rand() % ID_CURSOS + 1, "Curso", 8);
-        fim = clock();
-
-        tempo += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+    int idcurso = 542;
+    int sucesso = 0;
+    rmvcurso(curso, idcurso, &sucesso);
+    if (sucesso == 1){
+        for(i = 0; i < REPEAT; i++){
+            inicio = clock();
+            cadcurso(curso, idcurso, "Curso", 8);
+            fim = clock();
+            rmvcurso(curso, idcurso, &sucesso);
+    
+            tempo += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+        }
     }
+
     liberar_cursos(curso);
     if (opc == 1)
         povoar_cursos_crescente(curso);
     else if (opc == 2)
         povoar_cursos_decrescente(curso);
-    else
+    else if (opc == 3)
         povoar_cursos_aleatorio(curso);
     return tempo / REPEAT;
 }
@@ -364,16 +426,17 @@ int main (){
         break;
     }
 
+    printf("Busca\n");
     // Metrificando o tempo de busca da nota de uma disciplina de um determinado aluno.
     for(i = 0; i < 10; i++){
         tempo = metrificar_tempo_por_busca_nota(alunos, raiz);
-        printf("Tempo de busca da nota de uma disciplina de um determinado aluno: %.2f\n", tempo * 1000000); // Microsegundos
+        printf("%.2f\n", tempo * 1000000); // Microsegundos
     }
-
+    printf("Inserção\n");
     // Metrificando o tempo de inserção de um curso
     for(i = 0; i < 10; i++){
         tempo = metrificar_tempo_por_insercao(&raiz, op);
-        printf("Tempo de insercao do curso: %.2f\n", tempo*1000000); // Microsegundos
+        printf("%.2f\n", tempo*1000000); // Microsegundos
     }
 
     system("PAUSE");
