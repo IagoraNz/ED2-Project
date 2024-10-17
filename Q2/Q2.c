@@ -313,79 +313,16 @@ double metrificar_tempo_por_busca_nota(Alunos *alunos, Cursos *raiz) {
     return tempo_total / REPEAT;
 }
 
-int ehfolhacurso(Cursos *curso){
-    return (curso->esq == NULL && curso->dir == NULL);
-}
-
-Cursos* soumfilhocurso(Cursos *raiz){
-    Cursos *aux;
-    aux = NULL;
-    if (raiz->esq == NULL)
-        aux = raiz->dir;
-    else if (raiz->dir == NULL)
-        aux = raiz->esq;
-
-    return aux;
-}
-
-Cursos* menorfilhoesqcurso(Cursos *raiz){
-    Cursos *aux;
-    aux = NULL;
-    if (raiz){
-        aux = menorfilhoesqcurso(raiz->esq);
-        if (!aux)
-            aux = raiz;
-    }
-    return aux;
-}
-
-void rmvcurso(Cursos **raiz, int idcurso, int *remove){
-    Cursos *aux;
-    if (*raiz != NULL){
-        if (idcurso == (*raiz)->idcurso){
-            if(ehfolhacurso(*raiz)){
-                aux = *raiz;
-                free(aux);
-                *raiz = NULL;
-            }
-            else if((aux = soumfilhocurso(*raiz)) != NULL){
-                Cursos *temp;
-                temp = *raiz;
-                free(temp);
-                *raiz = aux;
-            }
-            else{
-                aux = menorfilhoesqcurso((*raiz)->dir);
-                (*raiz)->idcurso = aux->idcurso;
-                (*raiz)->qntdperiodos = aux->qntdperiodos;
-                strcpy((*raiz)->nomecurso, aux->nomecurso);
-                rmvcurso(&(*raiz)->dir, aux->idcurso, remove);
-            }
-            *remove = 1;
-        }
-        else if (idcurso < (*raiz)->idcurso)
-            rmvcurso(&(*raiz)->esq, idcurso, remove);
-        else
-            rmvcurso(&(*raiz)->dir, idcurso, remove);
-    }
-}
-
 double metrificar_tempo_por_insercao(Cursos **curso, int opc){
     clock_t inicio, fim;
     double tempo = 0.0;
     int i;
-    int idcurso = 542;
-    int sucesso = 0;
-    rmvcurso(curso, idcurso, &sucesso);
-    if (sucesso == 1){
-        for(i = 0; i < REPEAT; i++){
-            inicio = clock();
-            cadcurso(curso, idcurso, "Curso", 8);
-            fim = clock();
-            rmvcurso(curso, idcurso, &sucesso);
-    
-            tempo += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-        }
+    for(i = 0; i < REPEAT; i++){
+        inicio = clock();
+        cadcurso(curso, rand() % ID_CURSOS + 1, "Curso", 8);
+        fim = clock();
+
+        tempo += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
     }
 
     liberar_cursos(curso);
