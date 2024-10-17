@@ -302,7 +302,7 @@ double metrificar_tempo_por_busca_nota(Alunos *alunos, AVLCurso *raiz) {
 Função de metrificação de tempo para inserção.
 */
 
-double metrificar_tempo_por_insercao(AVLCurso **curso){
+double metrificar_tempo_por_insercao(AVLCurso **curso, int opc){
     clock_t inicio, fim;
     double tempo = 0.0;
     int i;
@@ -320,7 +320,12 @@ double metrificar_tempo_por_insercao(AVLCurso **curso){
         tempo += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
     }
     liberarAVLCurso(curso);
-    povoar_cursos_crescente(curso);
+    if (opc == 1)
+        povoar_cursos_crescente(curso);
+    else if (opc == 2)
+        povoar_cursos_decrescente(curso);
+    else
+        povoar_cursos_aleatorio(curso);
     return tempo / REPEAT;
 }
 
@@ -356,13 +361,13 @@ int main (){
     // Metrificando o tempo de busca da nota de uma disciplina de um determinado aluno.
     for(i = 0; i < 10; i++){
         tempo = metrificar_tempo_por_busca_nota(alunos, raiz);
-        printf("Tempo de busca da nota: %.10f\n", tempo);
+        printf("Tempo de busca da nota: %.2f\n", tempo * 1000000); // Microsegundos
     }
 
     // Metrificando o tempo de inserção de um curso
     for(i = 0; i < 10; i++){
-        tempo = metrificar_tempo_por_insercao(&raiz);
-        printf("Tempo de insercao do curso: %.10f\n", tempo);
+        tempo = metrificar_tempo_por_insercao(&raiz, op);
+        printf("Tempo de insercao do curso: %.2f\n", tempo * 1000000); // Microsegundos
     }
 
     liberarAVLCurso(&raiz);
