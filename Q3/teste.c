@@ -91,11 +91,18 @@ int main () {
     exibirAlturaDisciplinaMain(curso, 1);
     system("PAUSE");
 
-    exibir_disc_curso_main(curso, 1);
-
     cadaluno(&alunos, curso, 1, "João", 1);
     cadaluno(&alunos, curso, 2, "Maria", 1);
     cadaluno(&alunos, curso, 3, "José", 1);
+
+    sucesso = rmvdisc_curso(&curso, alunos, 1, 1);
+    if (sucesso == 1)
+        printf("Disciplina removida com sucesso!\n");
+    else
+        printf("Disciplina não removida!\n");
+    system("PAUSE");
+
+    exibir_disc_curso_main(curso, 1);
 
     alunosporcurso(alunos, 1);
     
