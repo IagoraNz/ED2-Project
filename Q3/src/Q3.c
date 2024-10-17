@@ -898,12 +898,10 @@ void rmvdisc(AVLDisc **disc, int cod_disc, int *remove){
                 aux = *disc;
                 free(aux);
                 *disc = NULL;
-                printf("Disciplina removida com sucesso1!\n");
             } else if((endfilho = soumfilhodisc(*disc)) != NULL){
                 aux = *disc;
                 free(aux); 
                 *disc = endfilho;  
-                printf("Disciplina removida com sucesso2!\n");
             } else {
                 endmenorfilho = menorfilhoesqdisc((*disc)->dir);
                 (*disc)->info->cod_disciplina = endmenorfilho->info->cod_disciplina;
@@ -911,7 +909,6 @@ void rmvdisc(AVLDisc **disc, int cod_disc, int *remove){
                 (*disc)->info->periodo = endmenorfilho->info->periodo;
                 strcpy((*disc)->info->nomedisc, endmenorfilho->info->nomedisc);
                 rmvdisc(&(*disc)->dir, endmenorfilho->info->cod_disciplina, remove);
-                printf("Disciplina removida com sucesso3!\n");
             }
             *remove = 1;
         }
@@ -954,13 +951,9 @@ int rmvdisc_curso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc){
     int remove = 0, validar_disc = 0;
     if ((*cursos) != NULL){
         validar_rmv_disciplina(alunos, cod_disc, &validar_disc);
-        printf("Validar: %d\n", validar_disc);
         if (validar_disc != 0){
-            printf("Encontrado aluno matriculado na disciplina!\n");
-            if ((*cursos)->info->idcurso == idcurso){
-                printf("Disciplina nao pode ser removida!\n");
+            if ((*cursos)->info->idcurso == idcurso)
                 rmvdisc(&(*cursos)->info->disc, cod_disc, &remove);  
-            } 
             else if (idcurso < (*cursos)->info->idcurso)
                 remove = rmvdisc_curso(&(*cursos)->esq, alunos, idcurso, cod_disc);
             else
