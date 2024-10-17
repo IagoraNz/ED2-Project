@@ -573,8 +573,13 @@ void notadiscporaluno(Alunos *aluno, Cursos *curso, int matricula, int coddisc) 
                 d = buscar_disciplina(c->disc, coddisc);  // Usando a função recursiva de disciplina
                 if (d != NULL) {
                     nota = buscar_nota(aluno->nota, coddisc);  // Usando a função recursiva de nota
-                    if (nota != NULL) 
+                    if (nota != NULL){
+                        // printf("Disciplina: %s\n", d->nomedisc);
+                        // printf("Nota: %.2f\n", nota->notafinal);
+                        // printf("Periodo: %d\n", d->periodo);
+                        // printf("Carga Horaria: %d\n", d->cargah);
                         sucesso = 1;
+                    }
                 }
             }
         } else {
