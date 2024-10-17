@@ -176,8 +176,6 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso) {
     return sucesso; // Retorna 1 se a disciplina foi cadastrada, 0 caso contrário
 }
 
-
-
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
@@ -358,7 +356,6 @@ int cadnota(Alunos **a, int mat, int cod, int semestre, float notafinal) {
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* vi) Mostrar todos os alunos de um determinado curso. */
-
 void alunosporcurso(Alunos *a, int codcurso){
     if(a != NULL){
         if(a->codcurso == codcurso){
@@ -678,7 +675,6 @@ void exibir_notas(Notas *nota, Disciplina *d, int periodo) {
         exibir_notas(nota->dir, d, periodo);
     }
 }
-
 
 int exibir_nome_curso(Cursos *c, int idcurso){
     int qntperiodos = 0;

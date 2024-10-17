@@ -338,7 +338,6 @@ int alturaMatricula(AVLMatricula *raiz) {
     return res;
 }
 
-
 int fbMatricula(AVLMatricula *mat) {
     return alturaMatricula(mat->esq) - alturaMatricula(mat->dir);  // Fator de balanceamento
 }
@@ -439,7 +438,6 @@ int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat){
     }
     return sucesso;
 }
-
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -576,7 +574,6 @@ void rmvmatricula(AVLMatricula **m, int cod) {
     }
 }
 
-
 int cadnota_nota(AVLNotas **nota, Notas *n) {
     int sucesso = 1;
     if (*nota == NULL) {
@@ -601,7 +598,6 @@ int cadnota_nota(AVLNotas **nota, Notas *n) {
     }
     return sucesso;
 }
-
 
 int cadnota(Alunos **a, int mat, Notas *n) {
     int enc = 0;
@@ -805,7 +801,6 @@ AVLCurso* buscar_curso(AVLCurso *curso, int idcurso) {
     return aux;
 }
 
-
 void notadiscporaluno(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc){
     if (aluno != NULL){
         if (aluno->matricula == matricula){
@@ -840,7 +835,6 @@ void notadiscporaluno(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc
             notadiscporaluno(aluno->prox, curso, matricula, coddisc);
     }
 }
-
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -925,9 +919,6 @@ void exibir_hist_aluno(Alunos *a, AVLCurso *c, int matricula){
 
 // Gerar os códigos
 
-
-// Liberar estruturas com base nas novas configurações
-
 void gerarCodDisciplina(int cargah, int periodo, int *coddisc) {
     // Passo 1: obtendo o ano atual
     time_t t = time(NULL);
@@ -965,6 +956,8 @@ void gerarMatriculaAluno(int idcurso, int *matricula) {
     // Passo 4: combinando tudo em um número no formato AAAANNNCC
     *matricula = ano * 100000 + num4 * 1000 + idcursoModificado;
 }
+
+// Exibir alturas
 
 void exibirAlturaCurso(AVLCurso *curso){
     if(curso != NULL){
@@ -1031,6 +1024,8 @@ void exibirAlturaNotasMain(Alunos *a, int matricula){
             exibirAlturaNotasMain(a->prox, matricula);
     }
 }
+
+// Liberar estruturas com base nas novas configurações
 
 void liberarAVLDisc(AVLDisc **raiz){
     if(*raiz != NULL){

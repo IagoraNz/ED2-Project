@@ -91,11 +91,6 @@ int main(){
     printf("\nMatriculando alunos\n");
 
     cadmatricula(&a, 1001, 2021000301);
-    cadmatricula(&a, 1001, 2021000002);
-    cadmatricula(&a, 1001, 2021000013);
-    cadmatricula(&a, 991, 2021000444);
-    cadmatricula(&a, 1010, 2021000301);
-    cadmatricula(&a, 1001, 2021100006);
     printf("\nAlunos matriculados com sucesso!\n");
 
     printf("Exibindo Matriculas\n");
@@ -110,99 +105,96 @@ int main(){
 
     exibir_disc_aluno_main(a, c, 2021000301);
 
-    printf("Exibindo as disciplinas dos alunos\n");
-    exibir_disc_aluno_main(a, c, 2021000301);
+    // printf("Cadastrando notas\n");
+    // int teste = 0;
 
-    printf("Cadastrando notas\n");
-    int teste = 0;
+    // printf("\n");
 
-    printf("\n");
+    // teste = cadnota(&a, 2021000301, 1001, 1,  8.5);
+    // printf("%d\n", teste);    
 
-    teste = cadnota(&a, 2021000301, 1001, 1,  8.5);
-    printf("%d\n", teste);    
+    // teste = cadnota(&a, 2021000444, 1010, 3,  7.5);
+    // printf("%d\n", teste);
 
-    teste = cadnota(&a, 2021000444, 1010, 3,  7.5);
-    printf("%d\n", teste);
+    // printf("Exibindo as notas\n");
 
-    printf("Exibindo as notas\n");
-
-    exibir_hist_aluno(a, c, 2021000301);
+    // exibir_hist_aluno(a, c, 2021000301);
     
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("Mostrar todos os alunos de um determinado curso\n");
+    // printf("Mostrar todos os alunos de um determinado curso\n");
 
-    alunosporcurso(a, 10);
+    // alunosporcurso(a, 10);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("Mostrar todos os cursos do Campus\n");
+    // printf("Mostrar todos os cursos do Campus\n");
 
-    exibircurso(c);
+    // exibircurso(c);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("Mostrar todas as disciplinas de um determinado curso\n");
+    // printf("Mostrar todas as disciplinas de um determinado curso\n");
 
-    exibir_disc_curso_main(c, 4);
+    // exibir_disc_curso_main(c, 4);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("ix) Mostrar todas as disciplinas de um determinado periodo de um curso\n");
+    // printf("ix) Mostrar todas as disciplinas de um determinado periodo de um curso\n");
 
-    exibir_disc_periodo_main(c, 4, 1);
+    // exibir_disc_periodo_main(c, 4, 1);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("x) Mostrar todas as disciplinas que um determinado aluno esta matriculado\n");
+    // printf("x) Mostrar todas as disciplinas que um determinado aluno esta matriculado\n");
 
-    exibir_disc_aluno_main(a, c, 2021000301);
+    // exibir_disc_aluno_main(a, c, 2021000301);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("xi) Mostrar todas as notas de disciplinas de um determinado periodo de um determinado aluno.\n");
+    // printf("xi) Mostrar todas as notas de disciplinas de um determinado periodo de um determinado aluno.\n");
 
-    notasdiscperiodoaluno(a, 1, 2021000301);
+    // notasdiscperiodoaluno(a, 1, 2021000301);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o periodo e a carga horaria da disciplina.\n");
+    // printf("xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o periodo e a carga horaria da disciplina.\n");
 
-    notadiscporaluno(a, c, 2021000301, 1001);
+    // notadiscporaluno(a, c, 2021000301, 1001);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("xiii) Remover uma disciplina de um determinado curso desde que nao tenha nenhum aluno matriculado na mesma\n");
+    // printf("xiii) Remover uma disciplina de um determinado curso desde que nao tenha nenhum aluno matriculado na mesma\n");
 
-    rmvdisc_curso(&c, a, 4, 1001);
-    printf("Disciplina removida com sucesso!\n");
+    // rmvdisc_curso(&c, a, 4, 1001);
+    // printf("Disciplina removida com sucesso!\n");
 
-    // Exibindo as disciplinas do curso 4 após a remoção da disciplina 1001
+    // // Exibindo as disciplinas do curso 4 após a remoção da disciplina 1001
 
-    exibir_disc_curso_main(c, 4);
+    // exibir_disc_curso_main(c, 4);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("xiv) Permita remover uma disciplina da arvore de matricula de um determinado aluno.\n");
+    // printf("xiv) Permita remover uma disciplina da arvore de matricula de um determinado aluno.\n");
 
-    rmvmatdealuno(&a, m, 2021000301, 1010);
+    // rmvmatdealuno(&a, m, 2021000301, 1010);
 
-    // Exibindo as disciplinas do aluno 2021000301 após a remoção da disciplina 1001
+    // // Exibindo as disciplinas do aluno 2021000301 após a remoção da disciplina 1001
 
-    exibir_disc_aluno_main(a, c, 2021000301);
+    // exibir_disc_aluno_main(a, c, 2021000301);
 
-    printf("\n\n");
+    // printf("\n\n");
 
-    printf("xv) Mostrar o historico de um determinado aluno, contendo o nome do curso, as disciplinas e sua respectiva nota organizadas pelo periodo que a disciplina esta cadastrada no curso.\n");
+    // printf("xv) Mostrar o historico de um determinado aluno, contendo o nome do curso, as disciplinas e sua respectiva nota organizadas pelo periodo que a disciplina esta cadastrada no curso.\n");
 
-    exibir_hist_aluno(a, c, 2021000301);
+    // exibir_hist_aluno(a, c, 2021000301);
     
-    // Liberando a memória alocada
-    liberar_cursos(c);
-    liberar_alunos(a);
-    liberar_matriculas(m);
+    // // Liberando a memória alocada
+    // liberar_cursos(c);
+    // liberar_alunos(a);
+    // liberar_matriculas(m);
 
-    system("PAUSE");
+    // system("PAUSE");
 
     getchar();
 
