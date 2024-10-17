@@ -89,6 +89,7 @@ void exibir_disc_aluno_main(Alunos *aluno, AVLCurso *cursos, int matricula);
 void exibir_disc_periodo_main(AVLCurso *curso, int idcurso, int periodo);
 void exibir_disc_curso_main(AVLCurso *curso, int idcurso);
 void exibirAlturaDisciplinaMain(AVLCurso *curso, int idcurso);
+AVLDisc* buscar_disciplina(AVLDisc *disc, int cod_disc);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -107,6 +108,7 @@ int cadnota(Alunos **a, int mat, Notas *n);
 void notadiscporaluno(Alunos *a, AVLCurso *c, int matricula, int coddisc);
 void notasdiscperiodoaluno(Alunos *a, int periodo, int mat);
 void exibirAlturaNotasMain(Alunos *a, int matricula);
+AVLNotas* buscar_nota(AVLNotas *nota, int cod_disc);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

@@ -6,8 +6,7 @@
 /* ESTRUTURAS DE DADOS */
 
 typedef struct disciplina {
-    int cod_disciplina; /*Gerada pelo ano, pela cargah, periodo e 5 numeros aleatório
-    no formato AAAACCPNNNNN*/
+    int cod_disciplina;
     char nomedisc[50];
     int cargah;
     int periodo;
@@ -15,8 +14,7 @@ typedef struct disciplina {
 } Disciplina;
 
 typedef struct cursos {
-    int idcurso; /* Gerada pela quantidade de períodos, periodo * 3, periodo * 5, ano, e 4 numeros aleatorios no
-    formato PPPAAAANNNN, a quantidade de P pode variar de acordo com os múltiplos de 3 e 5 se forem de mais de um dígito*/
+    int idcurso;
     char nomecurso[50];
     int qntdperiodos;
     struct cursos *esq, *dir;
@@ -36,9 +34,7 @@ typedef struct matricula {
 } Matricula;
 
 typedef struct alunos {
-    int matricula; /* Gerada pela ano atual, 4 números aleatóris, pelo codcurso e por 3 nímeros aleatórios
-    no formato AAAANNNNCNNN*/
-    // C representa PPPAAAANNNN
+    int matricula;
     char nome[50];
     int codcurso;
     struct alunos *prox;
@@ -61,7 +57,7 @@ void exibir_cursos(Cursos *curso);
 void buscamat(Matricula *m, int codigo, int *enc);
 int cadmatricula(Alunos **a, int codigo, int mat);
 void exibirmat(Matricula *m);
-void rmvmatricula(Matricula **m, int cod);
+void rmvmatricula(Matricula **m, int cod, int *remove) ;
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -76,7 +72,7 @@ void exibir_disc_periodo(Disciplina *disc, int periodo);
 void exibir_disc_curso_main(Cursos *curso, int idcurso);
 void exibir_disc_periodo_main(Cursos *curso, int idcurso, int periodo);
 void exibir_disc_aluno_main(Alunos *aluno, Cursos *cursos, int matricula);
-void rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc);
+int rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc);
 int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc);
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -84,7 +80,7 @@ int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc);
 /* iv. ALUNO */
 
 void converternome(char *nome);
-int cadaluno(Alunos **a, int mat, char *nome, int codcurso);
+int cadaluno(Alunos **a, Cursos *curso, int mat, char *nome, int codcurso);
 void alunosporcurso(Alunos *a, int codcurso);
 void exibiralunos(Alunos *a);
 
@@ -106,7 +102,7 @@ void gerarIdCurso(int qntperiodos, int *idcurso);
 void gerarMatriculaAluno(int idcurso, int *matricula);
 void liberar_notas(Notas *n);
 void liberar_disciplinas(Disciplina *d);
-void liberar_cursos(Cursos *c);
+void liberar_cursos(Cursos **c);
 void liberar_alunos(Alunos *a);
 void liberar_matriculas(Matricula *m);
 

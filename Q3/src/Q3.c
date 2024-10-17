@@ -178,13 +178,13 @@ Alunos* criar_aluno(int mat, char *nome, int codcurso) {
     return novo;
 }
 
-void buscarCurso(AVLCurso *cursos, int codcurso, int *enc){
+void ValidarCurso(AVLCurso *cursos, int codcurso, int *enc){
     if (cursos != NULL){
         if (cursos->info->idcurso == codcurso){
             *enc = 1;
         } else {
-            buscarCurso(cursos->esq, codcurso, enc);
-            buscarCurso(cursos->dir, codcurso, enc);
+            ValidarCurso(cursos->esq, codcurso, enc);
+            ValidarCurso(cursos->dir, codcurso, enc);
         }
     }
 }
@@ -193,7 +193,7 @@ int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso) {
     int sucesso = 0, enc = 0;
     // Se a lista estiver vazia ou o ponto de inserção for alcançado
     if (*a == NULL) {
-        buscarCurso(cursos, codcurso, &enc);
+        ValidarCurso(cursos, codcurso, &enc);
         if (enc == 1){
             *a = criar_aluno(mat, nome, codcurso);
             sucesso = 1;
@@ -204,10 +204,13 @@ int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso) {
             sucesso = 0; 
         // Verifica se o novo aluno deve ser inserido antes do aluno atual (ordenado por nome)
         else if (strcmp(nome, (*a)->nome) < 0) {
+            ValidarCurso(cursos, codcurso, &enc);
+            if (enc == 1){
             Alunos *novo = criar_aluno(mat, nome, codcurso);  
             novo->prox = *a; 
             *a = novo;
             sucesso = 1;
+            }
         }
         else 
             sucesso = cadaluno(&(*a)->prox, cursos, mat, nome, codcurso);
@@ -414,9 +417,8 @@ void buscarDisciplina(AVLDisc *disc, int cod_disc, int *enc){
 
 void buscarDisciplinaMain(AVLCurso *curso, int cod_disc, int idcurso, int *encontrou) {
     if (curso != NULL) {
-        if (curso->info->idcurso == idcurso){
+        if (curso->info->idcurso == idcurso)
             buscarDisciplina(curso->info->disc, cod_disc, encontrou);
-        }
         else {
             buscarDisciplinaMain(curso->esq, cod_disc, idcurso, encontrou);
             buscarDisciplinaMain(curso->dir, cod_disc, idcurso, encontrou);
@@ -432,10 +434,8 @@ int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat){
             buscarDisciplinaMain(aux, codigo, (*aluno)->codcurso, &enc);
             if (enc == 1)
                 inserirMatricula(&(*aluno)->mat, codigo, &sucesso);
-        } else {
-            // Recursão para o próximo aluno
+        } else
             sucesso = cadmatricula(&(*aluno)->prox, curso, codigo, mat);
-        }
     }
     return sucesso;
 }
@@ -453,9 +453,8 @@ int AlturaAVlNotas(AVLNotas *notas) {
         int esq = AlturaAVlNotas(notas->esq);
         int dir = AlturaAVlNotas(notas->dir);
         res = 1 + (esq > dir ? esq : dir);
-    } else {
+    } else
         res = -1;
-    }
     return res;
 }
 
@@ -587,14 +586,13 @@ int cadnota_nota(AVLNotas **nota, Notas *n) {
         novo->altura = 0;  
         *nota = novo;
     } else {
-        if (n->coddisc == (*nota)->info->coddisc) {
+        if (n->coddisc == (*nota)->info->coddisc)
             sucesso = 0;  
-        } else {
-            if (n->coddisc < (*nota)->info->coddisc) {
+        else {
+            if (n->coddisc < (*nota)->info->coddisc)
                 sucesso = cadnota_nota(&((*nota)->esq), n);
-            } else {
+            else 
                 sucesso = cadnota_nota(&((*nota)->dir), n);
-            }
         }
         BalanceamentoAVLNotas(nota);
         (*nota)->altura = AlturaAVlNotas(*nota);
@@ -805,35 +803,47 @@ AVLCurso* buscar_curso(AVLCurso *curso, int idcurso) {
     return aux;
 }
 
+AVLDisc* buscar_disciplina(AVLDisc *disc, int cod_disc) {
+    AVLDisc *aux;
+    aux = NULL;
+    if (disc != NULL) {
+        if (disc->info->cod_disciplina == cod_disc)
+            aux = disc;
+        else if (cod_disc < disc->info->cod_disciplina)
+            aux = buscar_disciplina(disc->esq, cod_disc);
+        else
+            aux = buscar_disciplina(disc->dir, cod_disc);
+    }
+    return aux;
+}
+
+AVLNotas* buscar_nota(AVLNotas *nota, int cod_disc) {
+    AVLNotas *aux;
+    aux = NULL;
+    if (nota != NULL) {
+        if (nota->info->coddisc == cod_disc)
+            aux = nota;
+        else if (cod_disc < nota->info->coddisc)
+            aux = buscar_nota(nota->esq, cod_disc);
+        else
+            aux = buscar_nota(nota->dir, cod_disc);
+    }
+    return aux;
+}
+
 
 void notadiscporaluno(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc){
-    if (aluno != NULL){
-        if (aluno->matricula == matricula){
+    if(aluno != NULL){
+        if(aluno->matricula == matricula){
             AVLCurso *c = buscar_curso(curso, aluno->codcurso);
-            if (c != NULL){
-                AVLDisc *d = c->info->disc;
-                while (d != NULL){
-                    if (d->info->cod_disciplina == coddisc){
-                        AVLNotas *nota = aluno->nota;
-                        while (nota != NULL){
-                            if (nota->info->coddisc == coddisc){
-                                printf("Aluno: %s\n", aluno->nome);
-                                printf("Disciplina: %d\n", nota->info->coddisc);
-                                printf("Periodo: %d\n", d->info->periodo);
-                                printf("Carga horaria: %d\n", d->info->cargah);
-                                printf("Nota Final: %.2f\n", nota->info->notafinal);
-                            }
-                            if (coddisc < nota->info->coddisc)
-                                nota = nota->esq;
-                            else
-                                nota = nota->dir;
-                        }
-                    }
-                    if (coddisc < d->info->cod_disciplina)
-                        d = d->esq;
-                    else
-                        d = d->dir;
-                }
+            AVLDisc *d = buscar_disciplina(c->info->disc, coddisc);
+            AVLNotas *n = buscar_nota(aluno->nota, coddisc);
+            if(d != NULL && n != NULL){
+                printf("Codigo: %d\n", d->info->cod_disciplina);
+                printf("Nome: %s\n", d->info->nomedisc);
+                printf("Carga horaria: %d\n", d->info->cargah);
+                printf("Nota Final: %.2f\n", n->info->notafinal);
+                printf("Semestre: %d\n", n->info->semestre);
             }
         }
         else
@@ -986,9 +996,8 @@ void exibirAlturaDisciplina(AVLDisc *disc){
 
 void exibirAlturaDisciplinaMain(AVLCurso *curso, int idcurso){
     if(curso != NULL){
-        if(curso->info->idcurso == idcurso){
+        if(curso->info->idcurso == idcurso)
             exibirAlturaDisciplina(curso->info->disc);
-        }
         else if(idcurso < curso->info->idcurso)
             exibirAlturaDisciplinaMain(curso->esq, idcurso);
         else
