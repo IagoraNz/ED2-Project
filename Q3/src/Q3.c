@@ -241,9 +241,10 @@ int cadcurso(AVLCurso **curso, Cursos *c){
             sucesso = cadcurso(&((*curso)->esq), c);
         else 
             sucesso = cadcurso(&((*curso)->dir), c);
-        
-        balancearCurso(curso);
-        (*curso)->altura = alturaCurso(*curso);
+        if (sucesso == 1){
+            balancearCurso(curso);
+            (*curso)->altura = alturaCurso(*curso);
+        }
     }
     return sucesso;
 }
@@ -294,9 +295,10 @@ int insere_disc(AVLDisc **disc, Disciplina *d){
             suc = insere_disc(&(*disc)->dir, d);
         else
             suc = 0;
-        
-        balancearDisc(disc);
-        (*disc)->altura = alturaDisc(*disc);
+        if (suc == 1){
+            balancearDisc(disc);
+            (*disc)->altura = alturaDisc(*disc);
+        }
     }
 
     return suc;
@@ -399,8 +401,10 @@ void inserirMatricula(AVLMatricula **mat, int codigo, int *igual) {
         else 
             *igual = 0;  
 
-        (*mat)->altura = alturaMatricula(*mat);  // Atualiza a altura do nó
-        BalanceamentoAVLMatricula(mat);  // Balanceia a árvore após a inserção
+        if (*igual == 1) {
+            (*mat)->altura = alturaMatricula(*mat);  // Atualiza a altura do nó
+            BalanceamentoAVLMatricula(mat);  // Balanceia a árvore após a inserção
+        }
     }
 }
 
@@ -594,8 +598,11 @@ int cadnota_nota(AVLNotas **nota, Notas *n) {
             else 
                 sucesso = cadnota_nota(&((*nota)->dir), n);
         }
-        BalanceamentoAVLNotas(nota);
-        (*nota)->altura = AlturaAVlNotas(*nota);
+
+        if (sucesso == 1) {
+            BalanceamentoAVLNotas(nota);
+            (*nota)->altura = AlturaAVlNotas(*nota);
+        }
     }
     return sucesso;
 }
@@ -856,6 +863,112 @@ void notadiscporaluno(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc
 
 /* xiii)Remover uma disciplina de um determinado curso desde que não tenha nenhum aluno matriculado na
 mesma */
+
+int ehfolhadisc(AVLDisc *disc){
+    return (disc->esq == NULL && disc->dir == NULL);
+}
+
+AVLDisc* soumfilhodisc(AVLDisc *disc){
+    AVLDisc *aux;
+    aux = NULL;
+    if (disc->dir == NULL)
+        aux = disc->esq;
+    else if (disc->esq == NULL)
+        aux = disc->dir;
+    return aux;
+}
+
+AVLDisc* menorfilhoesqdisc(AVLDisc *disc){
+    AVLDisc *aux;
+    aux = NULL;
+    if (disc != NULL)
+        aux = menorfilhoesqdisc(disc->esq);
+        if (!aux)
+            aux = disc;
+    return aux;
+}
+
+void rmvdisc(AVLDisc **disc, int cod_disc, int *remove){
+    if ((*disc != NULL)){    
+        AVLDisc *aux;
+        AVLDisc *endfilho;
+        AVLDisc *endmenorfilho;
+        if ((*disc)->info->cod_disciplina == cod_disc){
+            if(ehfolhadisc(*disc)){
+                aux = *disc;
+                free(aux);
+                *disc = NULL;
+                printf("Disciplina removida com sucesso1!\n");
+            } else if((endfilho = soumfilhodisc(*disc)) != NULL){
+                aux = *disc;
+                free(aux); 
+                *disc = endfilho;  
+                printf("Disciplina removida com sucesso2!\n");
+            } else {
+                endmenorfilho = menorfilhoesqdisc((*disc)->dir);
+                (*disc)->info->cod_disciplina = endmenorfilho->info->cod_disciplina;
+                (*disc)->info->cargah = endmenorfilho->info->cargah;
+                (*disc)->info->periodo = endmenorfilho->info->periodo;
+                strcpy((*disc)->info->nomedisc, endmenorfilho->info->nomedisc);
+                rmvdisc(&(*disc)->dir, endmenorfilho->info->cod_disciplina, remove);
+                printf("Disciplina removida com sucesso3!\n");
+            }
+            *remove = 1;
+        }
+        else if (cod_disc < (*disc)->info->cod_disciplina)
+            rmvdisc(&(*disc)->esq, cod_disc, remove);
+        else 
+            rmvdisc(&(*disc)->dir, cod_disc, remove);
+
+        if (*disc != NULL){
+            balancearDisc(disc);
+            (*disc)->altura = alturaDisc(*disc);
+        }
+    }
+}
+
+void buscamat(AVLMatricula *m, int codigo, int *enc) {
+    if (m == NULL)
+        *enc = 0;
+    else if (m->info->coddisc == codigo)
+        *enc = 1;
+    else if (codigo < m->info->coddisc)
+        buscamat(m->esq, codigo, enc);
+    else
+        buscamat(m->dir, codigo, enc);
+}
+
+void validar_rmv_disciplina(Alunos *alunos, int cod_disc, int *validar_disc) {
+    int enc = 0;
+    if (alunos != NULL && *validar_disc == 0) { // Pare se já estiver validado
+        buscamat(alunos->mat, cod_disc, &enc);
+        if (enc == 0)
+            *validar_disc = 1;
+        else
+            validar_rmv_disciplina(alunos->prox, cod_disc, validar_disc);
+    }
+}
+
+
+int rmvdisc_curso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc){
+    int remove = 0, validar_disc = 0;
+    if ((*cursos) != NULL){
+        validar_rmv_disciplina(alunos, cod_disc, &validar_disc);
+        printf("Validar: %d\n", validar_disc);
+        if (validar_disc != 0){
+            printf("Encontrado aluno matriculado na disciplina!\n");
+            if ((*cursos)->info->idcurso == idcurso){
+                printf("Disciplina nao pode ser removida!\n");
+                rmvdisc(&(*cursos)->info->disc, cod_disc, &remove);  
+            } 
+            else if (idcurso < (*cursos)->info->idcurso)
+                remove = rmvdisc_curso(&(*cursos)->esq, alunos, idcurso, cod_disc);
+            else
+                remove = rmvdisc_curso(&(*cursos)->dir, alunos, idcurso, cod_disc);
+        }
+    }
+    return remove;
+}
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

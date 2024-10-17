@@ -71,6 +71,7 @@ void exibircurso(AVLCurso *curso);
 void exibir_cursos(AVLCurso *curso);
 void exibirAlturaCurso(AVLCurso *curso);
 AVLCurso* buscar_curso(AVLCurso *curso, int idcurso);
+int rmvdisc_curso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

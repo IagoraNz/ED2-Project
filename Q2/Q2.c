@@ -9,7 +9,7 @@
 #define QTD_ALUNOS 1000
 #define QTD_DISCIPLINAS 10
 #define QTD_MATRICULAS 10
-#define REPEAT 1000
+#define REPEAT 100000
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

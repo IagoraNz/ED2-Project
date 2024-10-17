@@ -9,7 +9,7 @@
 #define QTD_ALUNOS 1000
 #define QTD_DISCIPLINAS 10
 #define QTD_MATRICULAS 10
-#define REPEAT 1000
+#define REPEAT 100000
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
@@ -279,8 +279,8 @@ double metrificar_tempo_por_busca_nota(Alunos *alunos, AVLCurso *raiz) {
     double tempo_total = 0.0;
     int i;
 
-    int aluno_rand = 876;  // Escolhe aluno aleatório
-    int disc_rand = 5;  // Escolhe disciplina aleatória
+    int aluno_rand = 543;  // Escolhe aluno aleatório
+    int disc_rand = 4;  // Escolhe disciplina aleatória
 
     // Executa a busca várias vezes para obter uma média mais precisa
     for (i = 0; i < REPEAT; i++) {

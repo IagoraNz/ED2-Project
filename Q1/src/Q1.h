@@ -6,7 +6,8 @@
 /* ESTRUTURAS DE DADOS */
 
 typedef struct disciplina {
-    int cod_disciplina;
+    int cod_disciplina; /*Gerada pelo ano, pela cargah, periodo e 5 numeros aleatório
+    no formato AAAACCPNNNNN*/
     char nomedisc[50];
     int cargah;
     int periodo;
@@ -14,7 +15,8 @@ typedef struct disciplina {
 } Disciplina;
 
 typedef struct cursos {
-    int idcurso;
+    int idcurso; /* Gerada pela quantidade de períodos, periodo * 3, periodo * 5, ano, e 4 numeros aleatorios no
+    formato PPPAAAANNNN, a quantidade de P pode variar de acordo com os múltiplos de 3 e 5 se forem de mais de um dígito*/
     char nomecurso[50];
     int qntdperiodos;
     struct cursos *esq, *dir;
@@ -34,7 +36,9 @@ typedef struct matricula {
 } Matricula;
 
 typedef struct alunos {
-    int matricula;
+    int matricula; /* Gerada pela ano atual, 4 números aleatóris, pelo codcurso e por 3 nímeros aleatórios
+    no formato AAAANNNNCNNN*/
+    // C representa PPPAAAANNNN
     char nome[50];
     int codcurso;
     struct alunos *prox;
