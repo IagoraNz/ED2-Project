@@ -264,16 +264,12 @@ int main(){
                     scanf("%d", &intbuffer);
                     if(intbuffer == 1)
                         exibircurso(curso);
-                    printf("\nDigite o codigo do curso: ");
-                    scanf("%d", &idcursocomp);
-                    if(buscacurso(curso, idcursocomp) == 1){
+                        printf("\nDigite o codigo do curso: ");
+                        scanf("%d", &idcursocomp);
                         gerarMatriculaAluno(idcursocomp, &matricula);
-                        cadaluno(&aluno, matricula, buffer, idcursocomp);
+                        cadaluno(&aluno, curso,  matricula, buffer, idcursocomp);
                         printf("\nMatricula gerada: %d\n", matricula);
                         printf("Aluno cadastrado com sucesso!\n");
-                    } 
-                    else
-                        printf("Curso nao encontrado!\n");
                     break;
                 case 2:
                     printf("\nCADASTRO DE CURSO\n");
@@ -343,7 +339,7 @@ int main(){
                     printf("\nDesaja visualizar os alunos cadastrados (1 para sim 2 para nao): ");
                     scanf("%d", &intbuffer);
                     if(intbuffer == 1)
-                        exibir_alunos(aluno);
+                        exibiralunos(aluno);
                     printf("\nDigite o matricula do aluno: ");
                     scanf("%d", &matcomp);
                     cadmatricula(&aluno, coddisccomp, matcomp);
@@ -384,7 +380,7 @@ int main(){
                     printf("\nDesaja visualizar os alunos cadastrados (1 para sim 2 para nao): ");
                     scanf("%d", &intbuffer);
                     if(intbuffer == 1)
-                        exibir_alunos(aluno);
+                        exibiralunos(aluno);
                     printf("\nDigite o matricula do aluno: ");
                     scanf("%d", &matcomp);
                     printf("\nDigite o semestre: ");
@@ -447,7 +443,7 @@ int main(){
                     scanf("%d", &matcomp);
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
-                    rmvmatdealuno(&aluno, mat, matcomp, coddisccomp);
+                    rmvmatdealuno(&aluno, matcomp, coddisccomp);
                     printf("Disciplina removida com sucesso!\n");
                     break;
                 case 15:
