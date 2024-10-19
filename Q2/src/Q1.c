@@ -536,13 +536,12 @@ Cursos* buscar_curso(Cursos *curso, int idcurso) {
 Disciplina* buscar_disciplina(Disciplina *d, int coddisc) {
     Disciplina *resultado = NULL;
     if (d != NULL) {
-        if (d->cod_disciplina == coddisc) {
+        if (d->cod_disciplina == coddisc)
             resultado = d;
-        } else if (coddisc < d->cod_disciplina) {
+        else if (coddisc < d->cod_disciplina) 
             resultado = buscar_disciplina(d->esq, coddisc);
-        } else {
+        else
             resultado = buscar_disciplina(d->dir, coddisc);
-        }
     }
     return resultado;
 }
@@ -550,13 +549,12 @@ Disciplina* buscar_disciplina(Disciplina *d, int coddisc) {
 Notas* buscar_nota(Notas *nota, int coddisc) {
     Notas *resultado = NULL;
     if (nota != NULL) {
-        if (nota->coddisc == coddisc) {
+        if (nota->coddisc == coddisc)
             resultado = nota;
-        } else if (coddisc < nota->coddisc) {
+        else if (coddisc < nota->coddisc) 
             resultado = buscar_nota(nota->esq, coddisc);
-        } else {
+        else 
             resultado = buscar_nota(nota->dir, coddisc);
-        }
     }
     return resultado;
 }
@@ -624,9 +622,9 @@ void rmvdisc(Disciplina **disc, int cod_disc, int *remove){
         Disciplina *endmenorfilho;
         if ((*disc)->cod_disciplina == cod_disc){
             if(ehfolhadisc(*disc)){
-                aux = *disc;
-                free(aux);
-                *disc = NULL;
+            aux = *disc;
+            free(aux);
+            *disc = NULL;
             } else if((endfilho = soumfilhodisc(*disc)) != NULL){
                 aux = *disc;
                 free(aux); 
@@ -677,13 +675,13 @@ int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc){
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
-int rmvmatdealuno(Alunos **a, Matricula *m, int matricula, int coddisc){
+int rmvmatdealuno(Alunos **a, int matricula, int coddisc){
     int remove = 0;
     if(*a != NULL){
         if((*a)->matricula == matricula)
             rmvmatricula(&(*a)->mat, coddisc, &remove);
         else
-            remove = rmvmatdealuno(&(*a)->prox, m, matricula, coddisc);
+            remove = rmvmatdealuno(&(*a)->prox, matricula, coddisc);
     }
     return remove;
 }
