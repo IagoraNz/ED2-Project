@@ -307,7 +307,7 @@ int main(){
                     scanf("%d", &matcomp);
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
-                    rmvmatdealuno(&aluno, matcomp, coddisccomp);
+                    rmvmatdealuno(&aluno, &curso, matcomp, coddisccomp);
                     printf("Disciplina removida com sucesso!\n");
                     break;
                 case 15:

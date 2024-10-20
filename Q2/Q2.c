@@ -4,6 +4,10 @@
 #include <time.h>
 #include "./src/Q1.h"
 
+/*---------------------------------------------------------------------------------------------------------------*/
+
+/* Criação de constantes definidas */
+
 #define QTD_CURSOS 1000
 #define ID_CURSOS 10000
 #define QTD_ALUNOS 1000
@@ -13,43 +17,71 @@
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
+/* Funções de povoamento das arvores de forma crescente, decrescente e aleatória. */
+
+/*--------------------- CRESCENTE --------------------*/
+
 /*
-Funções de povoamento das arvores de forma crescente, decrescente e aleatória.
+    summary
+        Função que povoará a árvore de cursos de forma crescente.
+    param
+        raiz: árvore de cursos
 */
-
-// CRESCENTE
-
 void povoar_cursos_crescente(Cursos **raiz){ 
-    for (int i = 1; i < QTD_CURSOS; i++)
+    for(int i = 1; i < QTD_CURSOS; i++)
         cadcurso(raiz, i, "Engenharia de Software", 8);
 }
 
+/*
+    summary
+        Função que povoará a árvore de disciplinas de forma crescente.
+    param
+        raiz: árvore de cursos
+*/
 void povoar_disciplinas_crescente(Cursos **raiz){
-    if (*raiz != NULL){
-        for (int i = 1; i < QTD_DISCIPLINAS; i++){
+    if(*raiz != NULL){
+        // Povoando a árvore de disciplinas até a quantidade de disciplinas definida
+        for(int i = 1; i < QTD_DISCIPLINAS; i++){
             Disciplina *d = (Disciplina*)malloc(sizeof(Disciplina));
-            strcpy(d->nomedisc, "Algoritmos e Estruturas de Dados");
+            strcpy(d->nomedisc, "Algoritmos e Estruturas de Dados"); // Nome arbitrário, apenas para preencher
+            // Bem como os outros campos
             d->cargah = 60;
             d->periodo = 3;
             d->cod_disciplina = i;
             caddisc(raiz, d, (*raiz)->idcurso);
         }
+        // Recorre na árvore de cursos
         povoar_disciplinas_crescente(&(*raiz)->esq);
         povoar_disciplinas_crescente(&(*raiz)->dir);
     }
 }
 
+/*
+    summary
+        Função que povoará a árvore de matrículas de forma crescente.
+    param
+        aluno: árvore de alunos
+*/
 void povoar_matriculas_crescente(Alunos *aluno){
-    if (aluno != NULL){
-        for (int i = 1; i < QTD_MATRICULAS; i++)
+    if(aluno != NULL){
+        // Povoando a árvore de matrículas até a quantidade de matrículas definida
+        for(int i = 1; i < QTD_MATRICULAS; i++)
             cadmatricula(&aluno, i, aluno->matricula);
         povoar_matriculas_crescente(aluno->prox);
     }
 }
 
+/*
+    summary
+        Função que povoará a árvore de notas de forma crescente.
+    param
+        aluno: árvore de alunos
+*/
 void povoar_notas_crescente(Alunos *aluno){
     if (aluno != NULL){
-        for (int i = 1; i < QTD_DISCIPLINAS; i++){
+        // Povoando a árvore de notas até a quantidade de disciplinas definida
+        for(int i = 1; i < QTD_DISCIPLINAS; i++){
+            // Alocando espaço para a nota
             Notas *n = (Notas*)malloc(sizeof(Notas));
             n->coddisc = i;
             n->semestre = 3;
@@ -60,25 +92,48 @@ void povoar_notas_crescente(Alunos *aluno){
     }
 }
 
+/*
+    summary
+        Função que povoará a árvore de alunos de forma crescente.
+    param
+        aluno: árvore de alunos
+        curso: árvore de cursos
+*/
 void povoar_alunos_crescente(Alunos **aluno, Cursos *curso){
     int sucesso = 0;
-    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
-    for (int i = 1; i < QTD_ALUNOS; i++)
+    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"}; // Nomes arbitrários
+    // Povoando a árvore de alunos até a quantidade de alunos definida
+    for(int i = 1; i < QTD_ALUNOS; i++)
         cadaluno(aluno, curso, i, nomes[rand() % 5], rand() % QTD_CURSOS);
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
-// DESCRESCENTE
+/*--------------------DESCRESCENTE --------------------*/
 
+/*
+    summary
+        Função que povoará a árvore de cursos de forma decrescente.
+    param
+        raiz: árvore de cursos
+*/
 void povoar_cursos_decrescente(Cursos **raiz){
-    for (int i = QTD_CURSOS; i > 1; i--)
-        cadcurso(raiz, i, "Engenharia de Software", 8);
+    // Povoando a árvore de cursos até a quantidade de cursos definida
+    for(int i = QTD_CURSOS; i > 1; i--)
+        cadcurso(raiz, i, "Engenharia de Software", 8); // Nome arbitrário
 }
 
+/*
+    summary
+        Função que povoará a árvore de disciplinas de forma decrescente.
+    param
+        raiz: árvore de cursos
+*/
 void povoar_disciplinas_decrescente(Cursos **raiz){
-    if (*raiz != NULL){
-        for (int i = QTD_DISCIPLINAS; i > 1; i--){
+    if(*raiz != NULL){
+        // Povoando a árvore de disciplinas até a quantidade de disciplinas definida
+        for(int i = QTD_DISCIPLINAS; i > 1; i--){
+            // Alocando espaço para a disciplina
             Disciplina *d = (Disciplina*)malloc(sizeof(Disciplina));
             strcpy(d->nomedisc, "Algoritmos e Estruturas de Dados");
             d->cargah = 60;
@@ -86,22 +141,37 @@ void povoar_disciplinas_decrescente(Cursos **raiz){
             d->cod_disciplina = i;
             caddisc(raiz, d, (*raiz)->idcurso);
         }
+        // Recorre na árvore de cursos
         povoar_disciplinas_decrescente(&(*raiz)->esq);
         povoar_disciplinas_decrescente(&(*raiz)->dir);
     }
 }
 
+/*
+    summary
+        Função que povoará a árvore de matrículas de forma decrescente.
+    param
+        aluno: árvore de alunos
+*/
 void povoar_matriculas_decrescente(Alunos *aluno){
-    if (aluno != NULL){
-        for (int i = QTD_MATRICULAS; i > 1; i--)
-            cadmatricula(&aluno, i, aluno->matricula);
+    // Povoando a árvore de matrículas até a quantidade de matrículas definida
+    if(aluno != NULL){
+        for(int i = QTD_MATRICULAS; i > 1; i--)
+            cadmatricula(&aluno, i, aluno->matricula); // Matrícula do aluno
         povoar_matriculas_decrescente(aluno->prox);
     }
 }
 
+/*
+    summary
+        Função que povoará a árvore de notas de forma decrescente.
+    param
+        aluno: árvore de alunos
+*/
 void povoar_notas_decrescente(Alunos *aluno){
-    if (aluno != NULL){
-        for (int i = QTD_DISCIPLINAS; i > 1; i--){
+    if(aluno != NULL){
+        // Povoando a árvore de notas até a quantidade de disciplinas definida
+        for(int i = QTD_DISCIPLINAS; i > 1; i--){
             Notas *n = (Notas*)malloc(sizeof(Notas));
             n->coddisc = i;
             n->semestre = 3;
@@ -112,16 +182,29 @@ void povoar_notas_decrescente(Alunos *aluno){
     }
 }
 
+/*
+    summary
+        Função que povoará a árvore de alunos de forma decrescente.
+    param
+        aluno: árvore de alunos
+        curso: árvore de cursos
+*/
 void povoar_alunos_descrescente(Alunos **aluno, Cursos *curso){
-    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
-    for (int i = QTD_ALUNOS; i > 1; i--)
+    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"}; // Nomes arbitrários
+    for(int i = QTD_ALUNOS; i > 1; i--) // Povoando a árvore de alunos até a quantidade de alunos definida
         cadaluno(aluno, curso, i, nomes[rand() % 5], rand() % QTD_CURSOS);
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
-// ALEATÓRIO
+/*--------------------- ALEATÓRIO --------------------*/
 
+/*
+    summary
+        Função que povoará a árvore de cursos de forma aleatória.
+    param
+        raiz: árvore de cursos
+*/
 void povoar_cursos_aleatorio(Cursos **raiz){
     int i = 0, sucesso = 0;
     while (i < QTD_CURSOS){
@@ -130,11 +213,18 @@ void povoar_cursos_aleatorio(Cursos **raiz){
     }
 }
 
+/*
+    summary
+        Função que povoará a árvore de disciplinas de forma aleatória.
+    param
+        raiz: árvore de cursos
+*/
 void povoar_disciplinas_aleatorio(Cursos **raiz){
-    if (*raiz != NULL){
+    if(*raiz != NULL){
         int i = 0;
-        while (i < QTD_DISCIPLINAS){
+        while(i < QTD_DISCIPLINAS){ // Povoando a árvore de disciplinas até a quantidade de disciplinas definida
             Disciplina *d = (Disciplina*)malloc(sizeof(Disciplina));
+            // Nome e dados arbitrários
             strcpy(d->nomedisc, "Algoritmos");
             d->cod_disciplina = rand() % QTD_DISCIPLINAS + 1;
             d->cargah = 60;
@@ -142,38 +232,59 @@ void povoar_disciplinas_aleatorio(Cursos **raiz){
             if (caddisc(raiz, d, (*raiz)->idcurso) == 1)
                 i++;
         }
+        // Recorre na árvore de cursos
         povoar_disciplinas_aleatorio(&(*raiz)->esq);
         povoar_disciplinas_aleatorio(&(*raiz)->dir);
     }
 }
 
+/*
+    summary
+        Função que povoará a árvore de matrículas de forma aleatória.
+    param
+        aluno: árvore de alunos
+*/
 void povoar_alunos_aleatorio(Alunos **aluno, Cursos *curso){
-    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"};
+    char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"}; // Nomes arbitrários
     int i = 0;
-    for (i = 0; i < QTD_ALUNOS; i++)
+    for (i = 0; i < QTD_ALUNOS; i++) // Povoando a árvore de alunos até a quantidade de alunos definida
         cadaluno(aluno, curso, i, nomes[rand() % 5], rand() % QTD_CURSOS + 1); 
 }
 
+/*
+    summary
+        Função que povoará a árvore de matrículas de forma aleatória.
+    param
+        aluno: árvore de alunos
+*/
 void povoar_matricula_aleatorio(Alunos *aluno){
-    if (aluno != NULL){
+    if(aluno != NULL){
         int i = 0;
-        while (i < QTD_MATRICULAS){
-            if (cadmatricula(&aluno, rand() % QTD_MATRICULAS + 1, aluno->matricula) == 1)
+        while(i < QTD_MATRICULAS){ // Povoando a árvore de matrículas até a quantidade de matrículas definida
+            if(cadmatricula(&aluno, rand() % QTD_MATRICULAS + 1, aluno->matricula) == 1)
                 i++;
         }
+        // Recorre na árvore de alunos
         povoar_matricula_aleatorio(aluno->prox);
     }
 }
 
+/*
+    summary
+        Função que povoará a árvore de notas de forma aleatória.
+    param
+        aluno: árvore de alunos
+*/
 void povoar_notas_aleatorio(Alunos *aluno){
-    if (aluno != NULL){
+    if(aluno != NULL){
         int i = 0;
-        while (i < QTD_DISCIPLINAS){
+        while(i < QTD_DISCIPLINAS){ // Povoando a árvore de notas até a quantidade de disciplinas definida
             Notas *n = (Notas*)malloc(sizeof(Notas));
+            // Dados arbitrários
             n->coddisc = rand() % QTD_DISCIPLINAS + 1;
             n->semestre = 3;
             n->notafinal = 8;
-            if (cadnota(&aluno, aluno->matricula, n->coddisc, n->semestre, n->notafinal) == 1)
+            if(cadnota(&aluno, aluno->matricula, n->coddisc, n->semestre, n->notafinal) == 1)
                 i++;
         }
         povoar_notas_aleatorio(aluno->prox);
@@ -182,6 +293,15 @@ void povoar_notas_aleatorio(Alunos *aluno){
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
+/*--------------------- CHAMADAS --------------------*/
+
+/*
+    summary
+        Função que chama as funções de povoamento das árvores de forma crescente
+    param
+        raiz: árvore de cursos
+        alunos: árvore de alunos
+*/
 void povoamento_crescente(Cursos **raiz, Alunos **alunos){
     povoar_cursos_crescente(raiz);
     povoar_disciplinas_crescente(raiz);
@@ -190,6 +310,13 @@ void povoamento_crescente(Cursos **raiz, Alunos **alunos){
     povoar_notas_crescente(*alunos);
 }
 
+/*
+    summary
+        Função que chama as funções de povoamento das árvores de forma decrescente
+    param
+        raiz: árvore de cursos
+        alunos: árvore de alunos
+*/
 void povoamento_decrescente(Cursos **raiz, Alunos **alunos){
     povoar_cursos_decrescente(raiz);
     povoar_disciplinas_decrescente(raiz);
@@ -198,6 +325,13 @@ void povoamento_decrescente(Cursos **raiz, Alunos **alunos){
     povoar_notas_decrescente(*alunos);
 }
 
+/*
+    summary
+        Função que chama as funções de povoamento das árvores de forma aleatória
+    param
+        raiz: árvore de cursos
+        alunos: árvore de alunos
+*/
 void povoamento_aleatorio(Cursos **raiz, Alunos **alunos){
     povoar_cursos_aleatorio(raiz);
     povoar_disciplinas_aleatorio(raiz);
@@ -206,6 +340,10 @@ void povoamento_aleatorio(Cursos **raiz, Alunos **alunos){
     povoar_notas_aleatorio(*alunos);
 }
 
+/*
+    summary
+        Função que exibe o menu de povoamento das árvores
+*/
 void menu_povoamento(){
     printf("1 - Crescente\n");
     printf("2 - Decrescente\n");
@@ -215,19 +353,29 @@ void menu_povoamento(){
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
-// METRIFICANDO O TEMPO
+/*--------------------- METRIFICANDO O TEMPO --------------------*/
 
-double metrificar_tempo_por_busca_nota(Alunos *alunos, Cursos *raiz) {
+/*
+    summary
+        Função que metrifica o tempo de busca da nota de uma disciplina de um determinado aluno
+    param
+        alunos: árvore de alunos
+        raiz: árvore de cursos
+    return
+        Retorna o tempo médio por busca
+*/
+double metrificar_tempo_por_busca_nota(Alunos *alunos, Cursos *raiz){
+    // Variáveis para medir o tempo
     clock_t inicio, fim;
     double tempo_total = 0.0;
     int i;
 
+    // Aluno e disciplina aleatórios
     int aluno_rand = 543;
     int disc_rand = 4;
 
-
     // Executa a busca várias vezes para obter uma média mais precisa
-    for (i = 0; i < REPEAT; i++) {
+    for(i = 0; i < REPEAT; i++){
         Alunos *aux = alunos;
         Cursos *aux2 = raiz;
         inicio = clock();
@@ -235,18 +383,29 @@ double metrificar_tempo_por_busca_nota(Alunos *alunos, Cursos *raiz) {
         fim = clock();
 
         // Soma o tempo de cada execução
-        tempo_total += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+        tempo_total += ((double)(fim - inicio)) / CLOCKS_PER_SEC; 
     }
 
     // Retorna o tempo médio por busca
     return tempo_total / REPEAT;
 }
 
+/*
+    summary
+        Função que metrifica o tempo de inserção de um curso
+    param
+        curso: árvore de cursos
+        opc: opção de povoamento
+    return
+        Retorna o tempo médio por inserção
+*/
 double metrificar_tempo_por_insercao(Cursos **curso, int opc){
+    // Variáveis para medir o tempo
     clock_t inicio, fim;
     double tempo = 0.0;
     int i;
     
+    // Executa a inserção várias vezes para obter uma média mais precisa
     for(i = 0; i < REPEAT; i++){
         inicio = clock();
         cadcurso(curso, rand() % ID_CURSOS + 1, "Curso", 8);
@@ -254,7 +413,9 @@ double metrificar_tempo_por_insercao(Cursos **curso, int opc){
 
         tempo += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
     }
+    // Libera a árvore de cursos
     liberar_cursos(curso);
+    // Povoamento da árvore de cursos entre crescente, decrescente e aleatório a cada execução
     if (opc == 1)
         povoar_cursos_crescente(curso);
     else if (opc == 2)
@@ -266,7 +427,10 @@ double metrificar_tempo_por_insercao(Cursos **curso, int opc){
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
-int main (){
+/*--------------------- MAIN --------------------*/
+
+int main(){
+    // Inicializando as variáveis
     srand(time(NULL));
     Cursos *raiz;
     Alunos *alunos;
@@ -276,6 +440,7 @@ int main (){
     int op, i;
     double tempo;
 
+    // Menu de povoamento das árvores
     menu_povoamento();
     scanf("%d", &op);
     switch (op)
@@ -292,7 +457,7 @@ int main (){
     default:
         break;
     }
-    printf("Busca\n");
+
     // Metrificando o tempo de busca da nota de uma disciplina de um determinado aluno.
     printf("BUSCA\n\n");
     for(i = 0; i < 30; i++){
@@ -300,8 +465,6 @@ int main (){
         printf("%.2f\n", tempo * 1000000); // Microsegundos
     }
 
-
-    printf("Insercao\n");
     // Metrificando o tempo de inserção de um curso
     printf("INSERCAO\n\n");
     for(i = 0; i < 30; i++){
@@ -310,6 +473,7 @@ int main (){
     }
 
     system("PAUSE");
+    // Liberando a memória alocada
     liberar_alunos(alunos);
     liberar_cursos(&raiz);
     return 0;
