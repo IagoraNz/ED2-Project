@@ -51,50 +51,46 @@ typedef struct alunos {
 /* i. CURSO */
 
 int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos);
-void exibircurso(Cursos *c);
-int buscacurso(Cursos *curso, int idcurso);
 void exibir_cursos(Cursos *curso);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* ii. MATRÍCULA */
-void buscamat(Matricula *m, int codigo, int *enc);
-int cadmatricula(Alunos **a, int codigo, int mat);
-void exibirmat(Matricula *m);
-void rmvmatricula(Matricula **m, int cod, int *remove) ;
+void buscamat(Matricula *mat, int codigo, int *enc);
+int cadmatricula(Alunos **aluno, int codigo, int mat);
+void exibirmat(Matricula *mat);
+void rmvmatricula(Matricula **mat, int cod, int *remove) ;
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* iii. DISCIPLINA */
 
-void validar_periodo(Cursos *curso,int *validar, int periodo);
-void validar_cargahoraria(int *validar, int cargahoraria);
-void insere_disc(Disciplina **disc, Disciplina *No, int *insere);
+void validarPeriodo(Cursos *curso,int *validar, int periodo);
+void validarCargahoraria(int *validar, int cargahoraria);
+void inseredisc(Disciplina **disc, Disciplina *No, int *insere);
 int caddisc(Cursos **curso, Disciplina *No, int idcurso);
-void exibir_disc_curso(Disciplina *disc);
-void exibir_disc_periodo(Disciplina *disc, int periodo);
-void exibir_disc_curso_main(Cursos *curso, int idcurso);
-void exibir_disc_periodo_main(Cursos *curso, int idcurso, int periodo);
-void exibir_disc_aluno_main(Alunos *aluno, Cursos *cursos, int matricula);
-int rmvmatdealuno(Alunos **a, int matricula, int coddisc);
-int rmvdisc_curso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc);
+void exibirDiscCurso(Cursos *curso, int idcurso);
+void exibirDiscPeriodo(Cursos *curso, int idcurso, int periodo);
+void exibirDiscAluno(Alunos *aluno, Cursos *cursos, int matricula);
+int rmvmatdealuno(Alunos **aluno, Matricula *mat, int matricula, int coddisc);
+int rmvDiscCurso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* iv. ALUNO */
 
 void converternome(char *nome);
-int cadaluno(Alunos **a, Cursos *curso, int mat, char *nome, int codcurso);
-void alunosporcurso(Alunos *a, int codcurso);
-void exibiralunos(Alunos *a);
+int cadaluno(Alunos **aluno, Cursos *curso, int mat, char *nome, int codcurso);
+void alunosporcurso(Alunos *aluno, int codcurso);
+void exibiralunos(Alunos *aluno);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* v. NOTA */
 
-int cadnota(Alunos **a, int mat, int cod, int semestre, float notafinal);
-void notasdiscperiodoaluno(Alunos *a, int periodo, int mat);
-void notadiscporaluno(Alunos *a, Cursos *c, int matricula, int coddisc);
+int cadnota(Alunos **aluno, int mat, int cod, int semestre, float notafinal);
+void notasdiscperiodoaluno(Alunos *aluno, int periodo, int mat);
+void notadiscporaluno(Alunos *aluno, Cursos *curso, int matricula, int coddisc);
 void exibir_hist_aluno(Alunos *aluno, Cursos *curso, int mat_aluno);
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -104,11 +100,11 @@ void exibir_hist_aluno(Alunos *aluno, Cursos *curso, int mat_aluno);
 void gerarCodDisciplina(int cargah, int periodo, int *coddisc);
 void gerarIdCurso(int qntperiodos, int *idcurso);
 void gerarMatriculaAluno(int idcurso, int *matricula);
-void liberar_notas(Notas *n);
-void liberar_disciplinas(Disciplina *d);
-void liberar_cursos(Cursos **c);
-void liberar_alunos(Alunos *a);
-void liberar_matriculas(Matricula *m);
+void liberar_notas(Notas **nota);
+void liberar_disciplinas(Disciplina **disc);
+void liberar_cursos(Cursos **curso);
+void liberar_alunos(Alunos **aluno);
+void liberar_matriculas(Matricula **mat);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 #endif
