@@ -246,6 +246,7 @@ double metrificar_tempo_por_insercao(Cursos **curso, int opc){
     clock_t inicio, fim;
     double tempo = 0.0;
     int i;
+    
     for(i = 0; i < REPEAT; i++){
         inicio = clock();
         cadcurso(curso, rand() % ID_CURSOS + 1, "Curso", 8);
@@ -262,6 +263,7 @@ double metrificar_tempo_por_insercao(Cursos **curso, int opc){
         povoar_cursos_aleatorio(curso);
     return tempo / REPEAT;
 }
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 int main (){
@@ -292,6 +294,7 @@ int main (){
     }
     printf("Busca\n");
     // Metrificando o tempo de busca da nota de uma disciplina de um determinado aluno.
+    printf("BUSCA\n\n");
     for(i = 0; i < 30; i++){
         tempo = metrificar_tempo_por_busca_nota(alunos, raiz);
         printf("%.2f\n", tempo * 1000000); // Microsegundos
@@ -300,9 +303,10 @@ int main (){
 
     printf("Insercao\n");
     // Metrificando o tempo de inserção de um curso
+    printf("INSERCAO\n\n");
     for(i = 0; i < 30; i++){
         tempo = metrificar_tempo_por_insercao(&raiz, op);
-        printf("%.2f\n", tempo*1000000); // Microsegundos
+        printf("%.2f\n", tempo * 1000000); // Microsegundos
     }
 
     system("PAUSE");

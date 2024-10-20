@@ -26,7 +26,7 @@ int main(){
 
     printf("\nExibindo os cursos\n");
 
-    exibircurso(c);
+    exibir_cursos(c);
 
     printf("\nCadastrando disciplinas\n");
 
@@ -66,7 +66,7 @@ int main(){
 
     printf("Exibindo as disciplinas\n");
 
-    exibir_disc_curso_main(c, 4);
+    exibirDiscCurso(c, 4);
 
     printf("\nCadastrando alunos\n");
 
@@ -108,10 +108,10 @@ int main(){
 
     printf("\nExibindo as disciplinas dos alunos\n");
 
-    exibir_disc_aluno_main(a, c, 2021000301);
+    exibirDiscAluno(a, c, 2021000301);
 
     printf("Exibindo as disciplinas dos alunos\n");
-    exibir_disc_aluno_main(a, c, 2021000301);
+    exibirDiscAluno(a, c, 2021000301);
 
     printf("Cadastrando notas\n");
     int teste = 0;
@@ -138,25 +138,25 @@ int main(){
 
     printf("Mostrar todos os cursos do Campus\n");
 
-    exibircurso(c);
+    exibir_cursos(c);
 
     printf("\n\n");
 
     printf("Mostrar todas as disciplinas de um determinado curso\n");
 
-    exibir_disc_curso_main(c, 4);
+    exibirDiscCurso(c, 4);
 
     printf("\n\n");
 
     printf("ix) Mostrar todas as disciplinas de um determinado periodo de um curso\n");
 
-    exibir_disc_periodo_main(c, 4, 1);
+    exibirDiscPeriodo(c, 4, 1);
 
     printf("\n\n");
 
     printf("x) Mostrar todas as disciplinas que um determinado aluno esta matriculado\n");
 
-    exibir_disc_aluno_main(a, c, 2021000301);
+    exibirDiscAluno(a, c, 2021000301);
 
     printf("\n\n");
 
@@ -174,12 +174,12 @@ int main(){
 
     printf("xiii) Remover uma disciplina de um determinado curso desde que nao tenha nenhum aluno matriculado na mesma\n");
 
-    rmvdisc_curso(&c, a, 4, 1001);
+    rmvDiscCurso(&c, a, 4, 1001);
     printf("Disciplina removida com sucesso!\n");
 
     // Exibindo as disciplinas do curso 4 após a remoção da disciplina 1001
 
-    exibir_disc_curso_main(c, 4);
+    exibirDiscCurso(c, 4);
 
     printf("\n\n");
 
@@ -193,7 +193,7 @@ int main(){
 
     // Exibindo as disciplinas do aluno 2021000301 após a remoção da disciplina 1001
 
-    exibir_disc_aluno_main(a, c, 2021000301);
+    exibirDiscAluno(a, c, 2021000301);
 
     printf("\n\n");
 
@@ -203,8 +203,8 @@ int main(){
     
     // Liberando a memória alocada
     liberar_cursos(&c);
-    liberar_alunos(a);
-    liberar_matriculas(m);
+    liberar_alunos(&a);
+    liberar_matriculas(&m);
 
     system("PAUSE");
 
