@@ -185,7 +185,7 @@ int main(){
 
     printf("xiv) Permita remover uma disciplina da arvore de matricula de um determinado aluno.\n");
     int remove;
-    remove = rmvmatdealuno(&a, m, 2021000301, 1010);
+    remove = rmvmatdealuno(&a, 2021000301, 1010);
     if (remove == 1)
         printf("Disciplina removida com sucesso!\n");
     else

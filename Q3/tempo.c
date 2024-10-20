@@ -365,12 +365,12 @@ int main (){
         printf("%.2f\n", tempo * 1000000); // Microsegundos
     }
 
-    // // Metrificando o tempo de inserção de um curso
-    // printf("INSERCAO\n\n");
-    // for(i = 0; i < 30; i++){
-    //     tempo = metrificar_tempo_por_insercao(&raiz, op);
-    //     printf("%.2f\n", tempo * 1000000); // Microsegundos
-    // }
+    // Metrificando o tempo de inserção de um curso
+    printf("INSERCAO\n\n");
+    for(i = 0; i < 30; i++){
+        tempo = metrificar_tempo_por_insercao(&raiz, op);
+        printf("%.2f\n", tempo * 1000000); // Microsegundos
+    }
 
     liberarAVLCurso(&raiz);
     liberarAlunos(&alunos);
