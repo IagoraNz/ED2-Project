@@ -118,6 +118,15 @@ int cadaluno(Alunos **aluno, Cursos *curso, int mat, char *nome, int codcurso){
     return sucesso; 
 }
 
+void exibir_alunos(Alunos *aluno){
+    if(aluno != NULL){
+        printf("Matricula: %d\n", aluno->matricula);
+        printf("Nome: %s\n", aluno->nome);
+        printf("Codigo do curso: %d\n", aluno->codcurso);
+        printf("\n");
+        exibir_alunos(aluno->prox);
+    }
+}
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* ii) Cadastrar cursos a qualquer momento na árvore de curso, de forma que o usuário não precise cadastrar
@@ -938,7 +947,7 @@ void notadiscporaluno(Alunos *aluno, Cursos *curso, int matricula, int coddisc){
                         printf("Disciplina: %s\n", d->nomedisc);
                         printf("Nota: %.2f\n", nota->notafinal);
                         printf("Periodo: %d\n", d->periodo);
-                        printf("Carga horaria: %d\n", d->cargah);
+                        printf("Carga Horaria: %d\n", d->cargah);
                     }
                 }
             }
@@ -1097,7 +1106,6 @@ int rmvDiscCurso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc){
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
-
 /* 
     summary
         Função principal responsável por remover uma disciplina da árvore de matrícula de um determinado aluno
