@@ -178,83 +178,75 @@ Alunos* criar_aluno(int mat, char *nome, int codcurso) {
     return novo;
 }
 
-void ValidarCurso(AVLCurso *cursos, int codcurso, int *enc){
+void validacurso(AVLCurso *cursos, int codcurso, int *enc){
     if (cursos != NULL){
         if (cursos->info->idcurso == codcurso){
             *enc = 1;
         } else {
-            ValidarCurso(cursos->esq, codcurso, enc);
-            ValidarCurso(cursos->dir, codcurso, enc);
+            validacurso(cursos->esq, codcurso, enc);
+            validacurso(cursos->dir, codcurso, enc);
         }
     }
 }
 
-int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso) {
+int cadaluno(Alunos **aluno, AVLCurso *cursos, int mat, char *nome, int codcurso) {
     int sucesso = 0, enc = 0;
     // Se a lista estiver vazia ou o ponto de inserção for alcançado
-    if (*a == NULL) {
-        ValidarCurso(cursos, codcurso, &enc);
-        if (enc == 1){
-            *a = criar_aluno(mat, nome, codcurso);
+    if (*aluno == NULL) {
+        validacurso(cursos, codcurso, &enc);
+        if (enc == 1) {
+            *aluno = criar_aluno(mat, nome, codcurso);
             sucesso = 1;
         }
-    }
-    else {
-        if ((*a)->matricula == mat)
+    } else {
+        if ((*aluno)->matricula == mat)
             sucesso = 0; 
         // Verifica se o novo aluno deve ser inserido antes do aluno atual (ordenado por nome)
-        else if (strcmp(nome, (*a)->nome) < 0) {
-            ValidarCurso(cursos, codcurso, &enc);
-            if (enc == 1){
-            Alunos *novo = criar_aluno(mat, nome, codcurso);  
-            novo->prox = *a; 
-            *a = novo;
-            sucesso = 1;
+        else if (strcmp(nome, (*aluno)->nome) < 0) {
+            validacurso(cursos, codcurso, &enc);
+            if (enc == 1) {
+                Alunos *novo = criar_aluno(mat, nome, codcurso);  
+                novo->prox = *aluno; 
+                *aluno = novo;
+                sucesso = 1;
             }
-        }
-        else 
-            sucesso = cadaluno(&(*a)->prox, cursos, mat, nome, codcurso);
+        } else 
+            sucesso = cadaluno(&(*aluno)->prox, cursos, mat, nome, codcurso);
     }
     
     return sucesso; 
 }
+
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* ii) Cadastrar cursos a qualquer momento na árvore de curso, de forma que o usuário não precise cadastrar
 as disciplinas para permitir o cadastro do curso. */
 
-int cadcurso(AVLCurso **curso, Cursos *c){
+int cadcurso(AVLCurso **curso, Cursos *no) {
     int sucesso = 0;
-    if(*curso == NULL){
+    if (*curso == NULL) {
         *curso = (AVLCurso*)malloc(sizeof(AVLCurso));
-        (*curso)->info = c;
+        (*curso)->info = no;
         (*curso)->esq = NULL;
         (*curso)->dir = NULL;
         (*curso)->altura = 0;
         sucesso = 1;    
     }
-    else{
-        if (c->idcurso == (*curso)->info->idcurso)
+    else {
+        if (no->idcurso == (*curso)->info->idcurso)
             sucesso = 0;
-        else if(c->idcurso < (*curso)->info->idcurso)
-            sucesso = cadcurso(&((*curso)->esq), c);
+        else if (no->idcurso < (*curso)->info->idcurso)
+            sucesso = cadcurso(&((*curso)->esq), no);
         else 
-            sucesso = cadcurso(&((*curso)->dir), c);
-        if (sucesso == 1){
+            sucesso = cadcurso(&((*curso)->dir), no);
+        
+        if (sucesso == 1) {
             balancearCurso(curso);
             (*curso)->altura = alturaCurso(*curso);
         }
     }
     return sucesso;
-}
-
-void exibircurso(AVLCurso *curso){
-    if(curso != NULL){
-        exibircurso(curso->esq);
-        printf("%d %s %d %d\n", curso->info->idcurso, curso->info->nomecurso, curso->info->qntdperiodos, curso->altura);
-        exibircurso(curso->dir);
-    }
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -278,24 +270,25 @@ int validar_periodo(AVLCurso *curso, int periodo){
     return validar;
 }
 
-int insere_disc(AVLDisc **disc, Disciplina *d){
+int insere_disc(AVLDisc **disc, Disciplina *no) {
     int suc = 0;
-    if((*disc) == NULL){
+    if ((*disc) == NULL) {
         *disc = (AVLDisc*)malloc(sizeof(AVLDisc));
-        (*disc)->info = d;
+        (*disc)->info = no;
         (*disc)->esq = NULL;
         (*disc)->dir = NULL;
         (*disc)->altura = 0;
         suc = 1;
     } 
-    else{
-        if(d->cod_disciplina < (*disc)->info->cod_disciplina)
-            suc = insere_disc(&(*disc)->esq, d);
-        else if(d->cod_disciplina > (*disc)->info->cod_disciplina)
-            suc = insere_disc(&(*disc)->dir, d);
+    else {
+        if (no->cod_disciplina < (*disc)->info->cod_disciplina)
+            suc = insere_disc(&(*disc)->esq, no);
+        else if (no->cod_disciplina > (*disc)->info->cod_disciplina)
+            suc = insere_disc(&(*disc)->dir, no);
         else
             suc = 0;
-        if (suc == 1){
+
+        if (suc == 1) {
             balancearDisc(disc);
             (*disc)->altura = alturaDisc(*disc);
         }
@@ -336,9 +329,8 @@ int alturaMatricula(AVLMatricula *raiz) {
         int esq = alturaMatricula(raiz->esq);  // Altura da subárvore esquerda
         int dir = alturaMatricula(raiz->dir);  // Altura da subárvore direita
         res = 1 + (esq > dir ? esq : dir);  // A altura do nó é a maior altura dos filhos + 1
-    } else {
+    } else
         res = -1;  // Caso base: árvore vazia tem altura -1
-    }
 
     return res;
 }
@@ -503,100 +495,100 @@ void BalanceamentoAVLNotas(AVLNotas **notas){
     }
 }
 
-void busca_disc(AVLMatricula *m, int cod, int *enc){ 
-    if(m != NULL){
-        if(m->info->coddisc == cod)
+void busca_disc(AVLMatricula *mat, int cod, int *enc) { 
+    if (mat != NULL) {
+        if (mat->info->coddisc == cod)
             *enc = 1;
-        else if(cod < m->info->coddisc)
-            busca_disc(m->esq, cod, enc);
+        else if (cod < mat->info->coddisc)
+            busca_disc(mat->esq, cod, enc);
         else
-            busca_disc(m->dir, cod, enc);
+            busca_disc(mat->dir, cod, enc);
     }
 }
 
-int ehfolhamat(AVLMatricula *m){
-    return (m->esq == NULL && m->dir == NULL);
+int ehfolhamat(AVLMatricula *mat) {
+    return (mat->esq == NULL && mat->dir == NULL);
 }
 
-AVLMatricula* soumfilhomat(AVLMatricula *m){
+AVLMatricula* soumfilhomat(AVLMatricula *mat) {
     AVLMatricula *aux;
     aux = NULL;
-    if (m->esq == NULL)
-        aux = m->dir;
-    else if (m->dir == NULL)
-        aux = m->esq;
+    if (mat->esq == NULL)
+        aux = mat->dir;
+    else if (mat->dir == NULL)
+        aux = mat->esq;
 
     return aux;
 }
 
-AVLMatricula* menorfilhoesqmat(AVLMatricula *m) {
+AVLMatricula* menorfilhoesqmat(AVLMatricula *mat) {
     AVLMatricula *aux;
     aux = NULL;
-    if (m){
-        aux = menorfilhoesqmat(m->esq);
+    if (mat) {
+        aux = menorfilhoesqmat(mat->esq);
         if (!aux)
-            aux = m;
+            aux = mat;
     }
     return aux;
 }
 
-void rmvmatricula(AVLMatricula **m, int cod) {
-    if (*m != NULL) {
+void rmvmatricula(AVLMatricula **mat, int cod) {
+    if (*mat != NULL) {
         // Se encontrou o nó a ser removido
-        if ((*m)->info->coddisc == cod) {
+        if ((*mat)->info->coddisc == cod) {
             AVLMatricula *aux;
             
             // Caso 1: O nó é uma folha (sem filhos)
-            if (ehfolhamat(*m)) {
-                aux = *m;
+            if (ehfolhamat(*mat)) {
+                aux = *mat;
                 free(aux);
-                *m = NULL;
+                *mat = NULL;
             } 
             // Caso 2: O nó tem apenas um filho
-            else if ((aux = soumfilhomat(*m)) != NULL) {
+            else if ((aux = soumfilhomat(*mat)) != NULL) {
                 AVLMatricula *temp;
-                temp = *m;
+                temp = *mat;
                 free(temp);
-                *m = aux;  // Substitui o nó pelo seu único filho
+                *mat = aux;  // Substitui o nó pelo seu único filho
             } 
             else {
-                AVLMatricula *menorfilho = menorfilhoesqmat((*m)->dir);
-                (*m)->info->coddisc = menorfilho->info->coddisc;
-                rmvmatricula(&(*m)->dir, menorfilho->info->coddisc);
+                AVLMatricula *menorfilho = menorfilhoesqmat((*mat)->dir);
+                (*mat)->info->coddisc = menorfilho->info->coddisc;
+                rmvmatricula(&(*mat)->dir, menorfilho->info->coddisc);
             }
         } 
         // Se o código é menor, continua na subárvore esquerda
-        else if (cod < (*m)->info->coddisc)
-            rmvmatricula(&(*m)->esq, cod);
+        else if (cod < (*mat)->info->coddisc)
+            rmvmatricula(&(*mat)->esq, cod);
         // Se o código é maior, continua na subárvore direita
         else
-            rmvmatricula(&(*m)->dir, cod);
+            rmvmatricula(&(*mat)->dir, cod);
         
-        if (*m != NULL) {
-            BalanceamentoAVLMatricula(m);  
-            (*m)->altura = alturaMatricula(*m);
+        if (*mat != NULL) {
+            BalanceamentoAVLMatricula(mat);  
+            (*mat)->altura = alturaMatricula(*mat);
         }
     }
 }
 
 
-int cadnota_nota(AVLNotas **nota, Notas *n) {
+int inserenota(AVLNotas **nota, Notas *no) {
     int sucesso = 1;
     if (*nota == NULL) {
         AVLNotas *novo = (AVLNotas*)malloc(sizeof(AVLNotas)); 
-        novo->info = n;
+        novo->info = no;
         novo->esq = NULL;
         novo->dir = NULL;
         novo->altura = 0;  
         *nota = novo;
     } else {
-        if (n->coddisc == (*nota)->info->coddisc)
+        if (no->coddisc == (*nota)->info->coddisc)
             sucesso = 0;  
         else {
-            if (n->coddisc < (*nota)->info->coddisc)
-                sucesso = cadnota_nota(&((*nota)->esq), n);
+            if (no->coddisc < (*nota)->info->coddisc)
+                sucesso = inserenota(&((*nota)->esq), no);
             else 
-                sucesso = cadnota_nota(&((*nota)->dir), n);
+                sucesso = inserenota(&((*nota)->dir), no);
         }
 
         if (sucesso == 1) {
@@ -608,20 +600,20 @@ int cadnota_nota(AVLNotas **nota, Notas *n) {
 }
 
 
-int cadnota(Alunos **a, int mat, Notas *n) {
+int cadnota(Alunos **aluno, int mat, Notas *no) {
     int enc = 0;
-    if (*a != NULL) {
-        if ((*a)->matricula == mat) {
+    if (*aluno != NULL) {
+        if ((*aluno)->matricula == mat) {
             int enc_disc = 0;
-            busca_disc((*a)->mat, n->coddisc, &enc_disc);
+            busca_disc((*aluno)->mat, no->coddisc, &enc_disc);
             if (enc_disc == 1) {
-                if (cadnota_nota(&(*a)->nota, n) == 1){
-                    rmvmatricula(&(*a)->mat, n->coddisc);
+                if (inserenota(&(*aluno)->nota, no) == 1) {
+                    rmvmatricula(&(*aluno)->mat, no->coddisc);
                     enc = 1;
                 }
             }
         } else
-            enc = cadnota(&(*a)->prox, mat, n);
+            enc = cadnota(&(*aluno)->prox, mat, no);
     }
     return enc; 
 }
@@ -924,15 +916,15 @@ void rmvdisc(AVLDisc **disc, int cod_disc, int *remove){
     }
 }
 
-void buscamat(AVLMatricula *m, int codigo, int *enc) {
-    if (m == NULL)
+void buscamat(AVLMatricula *mat, int codigo, int *enc) {
+    if (mat == NULL)
         *enc = 0;
-    else if (m->info->coddisc == codigo)
+    else if (mat->info->coddisc == codigo)
         *enc = 1;
-    else if (codigo < m->info->coddisc)
-        buscamat(m->esq, codigo, enc);
+    else if (codigo < mat->info->coddisc)
+        buscamat(mat->esq, codigo, enc);
     else
-        buscamat(m->dir, codigo, enc);
+        buscamat(mat->dir, codigo, enc);
 }
 
 void validar_rmv_disciplina(Alunos *alunos, int cod_disc, int *validar_disc) {
@@ -967,12 +959,12 @@ int rmvdisc_curso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc){
 
 /* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
 
-void rmvmatdealuno(Alunos **a, AVLMatricula *m, int matricula, int coddisc){
-    if(*a != NULL){
-        if((*a)->matricula == matricula)
-            rmvmatricula(&(*a)->mat, coddisc);
+void rmvmatdealuno(Alunos **aluno, AVLMatricula *mat, int matricula, int coddisc) {
+    if (*aluno != NULL) {
+        if ((*aluno)->matricula == matricula)
+            rmvmatricula(&(*aluno)->mat, coddisc);
         else
-            rmvmatdealuno(&(*a)->prox, m, matricula, coddisc);
+            rmvmatdealuno(&(*aluno)->prox, mat, matricula, coddisc);
     }
 }
 
@@ -981,57 +973,55 @@ void rmvmatdealuno(Alunos **a, AVLMatricula *m, int matricula, int coddisc){
 /* xv) Mostrar o histórico de um determinado aluno, contendo o nome do curso, as disciplinas e sua respectiva
 nota organizadas pelo período que a disciplina está cadastrada no curso. */
 
-void exibir_disciplina(AVLDisc *d, int cod_disciplina) {
-    if(d != NULL) {
-        if(d->info->cod_disciplina == cod_disciplina) 
-            printf("Disciplina: %s\n", d->info->nomedisc);
-        else if(cod_disciplina < d->info->cod_disciplina)
-            exibir_disciplina(d->esq, cod_disciplina);
+void exibir_disciplina(AVLDisc *disc, int cod_disciplina) {
+    if (disc != NULL) {
+        if (disc->info->cod_disciplina == cod_disciplina)
+            printf("Disciplina: %s\n", disc->info->nomedisc);
+        else if (cod_disciplina < disc->info->cod_disciplina)
+            exibir_disciplina(disc->esq, cod_disciplina);
         else
-            exibir_disciplina(d->dir, cod_disciplina);
+            exibir_disciplina(disc->dir, cod_disciplina);
     }
 }
 
-void exibir_notas(AVLNotas *nota, AVLDisc *d, int periodo) {
-    if(nota != NULL) {
+void exibir_notas(AVLNotas *nota, AVLDisc *disc, int periodo) {
+    if (nota != NULL) {
         if (nota->info->semestre == periodo) {
-            exibir_disciplina(d, nota->info->coddisc);
+            exibir_disciplina(disc, nota->info->coddisc);
             printf("Nota: %.2f\n", nota->info->notafinal);
             printf("Semestre: %d\n\n", nota->info->semestre);
         }
-        exibir_notas(nota->esq, d, periodo);
-        exibir_notas(nota->dir, d, periodo);
+        exibir_notas(nota->esq, disc, periodo);
+        exibir_notas(nota->dir, disc, periodo);
     }
 }
 
-int exibir_nome_curso(AVLCurso *c, int idcurso){
+int exibir_nome_curso(AVLCurso *curso, int idcurso) {
     int qntperiodos = 0;
-    if(c != NULL){
-        if(c->info->idcurso == idcurso){
-            printf("Curso: %s\n", c->info->nomecurso);
-            qntperiodos = c->info->qntdperiodos;
-        }
-        else if(idcurso < c->info->idcurso)
-            qntperiodos = exibir_nome_curso(c->esq, idcurso);
+    if (curso != NULL) {
+        if (curso->info->idcurso == idcurso) {
+            printf("Curso: %s\n", curso->info->nomecurso);
+            qntperiodos = curso->info->qntdperiodos;
+        } else if (idcurso < curso->info->idcurso)
+            qntperiodos = exibir_nome_curso(curso->esq, idcurso);
         else
-            qntperiodos = exibir_nome_curso(c->dir, idcurso);
+            qntperiodos = exibir_nome_curso(curso->dir, idcurso);
     }
     return qntperiodos;
 }
 
-void exibir_hist_aluno(Alunos *a, AVLCurso *c, int matricula){
-    if(a != NULL){
-        if(a->matricula == matricula){
-            printf("Aluno: %s\n", a->nome);
-            printf("Matricula: %d\n", a->matricula);
+void exibir_hist_aluno(Alunos *aluno, AVLCurso *curso, int matricula) {
+    if (aluno != NULL) {
+        if (aluno->matricula == matricula) {
+            printf("Aluno: %s\n", aluno->nome);
+            printf("Matricula: %d\n", aluno->matricula);
             int qntperiodos = 0;
-            qntperiodos = exibir_nome_curso(c, a->codcurso);
+            qntperiodos = exibir_nome_curso(curso, aluno->codcurso);
             printf("Historico:\n");
             for (int i = 1; i <= qntperiodos; i++)
-                exibir_notas(a->nota, c->info->disc, i);
-        }
-        else
-            exibir_hist_aluno(a->prox, c, matricula);
+                exibir_notas(aluno->nota, curso->info->disc, i);
+        } else
+            exibir_hist_aluno(aluno->prox, curso, matricula);
     }
 }
 
@@ -1138,12 +1128,12 @@ void exibirAlturaNotas(AVLNotas *nota){
     }
 }
 
-void exibirAlturaNotasMain(Alunos *a, int matricula){
-    if(a != NULL){
-        if(a->matricula == matricula)
-            exibirAlturaNotas(a->nota);
+void exibirAlturaNotasMain(Alunos *aluno, int matricula) {
+    if (aluno != NULL) {
+        if (aluno->matricula == matricula)
+            exibirAlturaNotas(aluno->nota);
         else
-            exibirAlturaNotasMain(a->prox, matricula);
+            exibirAlturaNotasMain(aluno->prox, matricula);
     }
 }
 
@@ -1188,13 +1178,13 @@ void liberarAVLMatricula(AVLMatricula **raiz){
     }
 }
 
-void liberarAlunos(Alunos **a){
-    if(*a != NULL){
-        liberarAlunos(&(*a)->prox);
-        liberarAVLMatricula(&(*a)->mat);
-        liberarAVLNotas(&(*a)->nota);
-        free(*a);
-        *a = NULL;
+void liberarAlunos(Alunos **aluno) {
+    if (*aluno != NULL) {
+        liberarAlunos(&(*aluno)->prox);
+        liberarAVLMatricula(&(*aluno)->mat);
+        liberarAVLNotas(&(*aluno)->nota);
+        free(*aluno);
+        *aluno = NULL;
     }
 }
 
