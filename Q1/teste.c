@@ -71,8 +71,6 @@ int main(){
     printf("\nCadastrando alunos\n");
 
     Alunos *a;
-    Alunos *aux;
-    aux = NULL;
     a = NULL;
 
     cadaluno(&a, c, 2021000301, "Joao", 4);

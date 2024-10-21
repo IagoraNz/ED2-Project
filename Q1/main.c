@@ -53,10 +53,10 @@ void menugeral(){
 }
 
 int main(){
-    int opc, opc1, sucesso, idcurso, qtdperiodos, cpf;
+    int opc, opc1, sucesso, idcurso, qtdperiodos;
     int matricula, coddisc, intbuffer;
     int matcomp, idcursocomp, coddisccomp, periodocomp;
-    char buffer[50], nomecurso[50], nomedisc[50];
+    char buffer[50], nomecurso[50];
 
     Alunos *aluno;
     Cursos *curso;
@@ -126,14 +126,15 @@ int main(){
                     scanf("%s", buffer);
                     printf("\nDeseja visualizar os cursos cadastrados? (1 para sim e 2 para nao): ");
                     scanf("%d", &intbuffer);
-                    if(intbuffer == 1)
-                        exibircurso(curso);
+                    if(intbuffer == 1){
+                        exibir_cursos(curso);
                         printf("\nDigite o codigo do curso: ");
                         scanf("%d", &idcursocomp);
                         gerarMatriculaAluno(idcursocomp, &matricula);
-                        cadaluno(&aluno, &curso, matricula, buffer, idcursocomp);
+                        cadaluno(&aluno, curso, matricula, buffer, idcursocomp);
                         printf("\nMatricula gerada: %d\n", matricula);
                         printf("Aluno cadastrado com sucesso!\n");
+                    }
                     break;
                 case 2:
                     printf("\nCADASTRO DE CURSO\n");
@@ -167,7 +168,7 @@ int main(){
                     printf("\nDeseja visualizar os cursos cadastrados? (1 para sim e 2 para nao): ");
                     scanf("%d", &intbuffer);
                     if(intbuffer == 1)
-                        exibircurso(curso);
+                        exibir_cursos(curso);
                     printf("\nDigite o codigo do curso: ");
                     scanf("%d", &idcursocomp);
                     gerarCodDisciplina(disc->cargah, disc->periodo, &coddisc);
@@ -193,10 +194,10 @@ int main(){
                     printf("\nDeseja visualizar as disciplinas do curso (1 para sim 2 para nao): ");
                     scanf("%d", &intbuffer);
                     if(intbuffer == 1){
-                        exibircurso(curso);
+                        exibir_cursos(curso);
                         printf("\nDigite o codigo do curso: ");
                         scanf("%d", &idcursocomp);
-                        exibir_disc_curso_main(curso, idcursocomp);
+                        exibirDiscCurso(curso, idcursocomp);
                     }
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
@@ -234,10 +235,10 @@ int main(){
                     printf("\nDeseja visualizar as disciplinas cadastradas (1 para sim 2 para nao): ");
                     scanf("%d", &intbuffer);
                     if(intbuffer == 1){
-                        exibircurso(curso);
+                        exibir_cursos(curso);
                         printf("\nDigite o codigo do curso: ");
                         scanf("%d", &idcursocomp);
-                        exibir_disc_curso_main(curso, idcursocomp);
+                        exibirDiscCurso(curso, idcursocomp);
                     }
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
@@ -250,7 +251,7 @@ int main(){
                     printf("\nDigite o semestre: ");
                     scanf("%d", &aluno->nota->semestre);
                     printf("\nDigite a nota final: ");
-                    scanf("%d", &aluno->nota->notafinal);
+                    scanf("%f", &aluno->nota->notafinal);
                     int sucesso = cadnota(&aluno, matcomp, coddisccomp, aluno->nota->semestre, aluno->nota->notafinal);
                     if(sucesso == 1)
                         printf("Nota cadastrada com sucesso!\n");
@@ -266,19 +267,19 @@ int main(){
                 case 8:
                     printf("\nDigite o codigo do curso: ");
                     scanf("%d", &idcursocomp);
-                    exibir_disc_curso_main(curso, idcursocomp);
+                    exibirDiscCurso(curso, idcursocomp);
                     break;
                 case 9:
                     printf("\nDigite o codigo do curso: ");
                     scanf("%d", &idcursocomp);
                     printf("\nDigite o periodo da disciplina: ");
                     scanf("%d", &periodocomp);
-                    exibir_disc_periodo_main(curso, idcursocomp, periodocomp);
+                    exibirDiscPeriodo(curso, idcursocomp, periodocomp);
                     break;
                 case 10:
                     printf("\nDigite o codigo do aluno: ");
                     scanf("%d", &matcomp);
-                    exibir_disc_aluno_main(aluno, curso, matcomp);
+                    exibirDiscAluno(aluno, curso, matcomp);
                     break;
                 case 11:
                     printf("\nDigite o codigo do aluno: ");
@@ -299,15 +300,18 @@ int main(){
                     scanf("%d", &idcursocomp);
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
-                    int remove = rmvdisc_curso(&curso, aluno, idcursocomp, coddisccomp);
-                    printf("Disciplina removida com sucesso!\n");
+                    int remove = rmvDiscCurso(&curso, aluno, idcursocomp, coddisccomp);
+                    if (remove == 1)
+                        printf("Disciplina removida com sucesso!\n");
+                    else
+                        printf("Erro ao remover disciplina!\n");
                     break;
                 case 14:
                     printf("\nDigite o codigo do aluno: ");
                     scanf("%d", &matcomp);
                     printf("\nDigite o codigo da disciplina: ");
                     scanf("%d", &coddisccomp);
-                    rmvmatdealuno(&aluno, &curso, matcomp, coddisccomp);
+                    rmvmatdealuno(&aluno, matcomp, coddisccomp);
                     printf("Disciplina removida com sucesso!\n");
                     break;
                 case 15:
