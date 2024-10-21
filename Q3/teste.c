@@ -6,8 +6,6 @@
 int main () {
     AVLCurso *curso;
     Alunos *alunos;
-    AVLDisc *disc;
-    disc = NULL;
     curso = NULL;
     alunos = NULL;
     int sucesso;
