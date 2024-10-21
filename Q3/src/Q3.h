@@ -66,7 +66,7 @@ typedef struct alunos {
 
 /* i. CURSO */
 
-int cadcurso(AVLCurso **curso, Cursos *c);
+int cadcurso(AVLCurso **curso, Cursos *no);
 void exibircurso(AVLCurso *curso);
 void exibir_cursos(AVLCurso *curso);
 void exibirAlturaCurso(AVLCurso *curso);
@@ -78,14 +78,14 @@ int rmvdisc_curso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc);
 /* ii. MATRÍCULA */
 
 int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat);
-void exibirAlturaMatriculaMain(Alunos *a, int matricula);
+void exibirAlturaMatriculaMain(Alunos *aluno, int matricula);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* iii. DISCIPLINA */
 
-int insere_disc(AVLDisc **disc, Disciplina *d);
-int caddisc(AVLCurso **curso, Disciplina *d, int idcurso);
+int insere_disc(AVLDisc **disc, Disciplina *no);
+int caddisc(AVLCurso **curso, Disciplina *no, int idcurso);
 void exibir_disc_aluno_main(Alunos *aluno, AVLCurso *cursos, int matricula);
 void exibir_disc_periodo_main(AVLCurso *curso, int idcurso, int periodo);
 void exibir_disc_curso_main(AVLCurso *curso, int idcurso);
@@ -96,19 +96,19 @@ AVLDisc* buscar_disciplina(AVLDisc *disc, int cod_disc);
 
 /* iv. ALUNO */
 
-int cadaluno(Alunos **a, AVLCurso *cursos, int mat, char *nome, int codcurso);
-void rmvmatdealuno(Alunos **a, AVLMatricula *m, int matricula, int coddisc);
-void exibir_hist_aluno(Alunos *a, AVLCurso *c, int matricula);
-void alunosporcurso(Alunos *a, int codcurso);
+int cadaluno(Alunos **aluno, AVLCurso *cursos, int mat, char *nome, int codcurso);
+void rmvmatdealuno(Alunos **aluno, int matricula, int coddisc);
+void exibir_hist_aluno(Alunos *aluno, AVLCurso *curso, int matricula);
+void alunosporcurso(Alunos *aluno, int codcurso);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* v. NOTA */
 
-int cadnota(Alunos **a, int mat, Notas *n);
-void notadiscporaluno(Alunos *a, AVLCurso *c, int matricula, int coddisc);
-void notasdiscperiodoaluno(Alunos *a, int periodo, int mat);
-void exibirAlturaNotasMain(Alunos *a, int matricula);
+int cadnota(Alunos **aluno, int mat, Notas *no);
+void notadiscporaluno(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc);
+void notasdiscperiodoaluno(Alunos *aluno, int periodo, int mat);
+void exibirAlturaNotasMain(Alunos *aluno, int matricula);
 AVLNotas* buscar_nota(AVLNotas *nota, int cod_disc);
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -122,7 +122,7 @@ void liberarAVLDisc(AVLDisc **raiz);
 void liberarAVLCurso(AVLCurso **raiz);
 void liberarAVLNotas(AVLNotas **raiz);
 void liberarAVLMatricula(AVLMatricula **raiz);
-void liberarAlunos(Alunos **a);
+void liberarAlunos(Alunos **aluno);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 #endif

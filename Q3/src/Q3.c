@@ -622,14 +622,14 @@ int cadnota(Alunos **aluno, int mat, Notas *no) {
 
 /* vi) Mostrar todos os alunos de um determinado curso. */
 
-void alunosporcurso(Alunos *a, int codcurso){
-    if(a != NULL){
-        if(a->codcurso == codcurso){
-            printf("Matricula: %d\n", a->matricula);
-            printf("Nome: %s\n", a->nome);
+void alunosporcurso(Alunos *aluno, int codcurso) {
+    if (aluno != NULL) {
+        if (aluno->codcurso == codcurso) {
+            printf("Matricula: %d\n", aluno->matricula);
+            printf("Nome: %s\n", aluno->nome);
             printf("\n");
         }
-        alunosporcurso(a->prox, codcurso);
+        alunosporcurso(aluno->prox, codcurso);
     }
 }
 
@@ -774,12 +774,12 @@ void exibirNotasPeriodo(AVLNotas *nota, int periodo){
     }
 }
 
-void notasdiscperiodoaluno(Alunos *a, int periodo, int mat){
-    if(a != NULL){
-        if(a->matricula == mat)
-            exibirNotasPeriodo(a->nota, periodo);
+void notasdiscperiodoaluno(Alunos *aluno, int periodo, int mat) {
+    if (aluno != NULL) {
+        if (aluno->matricula == mat)
+            exibirNotasPeriodo(aluno->nota, periodo);
         else
-            notasdiscperiodoaluno(a->prox, periodo, mat);
+            notasdiscperiodoaluno(aluno->prox, periodo, mat);
     }
 }
 
@@ -959,12 +959,12 @@ int rmvdisc_curso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc){
 
 /* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
 
-void rmvmatdealuno(Alunos **aluno, AVLMatricula *mat, int matricula, int coddisc) {
+void rmvmatdealuno(Alunos **aluno, int matricula, int coddisc) {
     if (*aluno != NULL) {
         if ((*aluno)->matricula == matricula)
             rmvmatricula(&(*aluno)->mat, coddisc);
         else
-            rmvmatdealuno(&(*aluno)->prox, mat, matricula, coddisc);
+            rmvmatdealuno(&(*aluno)->prox, matricula, coddisc);
     }
 }
 
@@ -1110,12 +1110,12 @@ void exibirAlturaMatricula(AVLMatricula *mat){
     }
 }
 
-void exibirAlturaMatriculaMain(Alunos *a, int matricula){
-    if(a != NULL){
-        if(a->matricula == matricula)
-            exibirAlturaMatricula(a->mat);
+void exibirAlturaMatriculaMain(Alunos *aluno, int matricula) {
+    if (aluno != NULL) {
+        if (aluno->matricula == matricula)
+            exibirAlturaMatricula(aluno->mat);
         else
-            exibirAlturaMatriculaMain(a->prox, matricula);
+            exibirAlturaMatriculaMain(aluno->prox, matricula);
     }
 }
 

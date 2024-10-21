@@ -1117,13 +1117,13 @@ int rmvDiscCurso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc){
     return
         Retorna 1 se a disciplina foi removida, 0 caso contrário
 */
-int rmvmatdealuno(Alunos **aluno, Matricula *mat, int matricula, int coddisc){
+int rmvmatdealuno(Alunos **aluno, int matricula, int coddisc){
     int remove = 0;
     if(*aluno != NULL){
         if((*aluno)->matricula == matricula)
             rmvmatricula(&(*aluno)->mat, coddisc, &remove);
         else
-            remove = rmvmatdealuno(&(*aluno)->prox, mat, matricula, coddisc);
+            remove = rmvmatdealuno(&(*aluno)->prox, matricula, coddisc);
     }
     return remove;
 }
@@ -1180,17 +1180,16 @@ void exibir_notas(Notas *nota, Disciplina *disc, int periodo){
     return
         Retorna a quantidade de períodos do curso
 */
-int exibir_nome_curso(Cursos *c, int idcurso){
+int exibir_nome_curso(Cursos *curso, int idcurso) {
     int qntperiodos = 0;
-    if(c != NULL){
-        if(c->idcurso == idcurso){
-            printf("Curso: %s\n", c->nomecurso);
-            qntperiodos = c->qntdperiodos;
-        }
-        else if(idcurso < c->idcurso)
-            qntperiodos = exibir_nome_curso(c->esq, idcurso);
+    if (curso != NULL) {
+        if (curso->idcurso == idcurso) {
+            printf("Curso: %s\n", curso->nomecurso);
+            qntperiodos = curso->qntdperiodos;
+        } else if (idcurso < curso->idcurso)
+            qntperiodos = exibir_nome_curso(curso->esq, idcurso);
         else
-            qntperiodos = exibir_nome_curso(c->dir, idcurso);
+            qntperiodos = exibir_nome_curso(curso->dir, idcurso);
     }
     return qntperiodos;
 }
@@ -1203,19 +1202,18 @@ int exibir_nome_curso(Cursos *c, int idcurso){
         c: árvore de cursos
         matricula: matrícula do aluno
 */
-void exibir_hist_aluno(Alunos *a, Cursos *c, int matricula){
-    if(a != NULL){
-        if(a->matricula == matricula){
-            printf("Aluno: %s\n", a->nome);
-            printf("Matricula: %d\n", a->matricula);
+void exibir_hist_aluno(Alunos *aluno, Cursos *curso, int matricula) {
+    if (aluno != NULL) {
+        if (aluno->matricula == matricula) {
+            printf("Aluno: %s\n", aluno->nome);
+            printf("Matricula: %d\n", aluno->matricula);
             int qntperiodos = 0;
-            qntperiodos = exibir_nome_curso(c, a->codcurso);
+            qntperiodos = exibir_nome_curso(curso, aluno->codcurso);
             printf("Historico:\n");
             for (int i = 1; i <= qntperiodos; i++)
-                exibir_notas(a->nota, c->disc, i);
-        }
-        else
-            exibir_hist_aluno(a->prox, c, matricula);
+                exibir_notas(aluno->nota, curso->disc, i);
+        } else
+            exibir_hist_aluno(aluno->prox, curso, matricula);
     }
 }
 

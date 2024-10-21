@@ -72,7 +72,7 @@ int caddisc(Cursos **curso, Disciplina *No, int idcurso);
 void exibirDiscCurso(Cursos *curso, int idcurso);
 void exibirDiscPeriodo(Cursos *curso, int idcurso, int periodo);
 void exibirDiscAluno(Alunos *aluno, Cursos *cursos, int matricula);
-int rmvmatdealuno(Alunos **aluno, Matricula *mat, int matricula, int coddisc);
+int rmvmatdealuno(Alunos **aluno, int matricula, int coddisc);
 int rmvDiscCurso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc);
 
 /*---------------------------------------------------------------------------------------------------------------*/
