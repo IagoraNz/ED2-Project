@@ -8,6 +8,7 @@
 
 /* Criação de constantes definidas */
 
+#define QTD_D_CURSOS 2000
 #define QTD_CURSOS 1000
 #define ID_CURSOS 10000
 #define QTD_ALUNOS 1000
@@ -119,7 +120,7 @@ void povoar_alunos_crescente(Alunos **aluno, Cursos *curso){
 */
 void povoar_cursos_decrescente(Cursos **raiz){
     // Povoando a árvore de cursos até a quantidade de cursos definida
-    for(int i = QTD_CURSOS; i > 1; i--)
+    for(int i = QTD_D_CURSOS; i > 1000; i--)
         cadcurso(raiz, i, "Engenharia de Software", 8); // Nome arbitrário
 }
 
@@ -192,7 +193,7 @@ void povoar_notas_decrescente(Alunos *aluno){
 void povoar_alunos_descrescente(Alunos **aluno, Cursos *curso){
     char *nomes[5] = {"Joao", "Maria", "Jose", "Ana", "Pedro"}; // Nomes arbitrários
     for(int i = QTD_ALUNOS; i > 1; i--) // Povoando a árvore de alunos até a quantidade de alunos definida
-        cadaluno(aluno, curso, i, nomes[rand() % 5], rand() % QTD_CURSOS);
+        cadaluno(aluno, curso, i, nomes[rand() % 5], rand() % QTD_D_CURSOS + 1000);
 }
 
 /*---------------------------------------------------------------------------------------------------------------*/
@@ -403,12 +404,16 @@ double metrificar_tempo_por_insercao(Cursos **curso, int opc){
     // Variáveis para medir o tempo
     clock_t inicio, fim;
     double tempo = 0.0;
-    int i;
+    int i, idcurso;
     
     // Executa a inserção várias vezes para obter uma média mais precisa
     for(i = 0; i < REPEAT; i++){
+        if (opc == 2)
+            idcurso = rand() % QTD_CURSOS + 1;
+        else
+            idcurso = rand() % ID_CURSOS + 1;
         inicio = clock();
-        cadcurso(curso, rand() % ID_CURSOS + 1, "Curso", 8);
+        cadcurso(curso, idcurso, "Curso", 8);
         fim = clock();
 
         tempo += ((double)(fim - inicio)) / CLOCKS_PER_SEC;
@@ -474,7 +479,7 @@ int main(){
 
     system("PAUSE");
     // Liberando a memória alocada
-    liberar_alunos(alunos);
+    liberar_alunos(&alunos);
     liberar_cursos(&raiz);
     return 0;
 }
