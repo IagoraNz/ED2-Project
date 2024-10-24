@@ -67,7 +67,6 @@ typedef struct alunos {
 /* i. CURSO */
 
 int cadcurso(AVLCurso **curso, Cursos *no);
-void exibircurso(AVLCurso *curso);
 void exibir_cursos(AVLCurso *curso);
 void exibirAlturaCurso(AVLCurso *curso);
 AVLCurso* buscar_curso(AVLCurso *curso, int idcurso);

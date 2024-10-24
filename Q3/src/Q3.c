@@ -600,7 +600,7 @@ int inserenota(AVLNotas **nota, Notas *no) {
 }
 
 
-int cadnota(Alunos **aluno, int mat, Notas *no) {
+int cadnota(Alunos **aluno, int mat, Notas *no){
     int enc = 0;
     if (*aluno != NULL) {
         if ((*aluno)->matricula == mat) {
@@ -1029,10 +1029,11 @@ void exibir_hist_aluno(Alunos *aluno, AVLCurso *curso, int matricula) {
 
 /* extra) Função agregadas, associadas ou adicionais para complementar a coesão do software */
 
+// Outros
+
+
+
 // Gerar os códigos
-
-
-// Liberar estruturas com base nas novas configurações
 
 void gerarCodDisciplina(int cargah, int periodo, int *coddisc) {
     // Passo 1: obtendo o ano atual
@@ -1136,6 +1137,8 @@ void exibirAlturaNotasMain(Alunos *aluno, int matricula) {
             exibirAlturaNotasMain(aluno->prox, matricula);
     }
 }
+
+// Liberar estruturas com base nas novas configurações
 
 void liberarAVLDisc(AVLDisc **raiz){
     if(*raiz != NULL){

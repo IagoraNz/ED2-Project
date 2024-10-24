@@ -169,8 +169,6 @@ int cadcurso(Cursos **curso, int idcurso, const char *nomecurso, int qntperiodos
     return sucesso;
 }
 
-
-
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* iii) Cadastrar disciplinas a qualquer momento em uma árvore de disciplinas de um determinado curso, ou
@@ -1106,6 +1104,7 @@ int rmvDiscCurso(Cursos **cursos, Alunos *alunos, int idcurso, int cod_disc){
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
+
 /* 
     summary
         Função principal responsável por remover uma disciplina da árvore de matrícula de um determinado aluno
