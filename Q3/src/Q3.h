@@ -70,8 +70,7 @@ int cadcurso(AVLCurso **curso, Cursos *no);
 void exibir_cursos(AVLCurso *curso);
 void exibirAlturaCurso(AVLCurso *curso);
 AVLCurso* buscar_curso(AVLCurso *curso, int idcurso);
-int rmvdisc_curso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc);
-
+int rmvDiscCurso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc);
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* ii. MATRÍCULA */
@@ -85,9 +84,9 @@ void exibirAlturaMatriculaMain(Alunos *aluno, int matricula);
 
 int insere_disc(AVLDisc **disc, Disciplina *no);
 int caddisc(AVLCurso **curso, Disciplina *no, int idcurso);
-void exibir_disc_aluno_main(Alunos *aluno, AVLCurso *cursos, int matricula);
-void exibir_disc_periodo_main(AVLCurso *curso, int idcurso, int periodo);
-void exibir_disc_curso_main(AVLCurso *curso, int idcurso);
+void exibirDiscAluno(Alunos *aluno, AVLCurso *cursos, int matricula);
+void exibirDiscPeriodo(AVLCurso *curso, int idcurso, int periodo);
+void exibirDiscCurso(AVLCurso *curso, int idcurso);
 void exibirAlturaDisciplinaMain(AVLCurso *curso, int idcurso);
 AVLDisc* buscar_disciplina(AVLDisc *disc, int cod_disc);
 
@@ -97,8 +96,10 @@ AVLDisc* buscar_disciplina(AVLDisc *disc, int cod_disc);
 
 int cadaluno(Alunos **aluno, AVLCurso *cursos, int mat, char *nome, int codcurso);
 void rmvmatdealuno(Alunos **aluno, int matricula, int coddisc);
-void exibir_hist_aluno(Alunos *aluno, AVLCurso *curso, int matricula);
+void exibirDiscAluno(Alunos *aluno, AVLCurso *cursos, int matricula);
 void alunosporcurso(Alunos *aluno, int codcurso);
+void exibir_hist_aluno(Alunos *aluno, AVLCurso *curso, int matricula);
+void exibir_alunos(Alunos *aluno);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

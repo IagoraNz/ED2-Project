@@ -59,7 +59,7 @@ void exibir_cursos(Cursos *curso);
 void buscamat(Matricula *mat, int codigo, int *enc);
 int cadmatricula(Alunos **aluno, int codigo, int mat);
 void exibirmat(Matricula *mat);
-void rmvmatricula(Matricula **mat, int cod, int *remove) ;
+void rmvmatricula(Matricula **mat, int cod, int *remove);
 
 /*---------------------------------------------------------------------------------------------------------------*/
 

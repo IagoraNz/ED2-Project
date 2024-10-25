@@ -204,8 +204,6 @@ int main(){
     liberar_alunos(&a);
     liberar_matriculas(&m);
 
-    system("PAUSE");
-
     getchar();
 
     return 0;

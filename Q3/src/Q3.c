@@ -12,6 +12,12 @@
 
 /* AVL DISCIPLINA */
 
+/*
+    summary
+        Função responsável por calcular a altura da árvore AVL de disciplinas
+    param
+        raiz: raiz da árvore
+*/
 int alturaDisc(AVLDisc *raiz){
     int res = -1, altesq, altdir;
     if(raiz){
@@ -23,10 +29,22 @@ int alturaDisc(AVLDisc *raiz){
     return res;
 }
 
+/*
+    summary
+        Função responsável por calcular o fator de balanceamento da árvore AVL de disciplinas
+    param
+        raiz: raiz da árvore
+*/
 int fatorDisc(AVLDisc *raiz){
     return alturaDisc(raiz->esq) - alturaDisc(raiz->dir);
 }
 
+/*
+    summary
+        Função responsável por realizar a rotação à esquerda na árvore AVL de disciplinas
+    param
+        raiz: raiz da árvore
+*/
 void giroEsqDisc(AVLDisc **raiz){
     AVLDisc *aux;
     if(*raiz != NULL){
@@ -41,6 +59,12 @@ void giroEsqDisc(AVLDisc **raiz){
     }
 }
 
+/*
+    summary
+        Função responsável por realizar a rotação à direita na árvore AVL de disciplinas
+    param
+        raiz: raiz da árvore
+*/
 void giroDirDisc(AVLDisc **raiz){
     AVLDisc *aux;
     if(*raiz != NULL){
@@ -55,6 +79,12 @@ void giroDirDisc(AVLDisc **raiz){
     }
 }
 
+/*
+    summary
+        Função responsável por balancear a árvore AVL de disciplinas
+    param
+        raiz: raiz da árvore
+*/
 void balancearDisc(AVLDisc **raiz){
     int fb;
     AVLDisc *aux;
@@ -82,6 +112,12 @@ void balancearDisc(AVLDisc **raiz){
 
 /* AVL CURSOS */
 
+/*
+    summary
+        Função responsável por calcular a altura da árvore AVL de cursos
+    param
+        raiz: raiz da árvore
+*/
 int alturaCurso(AVLCurso *raiz){
     int res = -1, altesq, altdir;
 
@@ -94,10 +130,22 @@ int alturaCurso(AVLCurso *raiz){
     return res;
 }
 
+/*
+    summary
+        Função responsável por calcular o fator de balanceamento da árvore AVL de cursos
+    param
+        raiz: raiz da árvore
+*/
 int fatorCurso(AVLCurso *raiz){
     return alturaCurso(raiz->esq) - alturaCurso(raiz->dir);
 }
 
+/*
+    summary
+        Função responsável por realizar a rotação à esquerda na árvore AVL de cursos
+    param
+        raiz: raiz da árvore
+*/
 void giroEsqCurso(AVLCurso **raiz){
     AVLCurso *aux;
     if(*raiz != NULL){
@@ -112,6 +160,12 @@ void giroEsqCurso(AVLCurso **raiz){
     }
 }
 
+/*
+    summary
+        Função responsável por realizar a rotação à direita na árvore AVL de cursos
+    param
+        raiz: raiz da árvore
+*/
 void giroDirCurso(AVLCurso **raiz){
     AVLCurso *aux;
     if(*raiz != NULL){
@@ -126,6 +180,12 @@ void giroDirCurso(AVLCurso **raiz){
     }
 }
 
+/*
+    summary
+        Função responsável por balancear a árvore AVL de cursos
+    param
+        raiz: raiz da árvore
+*/
 void balancearCurso(AVLCurso **raiz){
     int fb;
     AVLCurso *aux;
@@ -156,6 +216,12 @@ void balancearCurso(AVLCurso **raiz){
 /* i) Cadastrar alunos a qualquer momento na lista, de forma que só possa cadastrar um código de curso que
 já tenha sido cadastrado na árvore de cursos. */
 
+/* 
+    summary
+        Função responsável por converter o nome do aluno para maiúsculo
+    param
+        nome: nome do aluno
+*/
 void converternome(char *nome) {
     int i = 0;
     // Converte cada caractere para maiuscula enquanto não encontrar o caractere de terminação '\0'
@@ -165,6 +231,16 @@ void converternome(char *nome) {
     }
 }
 
+/* 
+    summary
+        Função responsável por criar um novo aluno
+    param
+        mat: matrícula do aluno
+        nome: nome do aluno
+        codcurso: código do curso do aluno
+    return
+        novo: novo aluno criado
+*/
 Alunos* criar_aluno(int mat, char *nome, int codcurso) {
     Alunos *novo = (Alunos*) malloc(sizeof(Alunos));
     novo->matricula = mat;
@@ -178,6 +254,14 @@ Alunos* criar_aluno(int mat, char *nome, int codcurso) {
     return novo;
 }
 
+/* 
+    summary
+        Função responsável por validar o curso
+    param
+        cursos: árvore de cursos
+        codcurso: código do curso
+        enc: variável de controle para verificar se o curso foi encontrado
+*/
 void validacurso(AVLCurso *cursos, int codcurso, int *enc){
     if (cursos != NULL){
         if (cursos->info->idcurso == codcurso){
@@ -189,6 +273,18 @@ void validacurso(AVLCurso *cursos, int codcurso, int *enc){
     }
 }
 
+/* 
+    summary
+        Função responsável por cadastrar um aluno
+    param
+        aluno: lista de alunos
+        cursos: árvore de cursos
+        mat: matrícula do aluno
+        nome: nome do aluno
+        codcurso: código do curso do aluno
+    return
+        sucesso: variável de controle para verificar se o aluno foi cadastrado
+*/
 int cadaluno(Alunos **aluno, AVLCurso *cursos, int mat, char *nome, int codcurso) {
     int sucesso = 0, enc = 0;
     // Se a lista estiver vazia ou o ponto de inserção for alcançado
@@ -218,11 +314,37 @@ int cadaluno(Alunos **aluno, AVLCurso *cursos, int mat, char *nome, int codcurso
 }
 
 
+/* 
+    summary
+        Função responsável por exibir os alunos
+    param
+        aluno: lista de alunos
+*/
+void exibir_alunos(Alunos *aluno) {
+    if (aluno != NULL) {
+        printf("Matricula: %d\n", aluno->matricula);
+        printf("Nome: %s\n", aluno->nome);
+        printf("Codigo do curso: %d\n", aluno->codcurso);
+        printf("\n");
+        exibir_alunos(aluno->prox);
+    }
+}
+
 /*---------------------------------------------------------------------------------------------------------------*/
 
 /* ii) Cadastrar cursos a qualquer momento na árvore de curso, de forma que o usuário não precise cadastrar
 as disciplinas para permitir o cadastro do curso. */
 
+/* 
+    summary
+        Função responsável por criar um novo curso
+    param
+        idcurso: código do curso
+        nomecurso: nome do curso
+        qntdperiodos: quantidade de períodos do curso
+    return
+        novo: novo curso criado
+*/
 int cadcurso(AVLCurso **curso, Cursos *no) {
     int sucesso = 0;
     if (*curso == NULL) {
@@ -256,21 +378,46 @@ seja, um disciplina só pode ser cadastrada se o curso já estiver sido cadastra
 disciplina deve ser válido, ou seja, estar entre 1 e a quantidade máxima de períodos do curso. A carga
 horária da disciplina deve ser múltiplo de 15, variando entre 30 e 90. */
 
-int validar_ch(int cargahoraria){
+/*
+    summary
+        Função responsável por validar a carga horária da disciplina
+    param
+        cargahoraria: carga horária da disciplina
+    return
+        validar: variável de controle para verificar se a carga horária é válida
+*/
+int validarCargahoraria(int cargahoraria){
     int validar = 0;
     if (cargahoraria % 15 == 0 && cargahoraria >= 30 && cargahoraria <= 90)
         validar = 1;
     return validar;
 }
 
-int validar_periodo(AVLCurso *curso, int periodo){
+/*
+    summary
+        Função responsável por validar o período da disciplina
+    param
+        curso: árvore de cursos
+        periodo: período da disciplina
+    return
+        validar: variável de controle para verificar se o período é válido
+*/
+int validarPeriodo(AVLCurso *curso, int periodo){
     int validar = 0;
     if (periodo >= 1 && periodo <= curso->info->qntdperiodos)
         validar = 1;
     return validar;
 }
 
-int insere_disc(AVLDisc **disc, Disciplina *no) {
+/*
+    summary
+        Função responsável por calcular a altura da árvore AVL de disciplinas
+    param
+        raiz: raiz da árvore
+    return
+        suc: variável de controle para verificar se a disciplina foi inserida
+*/
+int inseredisc(AVLDisc **disc, Disciplina *no) {
     int suc = 0;
     if ((*disc) == NULL) {
         *disc = (AVLDisc*)malloc(sizeof(AVLDisc));
@@ -282,9 +429,9 @@ int insere_disc(AVLDisc **disc, Disciplina *no) {
     } 
     else {
         if (no->cod_disciplina < (*disc)->info->cod_disciplina)
-            suc = insere_disc(&(*disc)->esq, no);
+            suc = inseredisc(&(*disc)->esq, no);
         else if (no->cod_disciplina > (*disc)->info->cod_disciplina)
-            suc = insere_disc(&(*disc)->dir, no);
+            suc = inseredisc(&(*disc)->dir, no);
         else
             suc = 0;
 
@@ -297,14 +444,24 @@ int insere_disc(AVLDisc **disc, Disciplina *no) {
     return suc;
 }
 
+/*
+    summary
+        Função responsável por cadastrar uma disciplina
+    param
+        curso: árvore de cursos
+        no: disciplina a ser cadastrada
+        idcurso: código do curso
+    return
+        sucesso: variável de controle para verificar se a disciplina foi cadastrada
+*/
 int caddisc(AVLCurso **curso, Disciplina *no, int idcurso) {
     int sucesso = 0;
 
-    if(validar_ch(no->cargah)){
+    if(validarCargahoraria(no->cargah)){
         if(*curso != NULL){
             if((*curso)->info != NULL && (*curso)->info->idcurso == idcurso){
-                if(validar_periodo(*curso, no->periodo))
-                    sucesso = insere_disc(&(*curso)->info->disc, no);
+                if(validarPeriodo(*curso, no->periodo))
+                    sucesso = inseredisc(&(*curso)->info->disc, no);
             } 
             else{
                 if(idcurso < (*curso)->info->idcurso)
@@ -322,6 +479,15 @@ int caddisc(AVLCurso **curso, Disciplina *no, int idcurso) {
 
 /* iv) Cadastrar uma matrícula, onde a mesma é uma árvore organizada e contendo somente um código de
 uma disciplina do curso do aluno. */
+
+/*
+    summary
+        Função responsável por calcular a altura da árvore AVL de matrículas
+    param
+        raiz: raiz da árvore
+    return
+        res: altura da árvore
+*/
 int alturaMatricula(AVLMatricula *raiz) {
     int res;
 
@@ -336,10 +502,24 @@ int alturaMatricula(AVLMatricula *raiz) {
 }
 
 
+/*
+    summary
+        Função responsável por calcular o fator de balanceamento da árvore AVL de matrículas
+    param
+        mat: nó da árvore
+    return
+        alturaMatricula(mat->esq) - alturaMatricula(mat->dir): fator de balanceamento
+*/
 int fbMatricula(AVLMatricula *mat) {
     return alturaMatricula(mat->esq) - alturaMatricula(mat->dir);  // Fator de balanceamento
 }
 
+/*
+    summary
+        Função responsável por realizar a rotação à esquerda na árvore AVL de matrículas
+    param
+        mat: nó da árvore
+*/
 void rotacaoEsqMatricula(AVLMatricula **mat) {
     AVLMatricula *aux = (*mat)->dir;
     if (aux != NULL) {
@@ -351,6 +531,12 @@ void rotacaoEsqMatricula(AVLMatricula **mat) {
     }
 }
 
+/*
+    summary
+        Função responsável por realizar a rotação à direita na árvore AVL de matrículas
+    param
+        mat: nó da árvore
+*/
 void rotacaoDirMatricula(AVLMatricula **mat) {
     AVLMatricula *aux = (*mat)->esq;
     if (aux != NULL) {
@@ -362,6 +548,12 @@ void rotacaoDirMatricula(AVLMatricula **mat) {
     }
 }
 
+/*
+    summary
+        Função responsável por balancear a árvore AVL de matrículas
+    param
+        mat: nó da árvore
+*/
 void BalanceamentoAVLMatricula(AVLMatricula **mat) {
     int fb = fbMatricula(*mat);
     if (fb == -2) {
@@ -375,6 +567,14 @@ void BalanceamentoAVLMatricula(AVLMatricula **mat) {
     }
 }
 
+/*
+    summary
+        Função responsável por inserir uma matrícula na árvore AVL de matrículas
+    param
+        mat: nó da árvore
+        codigo: código da disciplina
+        igual: variável de controle para verificar se a matrícula foi inserida
+*/
 void inserirMatricula(AVLMatricula **mat, int codigo, int *igual) {
     if (*mat == NULL) {
         *mat = (AVLMatricula*) malloc(sizeof(AVLMatricula));  
@@ -400,6 +600,14 @@ void inserirMatricula(AVLMatricula **mat, int codigo, int *igual) {
     }
 }
 
+/*
+    summary
+        Função responsável por buscar uma disciplina na árvore AVL de disciplinas
+    param
+        disc: raiz da árvore
+        cod_disc: código da disciplina
+        enc: variável de controle para verificar se a disciplina foi encontrada
+*/
 void buscarDisciplina(AVLDisc *disc, int cod_disc, int *enc){
     if(disc != NULL){
         if(disc->info->cod_disciplina == cod_disc)
@@ -411,23 +619,43 @@ void buscarDisciplina(AVLDisc *disc, int cod_disc, int *enc){
     }
 }
 
-void buscarDisciplinaMain(AVLCurso *curso, int cod_disc, int idcurso, int *encontrou) {
+/*
+    summary
+        Função responsável por buscar uma disciplina na árvore AVL de disciplinas de um curso
+    param
+        curso: raiz da árvore
+        cod_disc: código da disciplina
+        idcurso: código do curso
+        encontrou: variável de controle para verificar se a disciplina foi encontrada
+*/
+void buscarDisciplinaCurso(AVLCurso *curso, int cod_disc, int idcurso, int *encontrou) {
     if (curso != NULL) {
         if (curso->info->idcurso == idcurso)
             buscarDisciplina(curso->info->disc, cod_disc, encontrou);
         else {
-            buscarDisciplinaMain(curso->esq, cod_disc, idcurso, encontrou);
-            buscarDisciplinaMain(curso->dir, cod_disc, idcurso, encontrou);
+            buscarDisciplinaCurso(curso->esq, cod_disc, idcurso, encontrou);
+            buscarDisciplinaCurso(curso->dir, cod_disc, idcurso, encontrou);
         }
     }
 }
 
+/*
+    summary
+        Função responsável por cadastrar uma matrícula
+    param
+        aluno: lista de alunos
+        curso: árvore de cursos
+        codigo: código da disciplina
+        mat: matrícula do aluno
+    return
+        sucesso: variável de controle para verificar se a matrícula foi cadastrada
+*/
 int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat){
     int sucesso = 0, enc = 0;
     if (*aluno != NULL) {
         if ((*aluno)->matricula == mat) {
             AVLCurso *aux = curso;
-            buscarDisciplinaMain(aux, codigo, (*aluno)->codcurso, &enc);
+            buscarDisciplinaCurso(aux, codigo, (*aluno)->codcurso, &enc);
             if (enc == 1)
                 inserirMatricula(&(*aluno)->mat, codigo, &sucesso);
         } else
@@ -443,6 +671,14 @@ int cadmatricula(Alunos **aluno, AVLCurso *curso, int codigo, int mat){
 matricula, e quando a nota for cadastrada a disciplina deve ser removida da árvore de matricula para
 árvore de notas.*/
 
+/*
+    summary
+        Função responsável por calcular a altura da árvore AVL de notas
+    param
+        notas: raiz da árvore
+    return
+        res: altura da árvore
+*/
 int AlturaAVlNotas(AVLNotas *notas) {
     int res;
     if (notas != NULL) {
@@ -454,10 +690,24 @@ int AlturaAVlNotas(AVLNotas *notas) {
     return res;
 }
 
+/*
+    summary
+        Função responsável por calcular o fator de balanceamento da árvore AVL de notas
+    param
+        notas: raiz da árvore
+    return
+        AlturaAVlNotas(notas->esq) - AlturaAVlNotas(notas->dir): fator de balanceamento
+*/
 int fbNotas(AVLNotas *notas) {
     return AlturaAVlNotas(notas->esq) - AlturaAVlNotas(notas->dir);
 }
 
+/*
+    summary
+        Função responsável por realizar a rotação à esquerda na árvore AVL de notas
+    param
+        notas: raiz da árvore
+*/
 void rotacaoEsqNotas(AVLNotas **notas) {
     AVLNotas *aux = (*notas)->dir;
     if (aux != NULL) {
@@ -469,6 +719,12 @@ void rotacaoEsqNotas(AVLNotas **notas) {
     }
 }
 
+/*
+    summary
+        Função responsável por realizar a rotação à direita na árvore AVL de notas
+    param
+        notas: raiz da árvore
+*/
 void rotacaoDirNotas(AVLNotas **notas) {
     AVLNotas *aux = (*notas)->esq;
     if (aux != NULL) {
@@ -480,6 +736,12 @@ void rotacaoDirNotas(AVLNotas **notas) {
     }
 }
 
+/*
+    summary
+        Função responsável por balancear a árvore AVL de notas
+    param
+        notas: raiz da árvore
+*/
 void BalanceamentoAVLNotas(AVLNotas **notas){
     int fb;
     fb = fbNotas(*notas);
@@ -495,6 +757,14 @@ void BalanceamentoAVLNotas(AVLNotas **notas){
     }
 }
 
+/*
+    summary
+        Função responsável por buscar uma disciplina na árvore AVL de matrículas
+    param
+        mat: raiz da árvore
+        cod: código da disciplina
+        enc: variável de controle para verificar se a disciplina foi encontrada
+*/
 void busca_disc(AVLMatricula *mat, int cod, int *enc) { 
     if (mat != NULL) {
         if (mat->info->coddisc == cod)
@@ -506,10 +776,26 @@ void busca_disc(AVLMatricula *mat, int cod, int *enc) {
     }
 }
 
+/*
+    summary
+        Função responsável por verificar se o nó é uma folha
+    param
+        mat: nó da árvore
+    return
+        (mat->esq == NULL && mat->dir == NULL): 1 se for folha, 0 caso contrário
+*/
 int ehfolhamat(AVLMatricula *mat) {
     return (mat->esq == NULL && mat->dir == NULL);
 }
 
+/*
+    summary
+        Função responsável por verificar se o nó tem apenas um filho
+    param
+        mat: nó da árvore
+    return
+        aux: nó filho
+*/
 AVLMatricula* soumfilhomat(AVLMatricula *mat) {
     AVLMatricula *aux;
     aux = NULL;
@@ -521,6 +807,14 @@ AVLMatricula* soumfilhomat(AVLMatricula *mat) {
     return aux;
 }
 
+/*
+    summary
+        Função responsável por encontrar o menor filho à esquerda
+    param
+        mat: nó da árvore
+    return
+        aux: menor filho à esquerda
+*/
 AVLMatricula* menorfilhoesqmat(AVLMatricula *mat) {
     AVLMatricula *aux;
     aux = NULL;
@@ -532,6 +826,13 @@ AVLMatricula* menorfilhoesqmat(AVLMatricula *mat) {
     return aux;
 }
 
+/*
+    summary
+        Função responsável por remover uma matrícula da árvore AVL de matrículas
+    param
+        mat: nó da árvore
+        cod: código da disciplina
+*/
 void rmvmatricula(AVLMatricula **mat, int cod) {
     if (*mat != NULL) {
         // Se encontrou o nó a ser removido
@@ -572,6 +873,15 @@ void rmvmatricula(AVLMatricula **mat, int cod) {
 }
 
 
+/*
+    summary
+        Função responsável por inserir uma nota na árvore AVL de notas
+    param
+        nota: nó da árvore
+        no: nota a ser inserida
+    return
+        sucesso: variável de controle para verificar se a nota foi inserida
+*/
 int inserenota(AVLNotas **nota, Notas *no) {
     int sucesso = 1;
     if (*nota == NULL) {
@@ -600,6 +910,16 @@ int inserenota(AVLNotas **nota, Notas *no) {
 }
 
 
+/*
+    summary
+        Função responsável por cadastrar uma nota
+    param
+        aluno: lista de alunos
+        mat: matrícula do aluno
+        no: nota a ser cadastrada
+    return
+        enc: variável de controle para verificar se a nota foi cadastrada
+*/
 int cadnota(Alunos **aluno, int mat, Notas *no){
     int enc = 0;
     if (*aluno != NULL) {
@@ -622,6 +942,13 @@ int cadnota(Alunos **aluno, int mat, Notas *no){
 
 /* vi) Mostrar todos os alunos de um determinado curso. */
 
+/*
+    summary
+        Função responsável por exibir os alunos de um determinado curso
+    param
+        aluno: lista de alunos
+        codcurso: código do curso
+*/
 void alunosporcurso(Alunos *aluno, int codcurso) {
     if (aluno != NULL) {
         if (aluno->codcurso == codcurso) {
@@ -637,6 +964,12 @@ void alunosporcurso(Alunos *aluno, int codcurso) {
 
 /* vii) Mostrar todos os cursos do Campus. */
 
+/*
+    summary
+        Função responsável por exibir os cursos
+    param
+        curso: árvore de cursos
+*/
 void exibir_cursos(AVLCurso *curso) {
     if (curso != NULL) {
         printf("ID: %d\n", curso->info->idcurso);
@@ -652,28 +985,41 @@ void exibir_cursos(AVLCurso *curso) {
 
 /* viii) Mostrar todas as disciplinas de um determinado curso. */
 
-void exibir_disc_curso(AVLDisc *disc){
+/*
+    summary
+        Função responsável por exibir as disciplinas de um determinado curso
+    param
+        disc: raiz da árvore
+*/
+void printarDiscCurso(AVLDisc *disc){
     if(disc != NULL){
-        exibir_disc_curso(disc->esq);
+        printarDiscCurso(disc->esq);
         printf("Codigo: %d\n", disc->info->cod_disciplina);
         printf("Nome: %s\n", disc->info->nomedisc);
         printf("Carga horaria: %d\n", disc->info->cargah);
         printf("Periodo: %d\n", disc->info->periodo);
         printf("\n");
-        exibir_disc_curso(disc->dir);
+        printarDiscCurso(disc->dir);
     }
 }
 
-void exibir_disc_curso_main(AVLCurso *curso, int idcurso) {
+/*
+    summary
+        Função responsável por exibir as disciplinas de um determinado curso
+    param
+        curso: árvore de cursos
+        idcurso: código do curso
+*/
+void exibirDiscCurso(AVLCurso *curso, int idcurso) {
     if(curso != NULL){
         if(curso->info->idcurso == idcurso){
             AVLDisc *disc = curso->info->disc;
-            exibir_disc_curso(disc);
+            printarDiscCurso(disc);
         }
         else if (idcurso < curso->info->idcurso)
-            exibir_disc_curso_main(curso->esq, idcurso);
+            exibirDiscCurso(curso->esq, idcurso);
         else
-            exibir_disc_curso_main(curso->dir, idcurso);
+            exibirDiscCurso(curso->dir, idcurso);
        
     }
 }
@@ -682,9 +1028,16 @@ void exibir_disc_curso_main(AVLCurso *curso, int idcurso) {
 
 // ix) Mostrar todas as disciplinas de um determinado período de um curso. 
 
-void exibir_disc_periodo(AVLDisc *disc, int periodo) {
+/*
+    summary
+        Função responsável por exibir as disciplinas de um determinado período
+    param
+        disc: raiz da árvore
+        periodo: período da disciplina
+*/
+void printarDiscPeriodo(AVLDisc *disc, int periodo) {
     if (disc != NULL) {
-        exibir_disc_periodo(disc->esq, periodo);
+        printarDiscPeriodo(disc->esq, periodo);
         if (disc->info->periodo == periodo) {
             printf("Codigo: %d\n", disc->info->cod_disciplina);
             printf("Nome: %s\n", disc->info->nomedisc);
@@ -692,18 +1045,26 @@ void exibir_disc_periodo(AVLDisc *disc, int periodo) {
             printf("Periodo: %d\n", disc->info->periodo);
             printf("\n");
         }
-        exibir_disc_periodo(disc->dir, periodo);
+        printarDiscPeriodo(disc->dir, periodo);
     }
 }
 
-void exibir_disc_periodo_main(AVLCurso *curso, int idcurso, int periodo){
+/*
+    summary
+        Função responsável por exibir as disciplinas de um determinado período
+    param
+        curso: árvore de cursos
+        idcurso: código do curso
+        periodo: período da disciplina
+*/
+void exibirDiscPeriodo(AVLCurso *curso, int idcurso, int periodo){
     if(curso != NULL){
         if(curso->info->idcurso == idcurso)
-            exibir_disc_periodo(curso->info->disc, periodo);
+            printarDiscPeriodo(curso->info->disc, periodo);
         else if(idcurso < curso->info->idcurso)
-            exibir_disc_periodo_main(curso->esq, idcurso, periodo);
+            exibirDiscPeriodo(curso->esq, idcurso, periodo);
         else
-            exibir_disc_periodo_main(curso->dir, idcurso, periodo);
+            exibirDiscPeriodo(curso->dir, idcurso, periodo);
     }
 }
 
@@ -711,7 +1072,14 @@ void exibir_disc_periodo_main(AVLCurso *curso, int idcurso, int periodo){
 
 /* x) Mostrar todas as disciplinas que um determinado aluno está matriculado */
 
-void exibir_disciplinas(AVLDisc *disc, int cod_disc) {
+/*
+    summary
+        Função responsável por exibir as disciplinas de um aluno
+    param
+        disc: raiz da árvore
+        cod_disc: código da disciplina
+*/
+void printarDisc(AVLDisc *disc, int cod_disc) {
     if (disc != NULL) {
         if (disc->info->cod_disciplina == cod_disc) {
             printf("Codigo: %d\n", disc->info->cod_disciplina);
@@ -721,39 +1089,63 @@ void exibir_disciplinas(AVLDisc *disc, int cod_disc) {
             printf("\n");
         }
         else if (cod_disc < disc->info->cod_disciplina)
-            exibir_disciplinas(disc->esq, cod_disc);
+            printarDisc(disc->esq, cod_disc);
         else
-            exibir_disciplinas(disc->dir, cod_disc);
+            printarDisc(disc->dir, cod_disc);
     }
 }
 
-void exibir_disc(AVLCurso *curso, int cod_disc, int idcurso) {
+/*
+    summary
+        Função responsável por exibir as disciplinas de um aluno
+    param
+        curso: árvore de cursos
+        cod_disc: código da disciplina
+        idcurso: código do curso
+*/
+void exibirDisc(AVLCurso *curso, int cod_disc, int idcurso) {
     if (curso != NULL) {
         if (curso->info->idcurso == idcurso) {
             if (curso->info->disc != NULL)
-                exibir_disciplinas(curso->info->disc, cod_disc);
+                printarDisc(curso->info->disc, cod_disc);
         }
         else if (idcurso < curso->info->idcurso)
-            exibir_disc(curso->esq, cod_disc, idcurso);
+            exibirDisc(curso->esq, cod_disc, idcurso);
         else
-            exibir_disc(curso->dir, cod_disc, idcurso);
+            exibirDisc(curso->dir, cod_disc, idcurso);
     }
 }
 
-void exibir_disc_aluno(AVLMatricula *mat, AVLCurso *cursos, int codcurso){
+/*
+    summary
+        Função responsável por exibir as disciplinas de um aluno
+    param
+        mat: raiz da árvore
+        cursos: árvore de cursos
+        codcurso: código do curso
+*/
+void discAluno(AVLMatricula *mat, AVLCurso *cursos, int codcurso){
     if (mat != NULL){
-        exibir_disc(cursos, mat->info->coddisc, codcurso);
-        exibir_disc_aluno(mat->esq, cursos, codcurso);
-        exibir_disc_aluno(mat->dir, cursos, codcurso);
+        exibirDisc(cursos, mat->info->coddisc, codcurso);
+        discAluno(mat->esq, cursos, codcurso);
+        discAluno(mat->dir, cursos, codcurso);
     }
 }
 
-void exibir_disc_aluno_main(Alunos *aluno, AVLCurso *cursos, int matricula){
+/*
+    summary
+        Função responsável por exibir as disciplinas de um aluno
+    param
+        aluno: lista de alunos
+        cursos: árvore de cursos
+        matricula: matrícula do aluno
+*/
+void exibirDiscAluno(Alunos *aluno, AVLCurso *cursos, int matricula){
     if (aluno != NULL){
         if (aluno->matricula == matricula)
-            exibir_disc_aluno(aluno->mat, cursos, aluno->codcurso);
+            discAluno(aluno->mat, cursos, aluno->codcurso);
         else
-            exibir_disc_aluno_main(aluno->prox, cursos, matricula);
+            exibirDiscAluno(aluno->prox, cursos, matricula);
     }
 }
 
@@ -761,6 +1153,13 @@ void exibir_disc_aluno_main(Alunos *aluno, AVLCurso *cursos, int matricula){
 
 /* xi) Mostrar todas as notas de disciplinas de um determinado período de um determinado aluno.*/
 
+/*
+    summary
+        Função responsável por exibir as notas de um determinado período
+    param
+        nota: raiz da árvore
+        periodo: período da disciplina
+*/
 void exibirNotasPeriodo(AVLNotas *nota, int periodo){
     if(nota != NULL){
         if(nota->info->semestre == periodo){
@@ -774,6 +1173,14 @@ void exibirNotasPeriodo(AVLNotas *nota, int periodo){
     }
 }
 
+/*
+    summary
+        Função responsável por exibir as notas de um determinado período
+    param
+        aluno: lista de alunos
+        periodo: período da disciplina
+        mat: matrícula do aluno
+*/
 void notasdiscperiodoaluno(Alunos *aluno, int periodo, int mat) {
     if (aluno != NULL) {
         if (aluno->matricula == mat)
@@ -788,6 +1195,13 @@ void notasdiscperiodoaluno(Alunos *aluno, int periodo, int mat) {
 /* xii) Mostrar a nota de uma disciplina de um determinado aluno, mostrando o período e a carga horária da
 disciplina. */
 
+/*
+    summary
+        Função responsável por buscar um curso na árvore de cursos
+    param
+        curso: raiz da árvore
+        idcurso: código do curso
+*/
 AVLCurso* buscar_curso(AVLCurso *curso, int idcurso) {
     AVLCurso *aux;
     aux = NULL;
@@ -802,6 +1216,13 @@ AVLCurso* buscar_curso(AVLCurso *curso, int idcurso) {
     return aux;
 }
 
+/*
+    summary
+        Função responsável por buscar uma disciplina na árvore AVL de disciplinas
+    param
+        disc: raiz da árvore
+        cod_disc: código da disciplina
+*/
 AVLDisc* buscar_disciplina(AVLDisc *disc, int cod_disc) {
     AVLDisc *aux;
     aux = NULL;
@@ -816,6 +1237,13 @@ AVLDisc* buscar_disciplina(AVLDisc *disc, int cod_disc) {
     return aux;
 }
 
+/*
+    summary
+        Função responsável por buscar uma nota na árvore AVL de notas
+    param
+        nota: raiz da árvore
+        cod_disc: código da disciplina
+*/
 AVLNotas* buscar_nota(AVLNotas *nota, int cod_disc) {
     AVLNotas *aux;
     aux = NULL;
@@ -831,18 +1259,34 @@ AVLNotas* buscar_nota(AVLNotas *nota, int cod_disc) {
 }
 
 
+/*
+    summary
+        Função responsável por exibir a nota de uma disciplina de um determinado aluno
+    param
+        aluno: lista de alunos
+        curso: árvore de cursos
+        matricula: matrícula do aluno
+        coddisc: código da disciplina
+*/
 void notadiscporaluno(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc){
+    AVLCurso *c = NULL;
+    AVLDisc *d = NULL;
+    AVLNotas *n = NULL;
     if(aluno != NULL){
         if(aluno->matricula == matricula){
-            AVLCurso *c = buscar_curso(curso, aluno->codcurso);
-            AVLDisc *d = buscar_disciplina(c->info->disc, coddisc);
-            AVLNotas *n = buscar_nota(aluno->nota, coddisc);
-            if(d != NULL && n != NULL){
-                printf("Codigo: %d\n", d->info->cod_disciplina);
-                printf("Nome: %s\n", d->info->nomedisc);
-                printf("Carga horaria: %d\n", d->info->cargah);
-                printf("Nota Final: %.2f\n", n->info->notafinal);
-                printf("Semestre: %d\n", n->info->semestre);
+            c = buscar_curso(curso, aluno->codcurso);
+            if(c != NULL){
+                d = buscar_disciplina(c->info->disc, coddisc);
+                if(d != NULL){
+                    n = buscar_nota(aluno->nota, coddisc);
+                    if(n != NULL){
+                        printf("Codigo: %d\n", d->info->cod_disciplina);
+                        printf("Nome: %s\n", d->info->nomedisc);
+                        printf("Carga horaria: %d\n", d->info->cargah);
+                        printf("Nota Final: %.2f\n", n->info->notafinal);
+                        printf("\n");
+                    }
+                }
             }
         }
         else
@@ -856,10 +1300,26 @@ void notadiscporaluno(Alunos *aluno, AVLCurso *curso, int matricula, int coddisc
 /* xiii)Remover uma disciplina de um determinado curso desde que não tenha nenhum aluno matriculado na
 mesma */
 
+/*
+    summary
+        Função responsável por calcular a altura da árvore AVL de disciplinas
+    param
+        disc: raiz da árvore
+    return
+        res: altura da árvore
+*/
 int ehfolhadisc(AVLDisc *disc){
     return (disc->esq == NULL && disc->dir == NULL);
 }
 
+/*
+    summary
+        Função responsável por calcular a altura da árvore AVL de disciplinas
+    param
+        disc: raiz da árvore
+    return
+        res: altura da árvore
+*/
 AVLDisc* soumfilhodisc(AVLDisc *disc){
     AVLDisc *aux;
     aux = NULL;
@@ -870,6 +1330,14 @@ AVLDisc* soumfilhodisc(AVLDisc *disc){
     return aux;
 }
 
+/*
+    summary
+        Função responsável por encontrar o menor filho à esquerda
+    param
+        disc: raiz da árvore
+    return
+        aux: menor filho à esquerda
+*/
 AVLDisc* menorfilhoesqdisc(AVLDisc *disc){
     AVLDisc *aux;
     aux = NULL;
@@ -880,6 +1348,14 @@ AVLDisc* menorfilhoesqdisc(AVLDisc *disc){
     return aux;
 }
 
+/*
+    summary
+        Função responsável por calcular a altura da árvore AVL de disciplinas
+    param
+        disc: raiz da árvore
+    return
+        res: altura da árvore
+*/
 void rmvdisc(AVLDisc **disc, int cod_disc, int *remove){
     if ((*disc != NULL)){    
         AVLDisc *aux;
@@ -916,6 +1392,14 @@ void rmvdisc(AVLDisc **disc, int cod_disc, int *remove){
     }
 }
 
+/*
+    summary
+        Função responsável por buscar uma matrícula na árvore AVL de matrículas
+    param
+        mat: raiz da árvore
+        codigo: código da disciplina
+        enc: variável de controle para verificar se a disciplina foi encontrada
+*/
 void buscamat(AVLMatricula *mat, int codigo, int *enc) {
     if (mat == NULL)
         *enc = 0;
@@ -927,29 +1411,47 @@ void buscamat(AVLMatricula *mat, int codigo, int *enc) {
         buscamat(mat->dir, codigo, enc);
 }
 
-void validar_rmv_disciplina(Alunos *alunos, int cod_disc, int *validar_disc) {
+/*
+    summary
+        Função responsável por validar a remoção de uma disciplina
+    param
+        alunos: lista de alunos
+        cod_disc: código da disciplina
+        validar_disc: variável de controle para verificar se a disciplina pode ser removida
+*/
+void validarRemocao(Alunos *alunos, int cod_disc, int *validar_disc) {
     int enc = 0;
     if (alunos != NULL && *validar_disc == 0) { // Pare se já estiver validado
         buscamat(alunos->mat, cod_disc, &enc);
         if (enc == 0)
             *validar_disc = 1;
         else
-            validar_rmv_disciplina(alunos->prox, cod_disc, validar_disc);
+            validarRemocao(alunos->prox, cod_disc, validar_disc);
     }
 }
 
-
-int rmvdisc_curso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc){
+/*
+    summary
+        Função responsável por remover uma disciplina de um determinado curso
+    param
+        cursos: árvore de cursos
+        alunos: lista de alunos
+        idcurso: código do curso
+        cod_disc: código da disciplina
+    return
+        remove: variável de controle para verificar se a disciplina foi removida
+*/
+int rmvDiscCurso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc){
     int remove = 0, validar_disc = 0;
     if ((*cursos) != NULL){
-        validar_rmv_disciplina(alunos, cod_disc, &validar_disc);
+        validarRemocao(alunos, cod_disc, &validar_disc);
         if (validar_disc != 0){
             if ((*cursos)->info->idcurso == idcurso)
                 rmvdisc(&(*cursos)->info->disc, cod_disc, &remove);  
             else if (idcurso < (*cursos)->info->idcurso)
-                remove = rmvdisc_curso(&(*cursos)->esq, alunos, idcurso, cod_disc);
+                remove = rmvDiscCurso(&(*cursos)->esq, alunos, idcurso, cod_disc);
             else
-                remove = rmvdisc_curso(&(*cursos)->dir, alunos, idcurso, cod_disc);
+                remove = rmvDiscCurso(&(*cursos)->dir, alunos, idcurso, cod_disc);
         }
     }
     return remove;
@@ -959,6 +1461,14 @@ int rmvdisc_curso(AVLCurso **cursos, Alunos *alunos, int idcurso, int cod_disc){
 
 /* xiv)Permita remover uma disciplina da árvore de matrícula de um determinado aluno. */
 
+/*
+    summary
+        Função responsável por remover uma disciplina da árvore de matrícula de um determinado aluno
+    param
+        aluno: lista de alunos
+        matricula: matrícula do aluno
+        coddisc: código da disciplina
+*/
 void rmvmatdealuno(Alunos **aluno, int matricula, int coddisc) {
     if (*aluno != NULL) {
         if ((*aluno)->matricula == matricula)
@@ -973,6 +1483,13 @@ void rmvmatdealuno(Alunos **aluno, int matricula, int coddisc) {
 /* xv) Mostrar o histórico de um determinado aluno, contendo o nome do curso, as disciplinas e sua respectiva
 nota organizadas pelo período que a disciplina está cadastrada no curso. */
 
+/*
+    summary
+        Função responsável por exibir uma disciplina
+    param
+        disc: raiz da árvore
+        cod_disciplina: código da disciplina
+*/
 void exibir_disciplina(AVLDisc *disc, int cod_disciplina) {
     if (disc != NULL) {
         if (disc->info->cod_disciplina == cod_disciplina)
@@ -984,6 +1501,14 @@ void exibir_disciplina(AVLDisc *disc, int cod_disciplina) {
     }
 }
 
+/*
+    summary
+        Função responsável por exibir as notas de um determinado período
+    param
+        nota: raiz da árvore
+        disc: raiz da árvore
+        periodo: período da disciplina
+*/
 void exibir_notas(AVLNotas *nota, AVLDisc *disc, int periodo) {
     if (nota != NULL) {
         if (nota->info->semestre == periodo) {
@@ -996,6 +1521,15 @@ void exibir_notas(AVLNotas *nota, AVLDisc *disc, int periodo) {
     }
 }
 
+/*
+    summary
+        Função responsável por exibir o nome do curso
+    param
+        curso: raiz da árvore
+        idcurso: código do curso
+    return
+        qntperiodos: quantidade de períodos do curso
+*/
 int exibir_nome_curso(AVLCurso *curso, int idcurso) {
     int qntperiodos = 0;
     if (curso != NULL) {
@@ -1010,6 +1544,14 @@ int exibir_nome_curso(AVLCurso *curso, int idcurso) {
     return qntperiodos;
 }
 
+/*
+    summary
+        Função responsável por exibir o histórico de um determinado aluno
+    param
+        aluno: lista de alunos
+        curso: árvore de cursos
+        matricula: matrícula do aluno
+*/
 void exibir_hist_aluno(Alunos *aluno, AVLCurso *curso, int matricula) {
     if (aluno != NULL) {
         if (aluno->matricula == matricula) {
@@ -1034,7 +1576,14 @@ void exibir_hist_aluno(Alunos *aluno, AVLCurso *curso, int matricula) {
 
 
 // Gerar os códigos
-
+/*
+    summary
+        Função responsável por gerar o código da disciplina
+    param
+        cargah: carga horária da disciplina
+        periodo: período da disciplina
+        coddisc: código da disciplina
+*/
 void gerarCodDisciplina(int cargah, int periodo, int *coddisc) {
     // Passo 1: obtendo o ano atual
     time_t t = time(NULL);
@@ -1047,6 +1596,14 @@ void gerarCodDisciplina(int cargah, int periodo, int *coddisc) {
     *coddisc = anoatual * 100000000 + cargah * 1000000 + periodo * 100000 + num5;
 }
 
+/*
+    summary
+        Função responsável por gerar o código da disciplina
+    param
+        qntperiodos: quantidade de períodos do curso
+        idcurso: código do curso
+        cod_disciplina: código da disciplina
+*/
 void gerarIdCurso(int qntperiodos, int *idcurso) {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -1058,6 +1615,13 @@ void gerarIdCurso(int qntperiodos, int *idcurso) {
     *idcurso = qntperiodos * 100000000 + (qntperiodos * 3) * 1000000 + (qntperiodos * 5) * 10000 + ano * 10000 + num4;
 }
 
+/*
+    summary
+        Função responsável por gerar a matrícula do aluno
+    param
+        idcurso: código do curso
+        matricula: matrícula do aluno
+*/
 void gerarMatriculaAluno(int idcurso, int *matricula) {
     // Passo 1: obtendo o ano atual
     time_t t = time(NULL);
@@ -1073,6 +1637,14 @@ void gerarMatriculaAluno(int idcurso, int *matricula) {
     *matricula = ano * 100000 + num4 * 1000 + idcursoModificado;
 }
 
+/*
+    summary
+        Função responsável por gerar a matrícula do aluno
+    param
+        matricula: matrícula do aluno
+        coddisc: código da disciplina
+        cod_disciplina: código da disciplina
+*/
 void exibirAlturaCurso(AVLCurso *curso){
     if(curso != NULL){
         exibirAlturaCurso(curso->esq);
@@ -1082,6 +1654,13 @@ void exibirAlturaCurso(AVLCurso *curso){
     }
 }
 
+/*
+    summary
+        Função responsável por exibir a altura de um curso
+    param
+        curso: árvore de cursos
+        idcurso: código do curso
+*/
 void exibirAlturaDisciplina(AVLDisc *disc){
     if(disc != NULL){
         exibirAlturaDisciplina(disc->esq);
@@ -1091,6 +1670,13 @@ void exibirAlturaDisciplina(AVLDisc *disc){
     }
 }
 
+/*
+    summary
+        Função responsável por exibir a altura de um curso
+    param
+        curso: árvore de cursos
+        idcurso: código do curso
+*/
 void exibirAlturaDisciplinaMain(AVLCurso *curso, int idcurso){
     if(curso != NULL){
         if(curso->info->idcurso == idcurso)
@@ -1102,6 +1688,13 @@ void exibirAlturaDisciplinaMain(AVLCurso *curso, int idcurso){
     }
 }
 
+/*
+    summary
+        Função responsável por exibir a altura de um curso
+    param
+        curso: árvore de cursos
+        idcurso: código do curso
+*/
 void exibirAlturaMatricula(AVLMatricula *mat){
     if(mat != NULL){
         exibirAlturaMatricula(mat->esq);
@@ -1111,6 +1704,13 @@ void exibirAlturaMatricula(AVLMatricula *mat){
     }
 }
 
+/*
+    summary
+        Função responsável por exibir a altura de um curso
+    param
+        curso: árvore de cursos
+        idcurso: código do curso
+*/
 void exibirAlturaMatriculaMain(Alunos *aluno, int matricula) {
     if (aluno != NULL) {
         if (aluno->matricula == matricula)
@@ -1120,6 +1720,13 @@ void exibirAlturaMatriculaMain(Alunos *aluno, int matricula) {
     }
 }
 
+/*
+    summary
+        Função responsável por exibir a altura de um curso
+    param
+        curso: árvore de cursos
+        idcurso: código do curso
+*/
 void exibirAlturaNotas(AVLNotas *nota){
     if(nota != NULL){
         exibirAlturaNotas(nota->esq);
@@ -1129,6 +1736,13 @@ void exibirAlturaNotas(AVLNotas *nota){
     }
 }
 
+/*
+    summary
+        Função responsável por exibir a altura de um curso
+    param
+        curso: árvore de cursos
+        idcurso: código do curso
+*/
 void exibirAlturaNotasMain(Alunos *aluno, int matricula) {
     if (aluno != NULL) {
         if (aluno->matricula == matricula)
@@ -1140,6 +1754,12 @@ void exibirAlturaNotasMain(Alunos *aluno, int matricula) {
 
 // Liberar estruturas com base nas novas configurações
 
+/*
+    summary
+        Função responsável por liberar a árvore AVL de disciplinas
+    param
+        raiz: raiz da árvore
+*/
 void liberarAVLDisc(AVLDisc **raiz){
     if(*raiz != NULL){
         liberarAVLDisc(&(*raiz)->esq);
@@ -1150,6 +1770,12 @@ void liberarAVLDisc(AVLDisc **raiz){
     }
 }
 
+/*
+    summary
+        Função responsável por liberar a árvore AVL de cursos
+    param
+        raiz: raiz da árvore
+*/
 void liberarAVLCurso(AVLCurso **raiz){
     if(*raiz != NULL){
         liberarAVLCurso(&(*raiz)->esq);
@@ -1161,6 +1787,12 @@ void liberarAVLCurso(AVLCurso **raiz){
     }
 }
 
+/*
+    summary
+        Função responsável por liberar a árvore AVL de matrículas
+    param
+        raiz: raiz da árvore
+*/
 void liberarAVLNotas(AVLNotas **raiz){
     if(*raiz != NULL){
         liberarAVLNotas(&(*raiz)->esq);
@@ -1171,6 +1803,12 @@ void liberarAVLNotas(AVLNotas **raiz){
     }
 }
 
+/*
+    summary
+        Função responsável por liberar a árvore AVL de matrículas
+    param
+        raiz: raiz da árvore
+*/
 void liberarAVLMatricula(AVLMatricula **raiz){
     if(*raiz != NULL){
         liberarAVLMatricula(&(*raiz)->esq);
@@ -1181,6 +1819,12 @@ void liberarAVLMatricula(AVLMatricula **raiz){
     }
 }
 
+/*
+    summary
+        Função responsável por liberar a lista de alunos
+    param
+        aluno: lista de alunos
+*/
 void liberarAlunos(Alunos **aluno) {
     if (*aluno != NULL) {
         liberarAlunos(&(*aluno)->prox);

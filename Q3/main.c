@@ -50,7 +50,7 @@ void menugeral(){
     printf("\xBA     determinado aluno                    \xBA\n");
     printf("\xBA 15. Mostrar o historico de um            \xBA\n");
     printf("\xBA     determinado aluno                    \xBA\n");
-    printf("\xBA 16. Voltar                               \xBA\n");
+    printf("\xBA 16. Sair                                 \xBA\n");
     printf("\xC8");
     for(i = 0; i < 42; i++){
         printf("\xCD");
@@ -75,6 +75,17 @@ int buscar_aluno(Alunos *aluno, int matricula){
             enc = buscar_aluno(aluno->prox, matricula);
     }
     return enc;
+}
+
+int cod_curso(Alunos *aluno, int matricula){
+    int codcurso;
+    if(aluno != NULL){
+        if(aluno->matricula == matricula)
+            codcurso = aluno->codcurso;
+        else
+            codcurso = cod_curso(aluno->prox, matricula);
+    }
+    return codcurso;
 }
 
 /*
@@ -102,71 +113,59 @@ int main(){
     int matcomp, idcursocomp, coddisccomp, periodocomp;
     char buffer[50], nomecurso[50];
 
-    while(1){
+    while(opc != 16){
         menugeral();
+        printf("\nDigite a opcao desejada: ");
         scanf("%d", &opc);
         switch(opc){
             case 1:
                 printf("\nCADASTRO DE ALUNOS\n");
-                printf("\nDigite a matricula: ");
-                scanf("%d", &matricula);
                 printf("\nDigite o nome: ");
                 scanf("%s", buffer);
-                printf("\nDeseja visualizar os cursos disponiveis? (1 - Sim, 0 - Nao): ");
-                scanf("%d", &opc1);
-                if(opc1 == 1)
-                    exibir_cursos(curso);
+                exibir_cursos(curso);
                 printf("\n\nDigite o codigo do curso: ");
                 scanf("%d", &idcurso);
+                gerarMatriculaAluno(idcurso, &matricula);
                 sucesso = cadaluno(&aluno, curso, matricula, buffer, idcurso);
                 if(sucesso == 1)
                     printf("Aluno cadastrado com sucesso!\n");
                 break;
             case 2:
                 printf("\nCADASTRO DE CURSO\n");
-                printf("\nDigite o codigo do curso: ");
-                scanf("%d", &idcurso);
                 printf("\nDigite o nome do curso: ");
                 scanf("%s", nomecurso);
                 printf("\nDigite a quantidade de periodos: ");
                 scanf("%d", &qtdperiodos);
-                AVLCurso *cursoatual = (AVLCurso*)malloc(sizeof(AVLCurso));
-                cursoatual->info = (Cursos*)malloc(sizeof(Cursos));
-                cursoatual->info->idcurso = idcurso;
-                strcpy(cursoatual->info->nomecurso, nomecurso);
-                cursoatual->info->qntdperiodos = qtdperiodos;
-                cursoatual->info->disc = NULL;
-                cursoatual->altura = 0;
-                cursoatual->esq = NULL;
-                cursoatual->dir = NULL;
+                gerarIdCurso(qtdperiodos, &idcurso);
+                Cursos *cursoatual = (Cursos*)malloc(sizeof(Cursos));
+                cursoatual->idcurso = idcurso;
+                strcpy(cursoatual->nomecurso, nomecurso);
+                cursoatual->qntdperiodos = qtdperiodos;
+                cursoatual->disc = NULL;
                 sucesso = cadcurso(&curso, cursoatual);
                 if(sucesso == 1)
                     printf("Curso cadastrado com sucesso!\n");
                 break;
             case 3:
                 printf("\nCADASTRO DE DISCIPLINA\n");
-                printf("\nDigite o codigo da disciplina: ");
-                scanf("%d", &coddisc);
                 printf("\nDigite o nome da disciplina: ");
                 scanf("%s", buffer);
                 printf("\nDigite a carga horaria: ");
                 scanf("%d", &intbuffer);
                 printf("\nDigite o periodo: ");
                 scanf("%d", &opc1);
+                gerarCodDisciplina(intbuffer, opc1, &coddisc);
                 printf("\nDeseja visualizar os cursos disponiveis? (1 - Sim, 0 - Nao): ");
                 scanf("%d", &ib2);
                 if(ib2 == 1)
                     exibir_cursos(curso);
                 printf("\nDigite o codigo do curso: ");
                 scanf("%d", &idcurso);
-                AVLDisc *discatual = (AVLDisc*)malloc(sizeof(AVLDisc));
-                discatual->info = (Disciplina*)malloc(sizeof(Disciplina));
-                discatual->info->cod_disciplina = coddisc;
-                strcpy(discatual->info->nomedisc, buffer);
-                discatual->info->cargah = intbuffer;
-                discatual->info->periodo = opc1;
-                discatual->esq = NULL;
-                discatual->dir = NULL;
+                Disciplina *discatual = (Disciplina*)malloc(sizeof(Disciplina));
+                discatual->cod_disciplina = coddisc;
+                strcpy(discatual->nomedisc, buffer);
+                discatual->cargah = intbuffer;
+                discatual->periodo = opc1;
                 sucesso = caddisc(&curso, discatual, idcurso);
                 if(sucesso == 1)
                     printf("Disciplina cadastrada com sucesso!\n");
@@ -175,12 +174,12 @@ int main(){
                 printf("\nCADASTRO DE MATRICULA\n");
                 printf("\nDesaja visualizar as disciplinas do curso disponiveis? (1 - Sim, 0 - Nao): ");
                 scanf("%d", &opc1);
-                if(opc1 == 1)
+                if(opc1 == 1){
+                    exibir_cursos(curso);
                     printf("\nDigite o codigo do curso: ");
                     scanf("%d", &idcurso);
-                    // Exibir as disciplinas do curso void exibir_disc_curso_main(AVLCurso *curso, int idcurso)
-                    exibir_disc_curso_main(curso, idcurso);
-                    
+                    exibirDiscCurso(curso, idcurso);
+                }
                 printf("\nDigite o codigo da disciplina: ");
                 scanf("%d", &coddisc);
                 printf("\nDesaja visualizar os alunos disponiveis? (1 - Sim, 0 - Nao): ");
@@ -195,48 +194,44 @@ int main(){
                 break;
             case 5:
                 printf("\nCADASTRO DE NOTA\n");
-                printf("\nDeseja visualizar as disciplinas do aluno disponiveis? (1 - Sim, 0 - Nao): ");
-                scanf("%d", &opc1);
-                if(opc1 == 1)
-                    // Exibir os alunos disponiveis void exibir_disc_aluno_main(Alunos *aluno, AVLCurso *cursos, int matricula)
-                    exibir_cursos(curso);
-                    printf("\nDigite o codigo do curso: ");
-                    scanf("%d", &idcurso);
-                    alunosporcurso(aluno, idcurso);
-                    printf("\nDigite o codigo do aluno: ");
-                    scanf("%d", &matcomp);
-                    exibir_hist_aluno(aluno, curso, matcomp);
+                exibir_cursos(curso);
+                printf("\nDigite o codigo do curso: ");
+                scanf("%d", &idcurso);
+                alunosporcurso(aluno, idcurso);
+                printf("\nDigite o codigo do aluno: ");
+                scanf("%d", &matcomp);
+                exibirDiscAluno(aluno, curso, matcomp);
                 printf("\nDigite o codigo da disciplina: ");
                 scanf("%d", &coddisc);
-                printf("\nDigite a matricula do aluno: ");
-                scanf("%d", &matricula);
                 printf("\nDigite o semestre: ");
                 scanf("%d", &intbuffer);
                 printf("\nDigite a nota final: ");
                 scanf("%f", &notafinal);
-                Alunos *alunoatual = buscar_aluno(aluno, matricula);
                 Notas *notaatual = (Notas*)malloc(sizeof(Notas));
                 notaatual->coddisc = coddisc;
                 notaatual->semestre = intbuffer;
                 notaatual->notafinal = notafinal;
-                sucesso = cadnota(&nota, matricula, notaatual);
+                sucesso = cadnota(&aluno, matcomp, notaatual);
                 if(sucesso == 1)
                     printf("Nota cadastrada com sucesso!\n");
                 break;
             case 6:
+                exibir_cursos(curso);
                 printf("\nDigite o codigo do curso: ");
                 scanf("%d", &idcursocomp);
-                exibircurso(buscar_curso(curso, idcursocomp));
+                alunosporcurso(aluno, idcursocomp);
                 break;
             case 7:
                 exibir_cursos(curso);
                 break;
             case 8:
+                exibir_cursos(curso);
                 printf("\nDigite o codigo do curso: ");
                 scanf("%d", &idcursocomp);
                 exibirDiscCurso(curso, idcursocomp);
                 break;
             case 9:
+                exibir_cursos(curso);
                 printf("\nDigite o codigo do curso: ");
                 scanf("%d", &idcursocomp);
                 printf("\nDigite o periodo da disciplina: ");
@@ -244,11 +239,13 @@ int main(){
                 exibirDiscPeriodo(curso, idcursocomp, periodocomp);
                 break;
             case 10:
+                exibir_alunos(aluno);
                 printf("\nDigite o codigo do aluno: ");
                 scanf("%d", &matcomp);
                 exibirDiscAluno(aluno, curso, matcomp);
                 break;
             case 11:
+                exibir_alunos(aluno);
                 printf("\nDigite o codigo do aluno: ");
                 scanf("%d", &matcomp);
                 printf("\nDigite o periodo: ");
@@ -256,15 +253,19 @@ int main(){
                 notasdiscperiodoaluno(aluno, periodocomp, matcomp);
                 break;
             case 12:
+                exibir_alunos(aluno);
                 printf("\nDigite o codigo do aluno: ");
                 scanf("%d", &matcomp);
+                exibirDiscCurso(curso, cod_curso(aluno, matcomp));
                 printf("\nDigite o codigo da disciplina: ");
                 scanf("%d", &coddisccomp);
                 notadiscporaluno(aluno, curso, matcomp, coddisccomp);
                 break;
             case 13:
+                exibir_cursos(curso);
                 printf("\nDigite o codigo do curso: ");
                 scanf("%d", &idcursocomp);
+                exibirDiscCurso(curso, idcursocomp);
                 printf("\nDigite o codigo da disciplina: ");
                 scanf("%d", &coddisccomp);
                 int remove = rmvDiscCurso(&curso, aluno, idcursocomp, coddisccomp);
@@ -272,13 +273,16 @@ int main(){
                     printf("Disciplina removida com sucesso!\n");
                 break;
             case 14:
+                exibir_alunos(aluno);
                 printf("\nDigite o codigo do aluno: ");
                 scanf("%d", &matcomp);
+                exibirDiscAluno(aluno, curso, matcomp);
                 printf("\nDigite o codigo da disciplina: ");
                 scanf("%d", &coddisccomp);
                 rmvmatdealuno(&aluno, matcomp, coddisccomp);
                 break;
             case 15:
+                exibir_alunos(aluno);
                 printf("\nDigite o codigo do aluno: ");
                 scanf("%d", &matcomp);
                 exibir_hist_aluno(aluno, curso, matcomp);
@@ -289,8 +293,6 @@ int main(){
             default:
                 printf("\nOpção inválida!\n");
                 break;
-            system("PAUSE");
-            system("cls");
         }
     }
 

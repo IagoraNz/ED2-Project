@@ -70,7 +70,6 @@ int main(){
     mat = NULL;
 
     while(1){
-        system("cls");
         printf("\xC9");
         for(int i = 0; i < 41; i++){
             printf("\xCD");
@@ -109,7 +108,6 @@ int main(){
             /*--------------------------------------------------------------------------------------------------------*/
             /* i. O menu geral contém as principais funções listadas no escopo e descrição do projeto */
             while(opc1 != 16){
-                system("cls");
                 menugeral();
                 printf("Digite a opcao desejada: ");
                 scanf("%d", &opc1);
@@ -323,7 +321,7 @@ int main(){
                     printf("Opcao invalida!\n");
                     break;
                 }
-                system("PAUSE");
+                getchar();
             }
             break;
             /*--------------------------------------------------------------------------------------------------------*/

@@ -375,7 +375,7 @@ int main (){
     liberarAVLCurso(&raiz);
     liberarAlunos(&alunos);
 
-    system("PAUSE");
+    getchar();
     
     return 0;
 }

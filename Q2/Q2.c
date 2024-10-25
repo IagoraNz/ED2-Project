@@ -477,7 +477,7 @@ int main(){
         printf("%.2f\n", tempo * 1000000); // Microsegundos
     }
 
-    system("PAUSE");
+    getchar();
     // Liberando a memória alocada
     liberar_alunos(&alunos);
     liberar_cursos(&raiz);

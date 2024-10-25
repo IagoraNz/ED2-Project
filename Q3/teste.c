@@ -87,20 +87,20 @@ int main () {
         printf("Disciplina não cadastrada!\n");
 
     exibirAlturaDisciplinaMain(curso, 1);
-    system("PAUSE");
+    getchar();
 
     cadaluno(&alunos, curso, 1, "João", 1);
     cadaluno(&alunos, curso, 2, "Maria", 1);
     cadaluno(&alunos, curso, 3, "José", 1);
 
-    sucesso = rmvdisc_curso(&curso, alunos, 1, 1);
+    sucesso = rmvDiscCurso(&curso, alunos, 1, 1);
     if (sucesso == 1)
         printf("Disciplina removida com sucesso!\n");
     else
         printf("Disciplina não removida!\n");
-    system("PAUSE");
+    getchar();
 
-    exibir_disc_curso_main(curso, 1);
+    exibirDiscCurso(curso, 1);
 
     alunosporcurso(alunos, 1);
     
@@ -129,10 +129,10 @@ int main () {
     exibirAlturaMatriculaMain(alunos, 1);
     printf("\n");
 
-    exibir_disc_aluno_main(alunos, curso, 1);
-    exibir_disc_aluno_main(alunos, curso, 2);
+    exibirDiscAluno(alunos, curso, 1);
+    exibirDiscAluno(alunos, curso, 2);
 
-    system("PAUSE");
+    getchar();
 
     Notas *n = (Notas*) malloc(sizeof(Notas));
     n->coddisc = 1;
@@ -167,17 +167,17 @@ int main () {
     else
         printf("Nota não cadastrada!\n");
     
-    system("PAUSE");
+    getchar();
 
     notadiscporaluno(alunos, curso, 1, 1);
 
-    system("PAUSE");
+    getchar();
 
     notasdiscperiodoaluno(alunos, 1, 1);
 
     exibirAlturaNotasMain(alunos, 1);
 
-    system("PAUSE");
+    getchar();
 
     return 0;
 }
